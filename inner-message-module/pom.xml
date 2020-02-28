@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Inner-Message-Module</artifactId>
+    <artifactid>inner-message-module</artifactid>
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>

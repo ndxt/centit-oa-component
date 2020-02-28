@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>Inner-Message-Server</artifactId>
+    <artifactid>inner-message-server</artifactid>
 
 
 </project>

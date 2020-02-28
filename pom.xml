@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>Inner-Message-Module</module>
-        <module>Inner-Message-Server</module>
-        <module>Inner-Message-Client</module>
+        <module>inner-message-module</module>
+        <module>inner-message-server</module>
+        <module>inner-message-client</module>
     </modules>
 
     <parent>
