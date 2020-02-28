@@ -8,8 +8,7 @@
         <version>1.0-SNAPSHOT</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
-
-    <artifactid>inner-message-module</artifactid>
+    <artifactId>inner-message-module</artifactId>
     <dependencies>
         <dependency>
             <groupId>org.hibernate</groupId>
@@ -63,8 +62,5 @@
             <systemPath>${env.JAVA_HOME}/lib/tools.jar</systemPath>
             <scope>system</scope>
         </dependency>
-
     </dependencies>
-
-
 </project>
