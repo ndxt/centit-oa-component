@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
 import java.io.Serializable;
+import java.util.Date;
 
 @Data
 @Entity
@@ -34,4 +35,7 @@ public class InnerMsgAnnex implements Serializable{
     @Column(name = "ANNEX_FILE_ID")
     private String annexFileId;
 
+    @Column(name = "UPLOAD_DATE")
+    @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today()")
+    private Date uploadDate;
 }

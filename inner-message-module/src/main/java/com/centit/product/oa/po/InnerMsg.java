@@ -59,6 +59,7 @@ public class InnerMsg implements Serializable{
     @OrderBy("desc")
     @Column(name = "SEND_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today()")
     private Date sendDate;
 
     /**

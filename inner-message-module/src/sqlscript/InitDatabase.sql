@@ -87,7 +87,8 @@ create table M_InnerMsg_Annex  (
    Annex_ID             VARCHAR(32)                    not null,
    Msg_Code             VARCHAR(32)                    not null,
    ANNEX_file_name            VARCHAR(256)                   not null,
-   Annex_FILE_Id        VARCHAR(64)                    not null
+   Annex_FILE_Id        VARCHAR(64)                    not null,
+   upload_date          date
 );
 
 alter table M_InnerMsg_Annex

@@ -1,6 +1,8 @@
 package com.centit.product.oa.po;
 
 import com.centit.framework.core.dao.DictionaryMap;
+import com.centit.support.database.orm.GeneratorType;
+import com.centit.support.database.orm.ValueGenerator;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -72,6 +74,7 @@ public class InnerMsgRecipient implements Serializable{
     @OrderBy("desc")
     @Column(name = "RECEIVE_DATE")
     @Temporal(TemporalType.TIMESTAMP)
+    @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today()")
     private Date receiveDate;
 
 
