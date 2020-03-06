@@ -53,16 +53,16 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     public void sendInnerMsg(InnerMsgRecipient recipient, String sysUserCode) {
         String receive = recipient.getReceive();
         String receives[] = StringUtils.split(receive, ",");
-        InnerMsg msg = recipient.getMInnerMsg();
+        //InnerMsg msg = recipient.getMInnerMsg();
         //拆分recieve
-        if (!StringUtils.isNotBlank(msg.getSender())) {
+        /*if (!StringUtils.isNotBlank(msg.getSender())) {
             msg.setSender(sysUserCode);
             //msg.setSenderName(CodeRepositoryUtil.getUserInfoByCode(sysUserCode).getUserName());
             if (null == msg.getSendDate()) {
                 msg.setSendDate(new Date());
             }
         }
-        sendToMany(receives, msg, recipient);
+        sendToMany(receives, msg, recipient);*/
     }
 
     public void sendToMany(String[] receives, InnerMsg msg, InnerMsgRecipient recipient) {
@@ -79,13 +79,13 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             msg.setReceiveName(receiveName);
             msg.setMsgCode(innerMsgDao.getNextKey());
             innerMsgDao.saveNewObject(msg);
-            recipient.setMInnerMsg(msg);
+            //recipient.setMInnerMsg(msg);
             recipient.setMsgCode(msg.getMsgCode());
             //DataPushSocketServer.pushMessage(msg.getSender(), "你发送邮件："+ msg.getMsgTitle());
             for (String userCode : receives) {
                 InnerMsgRecipient innerMsgRecipient  = new InnerMsgRecipient();
-                innerMsgRecipient.setId(innerMsgRecipientDao.getNextKey());
-                innerMsgRecipient.copyNotNullProperties(recipient);
+                //innerMsgRecipient.setId(innerMsgRecipientDao.getNextKey());
+                //innerMsgRecipient.copyNotNullProperties(recipient);
                 innerMsgRecipient.setReceive(userCode);
                 innerMsgRecipientDao.saveNewObject(innerMsgRecipient);
                 //DataPushSocketServer.pushMessage(userCode, "你有新邮件：" + recipient.getMsgTitle());
@@ -133,10 +133,10 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
                     InnerMsgRecipient recipient = new InnerMsgRecipient();
                     recipient.setMsgState(msg.getMsgState());
                     recipient.setMailType(msg.getMailType());
-                    recipient.setMInnerMsg(msg);
+                    //recipient.setMInnerMsg(msg);
                     recipient.setMsgCode(msg.getMsgCode());
                     recipient.setReceive(ui.getUserCode());
-                    recipient.setId(innerMsgRecipientDao.getNextKey());
+                    //recipient.setId(innerMsgRecipientDao.getNextKey());
                     innerMsgRecipientDao.saveNewObject(recipient);
                     //DataPushSocketServer.pushMessage(ui.getUserCode(), "你有新邮件：" + recipient.getMsgTitle());
                 }
@@ -174,24 +174,22 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Override
     @Transactional
     public ResponseData sendMessage(String sender, String receiver, NoticeMessage message) {
-        InnerMsg msg = new InnerMsg();
-        msg.copyFromNoticeMessage(message);
+        InnerMsg msg = InnerMsg.valueOf(message);
         msg.setSendDate(new Date());
         msg.setMsgType("P");
         msg.setMailType("O");
         msg.setMsgState("U");
         msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());
         InnerMsgRecipient recipient = new InnerMsgRecipient();
-        recipient.setMInnerMsg(msg);
+        //recipient.setMInnerMsg(msg);
         recipient.setReplyMsgCode(0);
-        recipient.setReceiveType("P");
+        //recipient.setReceiveType("P");
         recipient.setMailType("T");
         recipient.setMsgState("U");
         String[] receives = new String[]{receiver};
         sendToMany(receives, msg, recipient);
         return ResponseData.successResponse;
     }
-
 
     @Override
     public List<InnerMsgRecipient> listMsgRecipients(Map<String, Object> filterMap) {
@@ -212,17 +210,17 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     public List<InnerMsgRecipient> listMsgRecipientsCascade(Map<String, Object> filterMap){
 //       return innerMsgRecipientDao.listObjectsCascade(filterMap);
         List<InnerMsgRecipient> recipients = innerMsgRecipientDao.listObjects(filterMap);
-        for(InnerMsgRecipient recipient : recipients){
+        /*for(InnerMsgRecipient recipient : recipients){
             recipient.setMInnerMsg(innerMsgDao.getObjectById(recipient.getMsgCode()));
-        }
+        }*/
         return recipients;
     }
     @Override
     public List<InnerMsgRecipient> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
         List<InnerMsgRecipient> recipients = listMsgRecipients(filterMap, pageDesc);
-        for(InnerMsgRecipient recipient : recipients){
+        /*for(InnerMsgRecipient recipient : recipients){
             recipient.setMInnerMsg(innerMsgDao.getObjectById(recipient.getMsgCode()));
-        }
+        }*/
         return recipients;
     }
 
