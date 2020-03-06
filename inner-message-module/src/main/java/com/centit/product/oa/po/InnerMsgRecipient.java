@@ -1,4 +1,4 @@
-package com.centit.framework.system.po;
+package com.centit.product.oa.po;
 
 import com.centit.framework.core.dao.DictionaryMap;
 import io.swagger.annotations.ApiModel;

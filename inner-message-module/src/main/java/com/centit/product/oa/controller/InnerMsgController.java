@@ -1,4 +1,4 @@
-package com.centit.framework.system.controller;
+package com.centit.product.oa.controller;
 
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
@@ -9,9 +9,9 @@ import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.framework.model.basedata.OperationLog;
-import com.centit.framework.system.po.InnerMsg;
-import com.centit.framework.system.po.InnerMsgRecipient;
-import com.centit.framework.system.service.InnerMessageManager;
+import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgRecipient;
+import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;

@@ -1,7 +1,7 @@
-package com.centit.framework.system.service;
+package com.centit.product.oa.service;
 
-import com.centit.framework.system.po.InnerMsg;
-import com.centit.framework.system.po.InnerMsgRecipient;
+import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.support.database.utils.PageDesc;
 
 import java.util.List;

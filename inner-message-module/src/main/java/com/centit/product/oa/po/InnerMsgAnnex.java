@@ -1,4 +1,4 @@
-package com.centit.framework.system.po;
+package com.centit.product.oa.po;
 
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;

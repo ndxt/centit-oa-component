@@ -1,4 +1,4 @@
-package com.centit.framework.system.service.impl;
+package com.centit.product.oa.service.impl;
 
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.components.CodeRepositoryUtil;
@@ -6,11 +6,11 @@ import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.NoticeMessage;
-import com.centit.framework.system.dao.InnerMsgDao;
-import com.centit.framework.system.dao.InnerMsgRecipientDao;
-import com.centit.framework.system.po.InnerMsg;
-import com.centit.framework.system.po.InnerMsgRecipient;
-import com.centit.framework.system.service.InnerMessageManager;
+import com.centit.product.oa.dao.InnerMsgDao;
+import com.centit.product.oa.dao.InnerMsgRecipientDao;
+import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgRecipient;
+import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
