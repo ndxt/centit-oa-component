@@ -4,9 +4,9 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>inner-message-module</module>
-        <module>inner-message-server</module>
-        <module>inner-message-client</module>
+        <module>oa-component-module</module>
+        <module>oa-component-server</module>
+        <module>oa-component-client</module>
     </modules>
 
     <parent>
@@ -16,11 +16,11 @@
     </parent>
 
     <groupId>com.centit.product</groupId>
-    <artifactId>centit-inner-message</artifactId>
+    <artifactId>centit-oa-component</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <packaging>pom</packaging>
-    <name>com.centit.product:centit-inner-message</name>
+    <name>com.centit.product:centit-oa-component</name>
     <description>内部消息（邮件）服务</description>
 
 
