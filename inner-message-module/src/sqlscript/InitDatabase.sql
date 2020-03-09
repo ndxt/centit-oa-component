@@ -93,3 +93,51 @@ create table M_InnerMsg_Annex  (
 
 alter table M_InnerMsg_Annex
    add constraint PK_M_MSGANNEX primary key (Annex_ID);
+
+
+/*==============================================================*/
+/* Table: M_BBS_SUBJECT  主题                                */
+/*==============================================================*/
+create table M_BBS_SUBJECT  (
+   SUBJECT_ID            VARCHAR(32)                    not null,
+   deliverer             VARCHAR(32),
+   deliver_Date          TIMESTAMP,
+   BBS_Title             VARCHAR(512),
+   BBS_Content           CLOB,
+   Opt_ID                VARCHAR(64)                    not null,
+   OPT_Method            VARCHAR(64),
+   opt_Tag               VARCHAR(200)
+);
+
+alter table M_BBS_SUBJECT
+   add constraint PK_M_BBS_SUBJECT primary key (SUBJECT_ID);
+
+/*==============================================================*/
+/* Table: M_BBS_PIECE  讨论版回复信息                                  */
+/*==============================================================*/
+create table M_BBS_PIECE  (
+   PIECE_ID            VARCHAR(32)                    not null,
+   SUBJECT_ID            VARCHAR(32)                    not null,
+   deliverer             VARCHAR(32),
+   deliver_Date          TIMESTAMP,
+   BBS_Content           CLOB
+);
+
+alter table M_BBS_PIECE
+   add constraint PK_M_BBS_PIECE primary key (PIECE_ID);
+
+
+/*==============================================================*/
+/* Table: M_MsgAnnex                                            */
+/*==============================================================*/
+create table M_BBS_Annex (
+   Annex_ID             VARCHAR(32)                    not null,
+   SUBJECT_ID           VARCHAR(32),
+   PIECE_ID             VARCHAR(32),
+   ANNEX_file_name      VARCHAR(256)                   not null,
+   Annex_FILE_Id        VARCHAR(64)                    not null,
+   upload_date          date
+);
+
+alter table M_BBS_Annex
+   add constraint PK_M_BBS_Annex primary key (Annex_ID);
