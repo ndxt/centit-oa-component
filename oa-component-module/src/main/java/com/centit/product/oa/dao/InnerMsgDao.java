@@ -34,7 +34,7 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
             filterField.put("msgContent", CodeBook.LIKE_HQL_ID);
             filterField.put("msgStateNot", "msgState != :msgStateNot");
             filterField.put("sender", CodeBook.EQUAL_HQL_ID);
-            filterField.put("receive", "msgCode in (select re.MSG_CODE from M_INNERMSG_RECIPIENT re Where re.RECEIVE = :receive )");
+            filterField.put("receive", "msgCode in (select re.MSG_CODE from f_inner_msg_recipient re Where re.RECEIVE = :receive )");
          }
         return filterField;
     }

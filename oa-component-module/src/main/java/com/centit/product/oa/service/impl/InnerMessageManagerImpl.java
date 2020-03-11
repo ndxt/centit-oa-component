@@ -86,6 +86,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             for (String userCode : receives) {
                 InnerMsgRecipient innerMsgRecipient  = new InnerMsgRecipient();
                 innerMsgRecipient.setMsgCode(innerMsgRecipientDao.getNextKey());
+                innerMsgRecipient.setMailType(recipient.getMailType());
+                innerMsgRecipient.setMsgState(recipient.getMsgState());
 //                innerMsgRecipient.copyNotNullProperties(recipient);
                 innerMsgRecipient.setReceive(userCode);
                 innerMsgRecipientDao.saveNewObject(innerMsgRecipient);
