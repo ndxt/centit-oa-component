@@ -73,7 +73,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
                 if (bo > 0) {
                     receiveName += ",";
                 }
-                receiveName += CodeRepositoryUtil.getUserInfoByCode(userCode).getUserName();
+                IUserInfo userinfo=CodeRepositoryUtil.getUserInfoByCode(userCode);
+                receiveName += userinfo==null?userCode:userinfo.getUserName();
                 bo++;
             }
             msg.setReceiveName(receiveName);
@@ -180,7 +181,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         msg.setMsgType("M");
         msg.setMailType("O");
         msg.setMsgState("U");
-        msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());
+        msg.setSender(sender);
+//        msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());
         InnerMsgRecipient recipient = new InnerMsgRecipient();
         //recipient.setMInnerMsg(msg);
         recipient.setReplyMsgCode(0);
