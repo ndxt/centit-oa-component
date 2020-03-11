@@ -84,8 +84,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             //DataPushSocketServer.pushMessage(msg.getSender(), "你发送邮件："+ msg.getMsgTitle());
             for (String userCode : receives) {
                 InnerMsgRecipient innerMsgRecipient  = new InnerMsgRecipient();
-                //innerMsgRecipient.setId(innerMsgRecipientDao.getNextKey());
-                //innerMsgRecipient.copyNotNullProperties(recipient);
+                innerMsgRecipient.setMsgCode(innerMsgRecipientDao.getNextKey());
+//                innerMsgRecipient.copyNotNullProperties(recipient);
                 innerMsgRecipient.setReceive(userCode);
                 innerMsgRecipientDao.saveNewObject(innerMsgRecipient);
                 //DataPushSocketServer.pushMessage(userCode, "你有新邮件：" + recipient.getMsgTitle());
