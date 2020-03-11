@@ -11,7 +11,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_BBS_PIECE")
+@Table(name="F_BBS_PIECE")
 @NoArgsConstructor
 public class BbsPiece implements Serializable {
 

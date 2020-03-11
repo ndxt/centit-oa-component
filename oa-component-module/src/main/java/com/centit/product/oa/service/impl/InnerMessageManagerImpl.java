@@ -176,7 +176,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     public ResponseData sendMessage(String sender, String receiver, NoticeMessage message) {
         InnerMsg msg = InnerMsg.valueOf(message);
         msg.setSendDate(new Date());
-        msg.setMsgType("P");
+        //系统消息
+        msg.setMsgType("M");
         msg.setMailType("O");
         msg.setMsgState("U");
         msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());

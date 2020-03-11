@@ -18,7 +18,7 @@ import java.util.List;
 
 @Data
 @Entity
-@Table(name = "M_INNERMSG")
+@Table(name = "F_INNER_MSG")
 @ApiModel(value="消息对象",description="消息对象InnerMsg")
 public class InnerMsg implements Serializable{
 
@@ -39,7 +39,7 @@ public class InnerMsg implements Serializable{
     /**
      * 如果是回复邮件，可以关联相关的邮件
      */
-    @Column(name="Reply_Msg_Code")
+    @Column(name="REPLY_MSG_CODE")
     @Length(max = 32, message = "字段长度不能大于{max}")
     private String replyMsgCode;
 
@@ -70,7 +70,7 @@ public class InnerMsg implements Serializable{
     private String msgTitle;
 
     /**
-     * 消息类别：P=个人为消息   A=机构为公告  M=消息
+     * 消息类别：P = 私信人为消息   A=机构为公告  M =系统消息
      */
     @Column(name = "MSG_TYPE")
     @Length(max = 16, message = "字段长度必须为{max}")
@@ -78,6 +78,8 @@ public class InnerMsg implements Serializable{
 
     /**
      *  消息类别：I=收件箱 O=发件箱 D=草稿箱 T=废件箱
+     *  这个字段是针对发信人来说的，
+     *  针对收件人的状态 在 F_INNER_MSG_RECIPIENT 表中的MSG_STATE
      */
     @Column(name = "MAIL_TYPE")
     @Length(max = 1, message = "字段长度必须为{max}")

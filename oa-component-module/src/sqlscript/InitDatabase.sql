@@ -1,7 +1,7 @@
 /*==============================================================*/
-/* Table: M_InnerMsg   针对发件人                                      */
+/* Table: F_INNER_MSG   针对发件人                                      */
 /*==============================================================*/
-create table M_InnerMsg  (
+create table F_INNER_MSG  (
    Msg_Code              VARCHAR(32)                    not null,
    Reply_Msg_Code        VARCHAR(32),
    Sender                VARCHAR(32),
@@ -19,40 +19,40 @@ create table M_InnerMsg  (
 
 
 
-comment on column M_InnerMsg.Msg_Code is
+comment on column F_INNER_MSG.Msg_Code is
 '消息主键自定义，通过S_M_INNERMSG序列生成';
 
-comment on column M_InnerMsg.Msg_Type is
+comment on column F_INNER_MSG.Msg_Type is
 'P= 个人为消息  A= 机构为公告（通知）
 M=邮件';
 -- 仅仅针对发件人
-comment on column M_InnerMsg.Mail_Type is
+comment on column F_INNER_MSG.Mail_Type is
 'I=收件箱
 O=发件箱
 D=草稿箱
 T=废件箱
 ';
 
-comment on column M_InnerMsg.Receive_Name is
+comment on column F_INNER_MSG.Receive_Name is
 '使用部门，个人中文名，中间使用英文分号分割';
 
 
-comment on column M_InnerMsg.Opt_ID is
+comment on column F_INNER_MSG.Opt_ID is
 '模块，或者表';
 
-comment on column M_InnerMsg.OPT_Method is
+comment on column F_INNER_MSG.OPT_Method is
 '方法，或者字段';
 
-comment on column M_InnerMsg.opt_Tag is
+comment on column F_INNER_MSG.opt_Tag is
 '一般用于关联到业务主体';
 
-alter table M_InnerMsg
+alter table F_INNER_MSG
    add constraint PK_M_INNERMSG primary key (Msg_Code);
 
 /*==============================================================*/
-/* Table: M_InnerMsg_Recipient                                  */
+/* Table: F_INNER_MSG_RECIPIENT                                  */
 /*==============================================================*/
-create table M_InnerMsg_Recipient  (
+create table F_INNER_MSG_RECIPIENT  (
    Receive              VARCHAR(32)                  not null,
    Msg_Code             VARCHAR(32)                  not null,
    RECEIVE_Date         TIMESTAMP,
@@ -61,20 +61,20 @@ create table M_InnerMsg_Recipient  (
    msg_State             CHAR(1),
 );
 
-alter table M_InnerMsg_Recipient
-   add constraint PK_M_INNERMSG_Recipient primary key (Msg_Code, Receive);
+alter table F_INNER_MSG_RECIPIENT
+   add constraint PK_INNER_MSG_RECIPIENT primary key (Msg_Code, Receive);
 
 
-comment on table M_InnerMsg_Recipient is
+comment on table F_INNER_MSG_RECIPIENT is
 '内部消息（邮件）与公告收件人及消息信息';
 
 
-comment on column M_InnerMsg_Recipient.Mail_Type is
+comment on column F_INNER_MSG_RECIPIENT.Mail_Type is
 'T=收件人
 C=抄送
 B=密送';
 
-comment on column M_InnerMsg_Recipient.msg_State is
+comment on column F_INNER_MSG_RECIPIENT.msg_State is
 '未读/已读/删除，收件人在线时弹出提示
 U=未读
 R=已读
@@ -83,7 +83,7 @@ D=删除';
 /*==============================================================*/
 /* Table: M_MsgAnnex                                            */
 /*==============================================================*/
-create table M_InnerMsg_Annex  (
+create table F_INNER_MSG_ANNEX  (
    Annex_ID             VARCHAR(32)                    not null,
    Msg_Code             VARCHAR(32)                    not null,
    ANNEX_file_name            VARCHAR(256)                   not null,
@@ -91,14 +91,14 @@ create table M_InnerMsg_Annex  (
    upload_date          date
 );
 
-alter table M_InnerMsg_Annex
-   add constraint PK_M_MSGANNEX primary key (Annex_ID);
+alter table F_INNER_MSG_ANNEX
+   add constraint PK_MSG_ANNEX primary key (Annex_ID);
 
 
 /*==============================================================*/
-/* Table: M_BBS_SUBJECT  主题                                */
+/* Table: F_BBS_SUBJECT  主题                                */
 /*==============================================================*/
-create table M_BBS_SUBJECT  (
+create table F_BBS_SUBJECT  (
    SUBJECT_ID            VARCHAR(32)                    not null,
    deliverer             VARCHAR(32),
    deliver_Date          TIMESTAMP,
@@ -109,13 +109,13 @@ create table M_BBS_SUBJECT  (
    opt_Tag               VARCHAR(200)
 );
 
-alter table M_BBS_SUBJECT
-   add constraint PK_M_BBS_SUBJECT primary key (SUBJECT_ID);
+alter table F_BBS_SUBJECT
+   add constraint PK_F_BBS_SUBJECT primary key (SUBJECT_ID);
 
 /*==============================================================*/
-/* Table: M_BBS_PIECE  讨论版回复信息                                  */
+/* Table: F_BBS_PIECE  讨论版回复信息                                  */
 /*==============================================================*/
-create table M_BBS_PIECE  (
+create table F_BBS_PIECE  (
    PIECE_ID            VARCHAR(32)                    not null,
    SUBJECT_ID            VARCHAR(32)                    not null,
    deliverer             VARCHAR(32),
@@ -123,14 +123,14 @@ create table M_BBS_PIECE  (
    BBS_Content           CLOB
 );
 
-alter table M_BBS_PIECE
-   add constraint PK_M_BBS_PIECE primary key (PIECE_ID);
+alter table F_BBS_PIECE
+   add constraint PK_F_BBS_PIECE primary key (PIECE_ID);
 
 
 /*==============================================================*/
 /* Table: M_MsgAnnex                                            */
 /*==============================================================*/
-create table M_BBS_Annex (
+create table F_BBS_Annex (
    Annex_ID             VARCHAR(32)                    not null,
    SUBJECT_ID           VARCHAR(32),
    PIECE_ID             VARCHAR(32),
@@ -139,5 +139,5 @@ create table M_BBS_Annex (
    upload_date          date
 );
 
-alter table M_BBS_Annex
-   add constraint PK_M_BBS_Annex primary key (Annex_ID);
+alter table F_BBS_Annex
+   add constraint PK_F_BBS_Annex primary key (Annex_ID);

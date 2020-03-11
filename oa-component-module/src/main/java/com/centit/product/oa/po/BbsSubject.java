@@ -12,7 +12,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_BBS_SUBJECT")
+@Table(name="F_BBS_SUBJECT")
 @NoArgsConstructor
 public class BbsSubject implements Serializable {
 

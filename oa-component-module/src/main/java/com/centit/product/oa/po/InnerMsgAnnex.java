@@ -10,7 +10,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_MSGANNEX")
+@Table(name="F_INNER_MSG_ANNEX")
 public class InnerMsgAnnex implements Serializable{
     /**
      *

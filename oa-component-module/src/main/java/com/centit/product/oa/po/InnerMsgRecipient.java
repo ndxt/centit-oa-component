@@ -15,7 +15,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_INNERMSG_RECIPIENT")
+@Table(name="F_INNER_MSG_RECIPIENT")
 @ApiModel(value="接受者信息",description="接受者信息对象InnerMsgRecipient")
 public class InnerMsgRecipient implements Serializable{
 
