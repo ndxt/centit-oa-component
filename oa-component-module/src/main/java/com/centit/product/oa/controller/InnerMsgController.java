@@ -82,6 +82,17 @@ public class InnerMsgController extends BaseController {
         long unreadMsg = innerMessageManager.getUnreadMessageCount(currUser);
         return ResponseData.makeResponseData(unreadMsg);
     }
+    /**
+     * 未读消息
+     *
+     * @param request {@link HttpServletRequest}
+     */
+    @ApiOperation(value = "未读消息", notes = "未读消息数量。")
+    @RequestMapping(value = "/unreadMsg/{receive}", method = {RequestMethod.GET})
+    @WrapUpResponseBody
+    public List<InnerMsg> unreadMsg(String receive,HttpServletRequest request) {
+        return innerMessageManager.listUnreadMessage(receive);
+    }
 
     /**
      * 查询发件箱

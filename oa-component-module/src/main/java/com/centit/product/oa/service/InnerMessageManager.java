@@ -42,5 +42,5 @@ public interface InnerMessageManager {
 
     long getUnreadMessageCount(String userCode);
 
-    List<InnerMsgRecipient> listUnreadMessage(String userCode);
+    List<InnerMsg> listUnreadMessage(String userCode);
 }

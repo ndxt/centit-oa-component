@@ -167,8 +167,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     @Transactional
-    public List<InnerMsgRecipient> listUnreadMessage(String userCode) {
-        return innerMsgRecipientDao.listUnreadMessage(userCode);
+    public List<InnerMsg> listUnreadMessage(String userCode) {
+        return innerMsgDao.listUnreadMessage(userCode);
     }
 
     /**
