@@ -41,7 +41,7 @@ public class InnerMsgRecipientDao extends BaseDaoImpl<InnerMsgRecipient, String>
         return super.listObjectsByProperties(filterMap);
     }
 
-    public InnerMsgRecipient getObjectById(String id) {
+    public InnerMsgRecipient getObjectById(Map<String, Object> id) {
         return super.getObjectById(id);
     }
 

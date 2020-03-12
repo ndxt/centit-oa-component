@@ -4,11 +4,9 @@ import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
-import com.centit.framework.components.OperationLogCenter;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
-import com.centit.framework.model.basedata.OperationLog;
 import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.product.oa.service.InnerMessageManager;
@@ -26,6 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -141,7 +140,7 @@ public class InnerMsgController extends BaseController {
         required = true, paramType = "path", dataType = "String")
     @RequestMapping(value = "/{msgCode}", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public ResponseData getInnerMsg(@PathVariable String msgCode, HttpServletResponse response) {
+    public ResponseData getInnerMsg(@PathVariable Map<String, Object> msgCode, HttpServletResponse response) {
         InnerMsgRecipient msgCopy = innerMessageManager.getMsgRecipientById(msgCode);
         return ResponseData.makeResponseData(msgCopy);
     }
@@ -260,7 +259,6 @@ public class InnerMsgController extends BaseController {
      * 更新接受者信息
      *
      * @param recipient InnerMsgRecipient
-     * @param id        接收者信息编号
      */
     @ApiOperation(value = "更新接受者信息", notes = "更新接受者信息。")
     @ApiImplicitParams({
@@ -271,9 +269,12 @@ public class InnerMsgController extends BaseController {
             name = "recipient", value = "json格式，更新的接受者信息对象",
             required = true, paramType = "body", dataTypeClass = InnerMsgRecipient.class)
     })
-    @RequestMapping(value = "recipient/{id}", method = {RequestMethod.PUT})
+    @RequestMapping(value = "recipient/{msgCode}/{receive}", method = {RequestMethod.PUT})
     @WrapUpResponseBody
-    public ResponseData mergInnerMsgRecipient(@Valid InnerMsgRecipient recipient, @PathVariable String id) {
+    public ResponseData mergInnerMsgRecipient(@Valid InnerMsgRecipient recipient, @PathVariable String msgCode,String receive) {
+        Map<String,Object> id=new HashMap<>();
+        id.put("msgCode",msgCode);
+        id.put("receive",receive);
         InnerMsgRecipient recipientCopy = innerMessageManager.getMsgRecipientById(id);
         if (null == recipientCopy) {
             return ResponseData.makeErrorMessage("当前机构中无此信息");
@@ -304,24 +305,28 @@ public class InnerMsgController extends BaseController {
     /**
      * 删除接受者信息,并没有删除该条记录，而是把msgState字段标记为D
      *
-     * @param id       接受者信息编号
-     * @param request  HttpServletRequest
-     * @param response HttpServletResponse
      */
-    @ApiOperation(value = "删除接受者信息", notes = "删除接受者信息,并没有删除该条记录，而是把msgState字段标记为D。")
-    @ApiImplicitParam(
-        name = "id", value = "接受者信息编号",
-        required = true, paramType = "path", dataType = "String")
-    @RequestMapping(value = "/recipient/{id}", method = {RequestMethod.DELETE})
+    @ApiOperation(value = "更新信息状态", notes = "删除接受者信息,并没有删除该条记录，而是把msgState字段标记为D。")
+    @ApiImplicitParams(
+        {@ApiImplicitParam(
+            name = "msgCode", value = "消息id",
+            required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(
+            name = "receive", value = "接收者id",
+            required = true, paramType = "path", dataType = "String"),
+        @ApiImplicitParam(
+        name = "msgState", value = "信息状态(R已读D删除)",
+        required = true, paramType = "path", dataType = "String")})
+    @RequestMapping(value = "/recipient/{msgCode}/{receive}/{msgState}", method = {RequestMethod.PUT})
     @WrapUpResponseBody
-    public ResponseData deleteRecipient(@PathVariable String id,
-                                        HttpServletRequest request, HttpServletResponse response) {
+    public ResponseData deleteRecipient(@PathVariable String msgCode,@PathVariable String receive,@PathVariable String msgState,
+                                        HttpServletRequest request) {
         /*InnerMsgRecipient recipient = innerMsgRecipientManager
                 .getObjectById(id);*/
-        innerMessageManager.deleteMsgRecipientById(id);
-        ;
-        OperationLogCenter.logDeleteObject(request, "recipient", id, OperationLog.P_OPT_LOG_METHOD_D,
-            "删除接收这信息", "");
+        Map<String,Object> id=new HashMap<>();
+        id.put("msgCode",msgCode);
+        id.put("receive",receive);
+        innerMessageManager.updateMsgRecipientStateById(id,msgState);
         return ResponseData.successResponse;
     }
 

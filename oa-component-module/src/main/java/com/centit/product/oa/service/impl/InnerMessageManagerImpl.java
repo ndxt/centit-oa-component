@@ -85,7 +85,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             //DataPushSocketServer.pushMessage(msg.getSender(), "你发送邮件："+ msg.getMsgTitle());
             for (String userCode : receives) {
                 InnerMsgRecipient innerMsgRecipient  = new InnerMsgRecipient();
-                innerMsgRecipient.setMsgCode(innerMsgRecipientDao.getNextKey());
+                innerMsgRecipient.setMsgCode(recipient.getMsgCode());
                 innerMsgRecipient.setMailType(recipient.getMailType());
                 innerMsgRecipient.setMsgState(recipient.getMsgState());
 //                innerMsgRecipient.copyNotNullProperties(recipient);
@@ -152,9 +152,9 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     @Transactional
-    public void deleteMsgRecipientById(String id) {
+    public void updateMsgRecipientStateById(Map<String, Object> id, String msgState) {
         InnerMsgRecipient re = innerMsgRecipientDao.getObjectById(id);
-        re.setMsgState("D");
+        re.setMsgState(msgState);
         innerMsgRecipientDao.updateInnerMsgRecipient(re);
     }
 
@@ -207,7 +207,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     }
 
     @Override
-    public InnerMsgRecipient getMsgRecipientById(String id) {
+    public InnerMsgRecipient getMsgRecipientById(Map<String, Object> id) {
         return innerMsgRecipientDao.getObjectById(id);
     }
 

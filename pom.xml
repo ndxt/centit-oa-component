@@ -22,6 +22,22 @@
     <packaging>pom</packaging>
     <name>com.centit.product:centit-oa-component</name>
     <description>内部消息（邮件）服务</description>
-
+    <build>
+        <plugins>
+    <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-source-plugin</artifactId>
+        <version>3.0.1</version>
+        <executions>
+            <execution>
+                <id>attach-sources</id>
+                <goals>
+                    <goal>jar-no-fork</goal>
+                </goals>
+            </execution>
+        </executions>
+    </plugin>
+</plugins>
+        </build>
 
 </project>
