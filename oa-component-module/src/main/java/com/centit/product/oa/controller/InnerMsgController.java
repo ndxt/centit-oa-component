@@ -77,10 +77,10 @@ public class InnerMsgController extends BaseController {
     @ApiOperation(value = "未读消息数量", notes = "未读消息数量。")
     @RequestMapping(value = "/unreadMsgCount", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public ResponseData unreadMsgCount(HttpServletRequest request) {
+    public long unreadMsgCount(HttpServletRequest request) {
         String currUser = WebOptUtils.getCurrentUserCode(request);
-        long unreadMsg = innerMessageManager.getUnreadMessageCount(currUser);
-        return ResponseData.makeResponseData(unreadMsg);
+        return innerMessageManager.getUnreadMessageCount(currUser);
+        //return ResponseData.makeResponseData(unreadMsg);
     }
 
     /**
