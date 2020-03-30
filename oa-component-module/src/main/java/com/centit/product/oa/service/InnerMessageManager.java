@@ -36,11 +36,11 @@ public interface InnerMessageManager {
 
     void noticeByUnitCode(String unitCode, InnerMsg msg) throws Exception;
 
-    InnerMsgRecipient getMsgRecipientById(String id);
+    InnerMsgRecipient getMsgRecipientById(Map<String, Object> id);
 
-    void deleteMsgRecipientById(String id);
+    void updateMsgRecipientStateById(Map<String, Object> id, String msgState);
 
     long getUnreadMessageCount(String userCode);
 
-    List<InnerMsgRecipient> listUnreadMessage(String userCode);
+    List<InnerMsg> listUnreadMessage(String userCode);
 }

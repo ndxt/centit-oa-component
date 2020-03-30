@@ -4,6 +4,8 @@ import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgRecipient;
+import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,7 +36,7 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
             filterField.put("msgContent", CodeBook.LIKE_HQL_ID);
             filterField.put("msgStateNot", "msgState != :msgStateNot");
             filterField.put("sender", CodeBook.EQUAL_HQL_ID);
-            filterField.put("receive", "msgCode in (select re.MSG_CODE from M_INNERMSG_RECIPIENT re Where re.RECEIVE = :receive )");
+            filterField.put("receive", "msgCode in (select re.MSG_CODE from f_inner_msg_recipient re Where re.RECEIVE = :receive )");
          }
         return filterField;
     }
@@ -51,7 +53,12 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
     public void updateInnerMsg(InnerMsg innerMsg){
         super.updateObject(innerMsg);
     }
-
+    public List<InnerMsg> listUnreadMessage(String userCode){
+        String queryString ="where MSG_CODE in (Select im.MSG_CODE from f_inner_msg_recipient im where  im.MAIL_TYPE='T'" +
+            " and im.msg_state='U' and RECEIVE= ?) order by msg_Code desc";
+        return listObjectsByFilter(queryString,
+            new Object[]{userCode});
+    }
     @Transactional
     public String getNextKey() {
         return StringBaseOpt.objectToString(

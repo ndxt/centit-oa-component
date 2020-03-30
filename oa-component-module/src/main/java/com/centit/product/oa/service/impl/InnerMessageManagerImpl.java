@@ -73,7 +73,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
                 if (bo > 0) {
                     receiveName += ",";
                 }
-                receiveName += CodeRepositoryUtil.getUserInfoByCode(userCode).getUserName();
+                IUserInfo userinfo=CodeRepositoryUtil.getUserInfoByCode(userCode);
+                receiveName += userinfo==null?userCode:userinfo.getUserName();
                 bo++;
             }
             msg.setReceiveName(receiveName);
@@ -84,8 +85,10 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             //DataPushSocketServer.pushMessage(msg.getSender(), "你发送邮件："+ msg.getMsgTitle());
             for (String userCode : receives) {
                 InnerMsgRecipient innerMsgRecipient  = new InnerMsgRecipient();
-                //innerMsgRecipient.setId(innerMsgRecipientDao.getNextKey());
-                //innerMsgRecipient.copyNotNullProperties(recipient);
+                innerMsgRecipient.setMsgCode(recipient.getMsgCode());
+                innerMsgRecipient.setMailType(recipient.getMailType());
+                innerMsgRecipient.setMsgState(recipient.getMsgState());
+//                innerMsgRecipient.copyNotNullProperties(recipient);
                 innerMsgRecipient.setReceive(userCode);
                 innerMsgRecipientDao.saveNewObject(innerMsgRecipient);
                 //DataPushSocketServer.pushMessage(userCode, "你有新邮件：" + recipient.getMsgTitle());
@@ -149,9 +152,9 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     @Transactional
-    public void deleteMsgRecipientById(String id) {
+    public void updateMsgRecipientStateById(Map<String, Object> id, String msgState) {
         InnerMsgRecipient re = innerMsgRecipientDao.getObjectById(id);
-        re.setMsgState("D");
+        re.setMsgState(msgState);
         innerMsgRecipientDao.updateInnerMsgRecipient(re);
     }
 
@@ -164,8 +167,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     @Transactional
-    public List<InnerMsgRecipient> listUnreadMessage(String userCode) {
-        return innerMsgRecipientDao.listUnreadMessage(userCode);
+    public List<InnerMsg> listUnreadMessage(String userCode) {
+        return innerMsgDao.listUnreadMessage(userCode);
     }
 
     /**
@@ -180,7 +183,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         msg.setMsgType("M");
         msg.setMailType("O");
         msg.setMsgState("U");
-        msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());
+        msg.setSender(sender);
+//        msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());
         InnerMsgRecipient recipient = new InnerMsgRecipient();
         //recipient.setMInnerMsg(msg);
         recipient.setReplyMsgCode(0);
@@ -203,7 +207,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     }
 
     @Override
-    public InnerMsgRecipient getMsgRecipientById(String id) {
+    public InnerMsgRecipient getMsgRecipientById(Map<String, Object> id) {
         return innerMsgRecipientDao.getObjectById(id);
     }
 
