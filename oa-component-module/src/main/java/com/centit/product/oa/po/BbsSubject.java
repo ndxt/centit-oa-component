@@ -17,23 +17,29 @@ import java.util.Date;
 public class BbsSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
+
+    //主题id
     @Id
     @Column(name="SUBJECT_ID")
     @ValueGenerator(strategy = GeneratorType.UUID22)
     private String subjectId;
 
+    //主题发表者
     @Column(name="DELIVERER")
     private String deliverer;
 
+    //主题发表的时间
     @OrderBy("desc")
     @Column(name = "DELIVER_DATE")
     @Temporal(TemporalType.TIMESTAMP)
     @ValueGenerator(strategy = GeneratorType.FUNCTION, value = "today()")
     private Date deliverDate;
 
+    //主题的标题
     @Column(name="BBS_TITLE")
     private String bbsTitle;
 
+    //主题的内容
     @Basic(fetch = FetchType.LAZY)
     @Column(name="BBS_CONTENT")
     private String bbsContent;

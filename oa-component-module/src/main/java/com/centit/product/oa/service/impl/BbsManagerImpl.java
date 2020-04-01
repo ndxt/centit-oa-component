@@ -55,6 +55,17 @@ public class BbsManagerImpl implements BbsManager {
     }
 
     @Override
+    public List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc) {
+        return bbsPieceDao.listObjects(filterMap,pageDesc);
+    }
+
+    @Override
+    public String getBbsPieces(String pieceId) {
+        List<BbsPiece> pieceIds = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
+        return pieceIds.get(0).getPieceContent();
+    }
+
+    @Override
     public void deleteBbsPieceByID(String id) {
         bbsPieceDao.deleteObjectById(id);
     }

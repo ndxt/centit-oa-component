@@ -21,8 +21,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.validation.constraints.NotNull;
 import java.util.*;
 
-@Transactional
-@Service("innerMessageManager")
+//@Transactional
+//@Service("innerMessageManager")
 public class InnerMessageManagerImpl implements InnerMessageManager, MessageSender {
 
     @Autowired

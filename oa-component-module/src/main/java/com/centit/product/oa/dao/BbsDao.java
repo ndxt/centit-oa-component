@@ -4,6 +4,7 @@ import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.product.oa.po.BbsSubject;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @Repository
@@ -16,6 +17,7 @@ public class BbsDao extends BaseDaoImpl<BbsSubject, String> {
      */
     @Override
     public Map<String, String> getFilterField() {
+        System.out.println("dao is running");
         return null;
     }
 }
