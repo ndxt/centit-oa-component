@@ -26,16 +26,11 @@ public class BbsController extends BaseController{
     @Autowired
     private BbsManager bbsManager;
 
-    /*@PostMapping
-    @ApiOperation(value = "新增主题")
-    @WrapUpResponseBody
-    public void createBbsSubject(BbsSubject bbsSubject){
-        bbsManager.createBbsSubject(bbsSubject);
-    }*/
+
     @PostMapping(value = "/addPiece")
     @ApiOperation(value = "新增评论信息")
     @WrapUpResponseBody
-    public void createBbsPiece(@RequestBody BbsPiece bbsPiece){
+    public void createBbsPiece(BbsPiece bbsPiece){
         bbsManager.createBbsPiece(bbsPiece);
     }
     @GetMapping(value = "/getPiece")
@@ -50,12 +45,9 @@ public class BbsController extends BaseController{
             paramType = "query"),
         @ApiImplicitParam(
             name = "optId", required = true,
-            paramType = "query"),
-        @ApiImplicitParam(
-            name = "pageDesc", required = true,
-            dataTypeClass = PageDesc.class)
+            paramType = "query")
     })
-    public PageQueryResult<BbsPiece> listBbsPieces(@RequestBody PageDesc pageDesc, HttpServletRequest request){
+    public PageQueryResult<BbsPiece> listBbsPieces( PageDesc pageDesc, HttpServletRequest request){
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
         List<BbsPiece> bbsPieces = bbsManager.listBbsPieces(searchColumn, pageDesc);
          return PageQueryResult.createResultMapDict(bbsPieces, pageDesc);
@@ -65,7 +57,10 @@ public class BbsController extends BaseController{
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
     public ResponseData deleteBbsPieces(@PathVariable String pieceId, HttpServletResponse response){
-        bbsManager.deleteBbsPieceByID(pieceId,response);
+        boolean flag = bbsManager.deleteBbsPieceByID(pieceId, response);
+        if (!flag){
+          return  ResponseData.makeErrorMessage("消息记录不存在!");
+        }
         return ResponseData.successResponse;
     }
 
@@ -78,50 +73,4 @@ public class BbsController extends BaseController{
         return ResponseData.makeResponseData(bbsPiece);
     }
 
-
-/*    @PutMapping(value = "/{bbsId}")
-    @ApiImplicitParam(name = "bbsId", value = "bbsID")
-    @ApiOperation(value = "更新主题")
-    @WrapUpResponseBody
-    public void updateBbsSubject(@PathVariable String bbsId, @RequestBody BbsSubject bbsSubject){
-        bbsSubject.setSubjectId(bbsId);
-        bbsManager.updateBbsSubject(bbsSubject);
-    }*/
-    /*@PutMapping(value = "/piece/{pieceId}")
-    @ApiImplicitParam(name = "pieceId", value = "pieceId")
-    @ApiOperation(value = "更新回复")
-    @WrapUpResponseBody
-    public void updateBbsPiece(@PathVariable String pieceId, @RequestBody BbsPiece bbsPiece){
-        bbsPiece.setPieceId(pieceId);
-        bbsManager.updateBbsPiece(bbsPiece);
-    }*/
-    /*@DeleteMapping(value = "/{bbsId}")
-    @ApiImplicitParam(name = "bbsId", value = "主题ID")
-    @ApiOperation(value = "删除主题")
-    @WrapUpResponseBody
-    public void delBbsSubject(@PathVariable String bbsId){
-        bbsManager.deleteBbsSubjectByID(bbsId);
-    }*/
-    /*@DeleteMapping(value = "/piece/{pieceId}")
-    @ApiImplicitParam(name = "pieceId", value = "回复ID")
-    @ApiOperation(value = "删除回复")
-    @WrapUpResponseBody
-    public void delBbsPiece(@PathVariable String pieceId){
-        bbsManager.deleteBbsPieceByID(pieceId);
-    }
-    @GetMapping
-    @ApiOperation(value = "查询所有主题")
-    @WrapUpResponseBody
-    public PageQueryResult<BbsSubject> listBbsSubject(PageDesc pageDesc, HttpServletRequest request){
-        List<BbsSubject> bbsSubjects =
-            bbsManager.listBbsSubjects(BaseController.collectRequestParameters(request), pageDesc);
-        return PageQueryResult.createResult(bbsSubjects,pageDesc);
-    }*/
-   /* @GetMapping(value = "/{bbsId}")
-    @ApiOperation(value = "查询一个主题")
-    @WrapUpResponseBody
-    public BbsSubject getBbsSubject(@PathVariable String bbsId){
-        BbsSubject bbsSubject = bbsManager.getBbsSubjectByID(bbsId);
-        return bbsSubject;
-    }*/
 }

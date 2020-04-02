@@ -20,38 +20,15 @@ import java.util.Map;
 @Service
 @Transactional
 public class BbsManagerImpl implements BbsManager {
-    @Autowired
-    private BbsDao bbsDao;
+
     @Autowired
     private BbsPieceDao bbsPieceDao;
 
- /*   @Override
-    public List<BbsSubject> listBbsSubjects(Map<String, Object> filterMap, PageDesc pageDesc) {
-        return bbsDao.listObjects(filterMap,pageDesc);
-    }*/
 
-   /* @Override
-    public BbsSubject getBbsSubjectByID(String id) {
-        return bbsDao.getObjectById(id);
-    }*/
-
-   /* @Override
-    public void createBbsSubject(BbsSubject bbsSubject) {
-        bbsDao.saveNewObject(bbsSubject);
-    }
-
-    @Override
-    public void updateBbsSubject(BbsSubject bbsSubject) {
-        bbsDao.updateObject(bbsSubject);
-    }
-
-    @Override
-    public void deleteBbsSubjectByID(String id) {
-        bbsDao.deleteObjectById(id);
-    }*/
 
     @Override
     public void createBbsPiece(BbsPiece bbsPiece) {
+        bbsPiece.setPieceId(null);
         bbsPieceDao.saveNewObject(bbsPiece);
     }
 
@@ -72,12 +49,13 @@ public class BbsManagerImpl implements BbsManager {
     }
 
     @Override
-    public void deleteBbsPieceByID(String pieceId , HttpServletResponse httpResponse) {
+    public boolean deleteBbsPieceByID(String pieceId , HttpServletResponse httpResponse) {
         List<BbsPiece> piece = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
         if (piece.isEmpty()){
-            throw new ObjectException("消息记录不存在!");
+            return false;
         }
         bbsPieceDao.deleteObjectById(pieceId);
+        return true;
     }
 
 

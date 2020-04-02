@@ -8,12 +8,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface BbsManager {
-    /*List<BbsSubject> listBbsSubjects(Map<String, Object> filterMap, PageDesc pageDesc);
-    BbsSubject getBbsSubjectByID(String id);
-    void createBbsSubject(BbsSubject bbsSubject);
-    void updateBbsSubject(BbsSubject bbsSubject);
-    void deleteBbsSubjectByID(String id);*/
-
 
 
     /**
@@ -43,6 +37,6 @@ public interface BbsManager {
      * 通过id删除消息记录
      * @param pieceId
      */
-    void deleteBbsPieceByID(String pieceId, HttpServletResponse httpResponse);
+    boolean deleteBbsPieceByID(String pieceId, HttpServletResponse httpResponse);
 
 }

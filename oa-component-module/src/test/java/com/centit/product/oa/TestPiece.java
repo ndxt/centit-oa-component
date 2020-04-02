@@ -30,8 +30,8 @@ public class TestPiece {
     @Autowired
     private BbsManagerImpl bbsManager;
 
-    @Autowired
-    private BbsController bbsController;
+    /*@Autowired
+    private BbsController bbsController;*/
     @Test
     public void batchcreateBbsPieceTest(){
         /*BbsPiece bbsPiece = new BbsPiece();
@@ -44,8 +44,8 @@ public class TestPiece {
             createBbsPieceTest();
         }
     }
-    @Before
-    //@Test
+   // @Before
+    @Test
     public void  createBbsPieceTest(){
         BbsPiece bbsPiece = new BbsPiece();
         bbsPiece.setApplicationId("asjfioadfa");
@@ -82,7 +82,7 @@ public class TestPiece {
     @Test
     public void deleteBbsPieceByID(){
 
-        bbsManager.deleteBbsPieceByID("iy0R2Hx0TV6bYDDfGaXrDA");
+        //bbsManager.deleteBbsPieceByID("iy0R2Hx0TV6bYDDfGaXrDA");
 
         System.out.println("successful");
     }
@@ -103,7 +103,7 @@ public class TestPiece {
         bbsPiece.setApplicationId("1234648");
         bbsPiece.setOptId("query");
         bbsPiece.setOptTag("欢迎回来");
-        bbsController.createBbsPiece(bbsPiece);
+      //  bbsController.createBbsPiece(bbsPiece);
         System.out.println("hahah");
     }
 
