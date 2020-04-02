@@ -1,17 +1,12 @@
 package com.centit.product.oa.service.impl;
 
-import com.centit.product.oa.dao.BbsDao;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
-import com.centit.product.oa.po.BbsSubject;
 import com.centit.product.oa.service.BbsManager;
-import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
-import org.apache.http.HttpResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.StringUtils;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -23,8 +18,6 @@ public class BbsManagerImpl implements BbsManager {
 
     @Autowired
     private BbsPieceDao bbsPieceDao;
-
-
 
     @Override
     public void createBbsPiece(BbsPiece bbsPiece) {

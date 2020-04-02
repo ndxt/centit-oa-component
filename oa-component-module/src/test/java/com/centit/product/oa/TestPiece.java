@@ -1,11 +1,9 @@
 package com.centit.product.oa;
 
 import com.centit.framework.jdbc.config.JdbcConfig;
-import com.centit.product.oa.controller.BbsController;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.impl.BbsManagerImpl;
 import com.centit.support.database.utils.PageDesc;
-import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;

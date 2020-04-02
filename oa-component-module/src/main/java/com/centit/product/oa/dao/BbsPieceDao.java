@@ -2,7 +2,6 @@ package com.centit.product.oa.dao;
 
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.product.oa.po.BbsPiece;
-import com.centit.product.oa.po.BbsSubject;
 import org.springframework.stereotype.Repository;
 
 import java.util.Map;
