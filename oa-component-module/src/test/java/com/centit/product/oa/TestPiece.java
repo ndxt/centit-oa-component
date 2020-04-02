@@ -1,6 +1,7 @@
 package com.centit.product.oa;
 
 import com.centit.framework.jdbc.config.JdbcConfig;
+import com.centit.product.oa.controller.BbsController;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.impl.BbsManagerImpl;
 import com.centit.support.database.utils.PageDesc;
@@ -29,7 +30,8 @@ public class TestPiece {
     @Autowired
     private BbsManagerImpl bbsManager;
 
-
+    @Autowired
+    private BbsController bbsController;
     @Test
     public void batchcreateBbsPieceTest(){
         /*BbsPiece bbsPiece = new BbsPiece();
@@ -93,4 +95,17 @@ public class TestPiece {
 
         System.out.println(pieceContent);
     }
+
+    //对Bbscontroller中的方法进行测试
+    @Test
+    public void createBbsPieceControllerTest(){
+        BbsPiece bbsPiece = new BbsPiece();
+        bbsPiece.setApplicationId("1234648");
+        bbsPiece.setOptId("query");
+        bbsPiece.setOptTag("欢迎回来");
+        bbsController.createBbsPiece(bbsPiece);
+        System.out.println("hahah");
+    }
+
+
 }

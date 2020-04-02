@@ -1,19 +1,18 @@
 package com.centit.product.oa.service;
 
 import com.centit.product.oa.po.BbsPiece;
-import com.centit.product.oa.po.BbsSubject;
-import com.centit.product.oa.po.InnerMsg;
 import com.centit.support.database.utils.PageDesc;
+import javax.servlet.http.HttpServletResponse;
 
 import java.util.List;
 import java.util.Map;
 
 public interface BbsManager {
-    List<BbsSubject> listBbsSubjects(Map<String, Object> filterMap, PageDesc pageDesc);
+    /*List<BbsSubject> listBbsSubjects(Map<String, Object> filterMap, PageDesc pageDesc);
     BbsSubject getBbsSubjectByID(String id);
     void createBbsSubject(BbsSubject bbsSubject);
     void updateBbsSubject(BbsSubject bbsSubject);
-    void deleteBbsSubjectByID(String id);
+    void deleteBbsSubjectByID(String id);*/
 
 
 
@@ -42,8 +41,8 @@ public interface BbsManager {
 
     /**
      * 通过id删除消息记录
-     * @param id
+     * @param pieceId
      */
-    void deleteBbsPieceByID(String id);
+    void deleteBbsPieceByID(String pieceId, HttpServletResponse httpResponse);
 
 }
