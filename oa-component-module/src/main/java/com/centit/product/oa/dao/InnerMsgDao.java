@@ -27,15 +27,13 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
 
     @Override
     public Map<String, String> getFilterField() {
-        if (filterField == null) {
-            filterField = new HashMap<>();
-            filterField.put("msgType", CodeBook.EQUAL_HQL_ID);
-            filterField.put("msgTitle", CodeBook.LIKE_HQL_ID);
-            filterField.put("msgContent", CodeBook.LIKE_HQL_ID);
-            filterField.put("msgStateNot", "msgState != :msgStateNot");
-            filterField.put("sender", CodeBook.EQUAL_HQL_ID);
-            filterField.put("receive", "msgCode in (select re.MSG_CODE from f_inner_msg_recipient re Where re.RECEIVE = :receive )");
-         }
+        HashMap<String, String> filterField = new HashMap<>();
+        filterField.put("msgType", CodeBook.EQUAL_HQL_ID);
+        filterField.put("msgTitle", CodeBook.LIKE_HQL_ID);
+        filterField.put("msgContent", CodeBook.LIKE_HQL_ID);
+        filterField.put("msgStateNot", "msgState != :msgStateNot");
+        filterField.put("sender", CodeBook.EQUAL_HQL_ID);
+        filterField.put("receive", "msgCode in (select re.MSG_CODE from f_inner_msg_recipient re Where re.RECEIVE = :receive )");
         return filterField;
     }
 

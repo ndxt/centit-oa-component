@@ -19,20 +19,18 @@ public class InnerMsgRecipientDao extends BaseDaoImpl<InnerMsgRecipient, String>
 
     @Override
     public Map<String, String> getFilterField() {
-        if (filterField == null) {
-            filterField = new HashMap<>();
-            filterField.put("receive", "receive = :receive");
-            filterField.put("sender", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.SENDER = :sender )");
-            filterField.put("(like)msgContent", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MSG_CONTENT LIKE :msgContent )");
-            filterField.put("(like)msgTitle", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MSG_TITLE LIKE :msgTitle )");
-            filterField.put("mailType", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MAIL_TYPE = :mailType )");
-            filterField.put("mailTypeNot", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MAIL_TYPE != :mailTypeNot )");
-            filterField.put("msgStateNot", "msgState != :msgStateNot");
-            filterField.put("innerMsgStateNot", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MSG_STATE != :innerMsgStateNot )");
-            filterField.put("isRecycled", CodeBook.EQUAL_HQL_ID);
-            filterField.put("MSGSTATE", CodeBook.EQUAL_HQL_ID);
-            filterField.put("msgType", "msgCode in ( select im.MSG_CODE from f_inner_msg im where im.MSG_TYPE = :msgType )");
-        }
+        HashMap<String, String> filterField = new HashMap<>();
+        filterField.put("receive", "receive = :receive");
+        filterField.put("sender", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.SENDER = :sender )");
+        filterField.put("(like)msgContent", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MSG_CONTENT LIKE :msgContent )");
+        filterField.put("(like)msgTitle", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MSG_TITLE LIKE :msgTitle )");
+        filterField.put("mailType", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MAIL_TYPE = :mailType )");
+        filterField.put("mailTypeNot", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MAIL_TYPE != :mailTypeNot )");
+        filterField.put("msgStateNot", "msgState != :msgStateNot");
+        filterField.put("innerMsgStateNot", "msgCode in (select im.MSG_CODE from f_inner_msg im where im.MSG_STATE != :innerMsgStateNot )");
+        filterField.put("isRecycled", CodeBook.EQUAL_HQL_ID);
+        filterField.put("MSGSTATE", CodeBook.EQUAL_HQL_ID);
+        filterField.put("msgType", "msgCode in ( select im.MSG_CODE from f_inner_msg im where im.MSG_TYPE = :msgType )");
         return filterField;
     }
 
