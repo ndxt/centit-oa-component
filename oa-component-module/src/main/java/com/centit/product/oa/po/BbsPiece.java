@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.Map;
 
 @Data
 @Entity
@@ -37,7 +38,8 @@ public class BbsPiece implements Serializable {
 
     //消息的内容
     @Column(name="PIECE_CONTENT")
-    private String pieceContent;
+    @Length(max = 2000, message = "字段长度不能大于{max}")
+    private Map<String,Object> pieceContent;
 
     //回复者回复的消息对应的id
     @Column(name = "REPLY_ID")
@@ -48,7 +50,7 @@ public class BbsPiece implements Serializable {
     private String replayName;
 
     /**
-     * 项目ID
+     * 项目ID 类似与 OSID
      */
     @Column(name="APPLICATION_ID")
     @Length(max = 64, message = "字段长度不能大于{max}")
