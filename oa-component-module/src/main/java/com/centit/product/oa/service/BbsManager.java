@@ -1,8 +1,8 @@
 package com.centit.product.oa.service;
 
+import com.alibaba.fastjson.JSONObject;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.support.database.utils.PageDesc;
-
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
 import java.util.Map;
@@ -19,7 +19,7 @@ public interface BbsManager {
     void updateBbsPiece(BbsPiece bbsPiece);
 
     /**
-     * 查询根据条件分页查询信息;
+     * 查询根据条件分页查询信息,并根据时间进行排序(先发生的时间靠前);
      * @param filterMap 需要过滤的字段;以key-value的类型保存到map集合中
      * @param pageDesc 分页参数设置
      * @return 符合条件的BbsPiece的集合
@@ -31,7 +31,7 @@ public interface BbsManager {
      * @param pieceId
      * @return
      */
-    String getBbsPieces(String pieceId);
+    JSONObject getBbsPieces(String pieceId);
 
     /**
      * 通过id删除消息记录

@@ -1,5 +1,7 @@
 package com.centit.product.oa.po;
 
+import com.alibaba.fastjson.JSONObject;
+import com.centit.framework.core.dao.DictionaryMap;
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
@@ -27,6 +29,7 @@ public class BbsPiece implements Serializable {
 
     //发送消息的人
     @Column(name="DELIVERER")
+    @DictionaryMap(fieldName="userName",value="userCode")
     private String deliverer;
 
     //消息发送的时间
@@ -39,14 +42,16 @@ public class BbsPiece implements Serializable {
     //消息的内容
     @Column(name="PIECE_CONTENT")
     @Length(max = 2000, message = "字段长度不能大于{max}")
-    private Map<String,Object> pieceContent;
+    private JSONObject pieceContent;
+   // private String pieceContent;
 
     //回复者回复的消息对应的id
     @Column(name = "REPLY_ID")
     private String replyId;
 
-    //回复者回复消息对应的姓名
+    //回复者回复消息对应的id
     @Column(name = "REPLY_NAME")
+    @DictionaryMap(fieldName="userName",value="userCode")
     private String replayName;
 
     /**

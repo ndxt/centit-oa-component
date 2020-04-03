@@ -1,5 +1,6 @@
 package com.centit.product.oa;
 
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.jdbc.config.JdbcConfig;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.impl.BbsManagerImpl;
@@ -15,6 +16,7 @@ import org.springframework.test.context.junit4.SpringRunner;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 @PropertySource(value = "classpath:system.properties")
 @ComponentScan(basePackages = {"com.centit"},
@@ -89,9 +91,9 @@ public class TestPiece {
     @Test
     public void getBbsPieceByID(){
 
-        String pieceContent = bbsManager.getBbsPieces("fCFBAFOcSXKuTDlcbC3MCA");
+        //String pieceContent = bbsManager.getBbsPieces("fCFBAFOcSXKuTDlcbC3MCA");
 
-        System.out.println(pieceContent);
+        //System.out.println(pieceContent);
     }
 
     //对Bbscontroller中的方法进行测试
@@ -103,6 +105,16 @@ public class TestPiece {
         bbsPiece.setOptTag("欢迎回来");
       //  bbsController.createBbsPiece(bbsPiece);
         System.out.println("hahah");
+    }
+
+    @Test
+    public void jsonTest(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("name","zhansan");
+        Object o = JSONObject.toJSON(map);
+        System.out.println(o.toString());
+        Object parse = JSONObject.parse(o.toString());
+        System.out.println(parse);
     }
 
 

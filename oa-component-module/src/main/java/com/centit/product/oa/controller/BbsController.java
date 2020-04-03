@@ -1,5 +1,6 @@
 package com.centit.product.oa.controller;
 
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
@@ -31,7 +32,8 @@ public class BbsController extends BaseController{
     @PostMapping(value = "/addPiece")
     @ApiOperation(value = "新增评论信息")
     @WrapUpResponseBody
-    public void createBbsPiece(BbsPiece bbsPiece){
+    public void createBbsPiece(@RequestBody BbsPiece bbsPiece,HttpServletRequest request){
+        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
         bbsManager.createBbsPiece(bbsPiece);
     }
     @GetMapping(value = "/getPiece")
@@ -70,8 +72,9 @@ public class BbsController extends BaseController{
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
     public ResponseData getBbsPieces(@PathVariable String pieceId){
-        String bbsPiece = bbsManager.getBbsPieces(pieceId);
+        JSONObject bbsPiece = bbsManager.getBbsPieces(pieceId);
         return ResponseData.makeResponseData(bbsPiece);
     }
+
 
 }
