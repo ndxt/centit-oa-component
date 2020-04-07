@@ -1,11 +1,9 @@
 package com.centit.product.oa.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
 import com.centit.support.database.utils.PageDesc;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,9 +45,9 @@ public class BbsManagerImpl implements BbsManager {
     }
 
     @Override
-    public  JSONObject getBbsPieces(String pieceId) {
+    public BbsPiece getBbsPieces(String pieceId) {
         List<BbsPiece> pieceIds = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
-        return pieceIds.get(0).getPieceContent();
+        return pieceIds.get(0);
     }
 
     @Override

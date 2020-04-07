@@ -12,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,7 @@ public class BbsController extends BaseController{
     @PostMapping(value = "/addPiece")
     @ApiOperation(value = "新增评论信息")
     @WrapUpResponseBody
-    public void createBbsPiece(@RequestBody BbsPiece bbsPiece,HttpServletRequest request){
-        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
+    public void createBbsPiece(@RequestBody BbsPiece bbsPiece){
         bbsManager.createBbsPiece(bbsPiece);
     }
     @GetMapping(value = "/getPiece")
@@ -72,8 +72,8 @@ public class BbsController extends BaseController{
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
     public ResponseData getBbsPieces(@PathVariable String pieceId){
-        JSONObject bbsPiece = bbsManager.getBbsPieces(pieceId);
-        return ResponseData.makeResponseData(bbsPiece);
+        BbsPiece bbsPieces = bbsManager.getBbsPieces(pieceId);
+        return ResponseData.makeResponseData(bbsPieces);
     }
 
 

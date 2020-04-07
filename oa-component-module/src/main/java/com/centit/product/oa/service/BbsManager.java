@@ -1,6 +1,5 @@
 package com.centit.product.oa.service;
 
-import com.alibaba.fastjson.JSONObject;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.support.database.utils.PageDesc;
 import javax.servlet.http.HttpServletResponse;
@@ -31,7 +30,7 @@ public interface BbsManager {
      * @param pieceId
      * @return
      */
-    JSONObject getBbsPieces(String pieceId);
+    BbsPiece getBbsPieces(String pieceId);
 
     /**
      * 通过id删除消息记录
