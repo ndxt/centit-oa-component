@@ -123,9 +123,8 @@ public class InnerMsgController extends BaseController {
     @ApiOperation(value = "是否有发公告权限", notes = "是否有发公告权限。")
     @RequestMapping(value = "/cangivenotify", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public ResponseData cangivenotify() {
-        boolean s = CodeRepositoryUtil.checkUserOptPower("MSGMAG", "givenotify");
-        return ResponseData.makeResponseData(s);
+    public boolean cangivenotify() {
+        return CodeRepositoryUtil.checkUserOptPower("MSGMAG", "givenotify");
     }
 
     /**
@@ -133,6 +132,7 @@ public class InnerMsgController extends BaseController {
      *
      * @param msgCode  msgCode
      * @param response HttpServletResponse
+     * @return InnerMsgRecipient
      */
     @ApiOperation(value = "是否有发公告权限", notes = "是否有发公告权限。")
     @ApiImplicitParam(
@@ -140,9 +140,8 @@ public class InnerMsgController extends BaseController {
         required = true, paramType = "path", dataType = "String")
     @RequestMapping(value = "/{msgCode}", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public ResponseData getInnerMsg(@PathVariable Map<String, Object> msgCode, HttpServletResponse response) {
-        InnerMsgRecipient msgCopy = innerMessageManager.getMsgRecipientById(msgCode);
-        return ResponseData.makeResponseData(msgCopy);
+    public InnerMsgRecipient getInnerMsg(@PathVariable Map<String, Object> msgCode, HttpServletResponse response) {
+        return innerMessageManager.getMsgRecipientById(msgCode);
     }
 
     /**
@@ -151,6 +150,7 @@ public class InnerMsgController extends BaseController {
      * @param field    显示结果中只需要显示的字段
      * @param pageDesc PageDesc
      * @param request  HttpServletRequest
+     * @return PageQueryResult
      */
     @ApiOperation(value = "公告列表", notes = "公告列表。")
     @ApiImplicitParams({
