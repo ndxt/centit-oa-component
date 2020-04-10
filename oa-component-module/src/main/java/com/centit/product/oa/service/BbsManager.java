@@ -25,6 +25,8 @@ public interface BbsManager {
      */
     List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc);
 
+     List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc);
+
     /**
      * 根据pieceId获取一条BbsPiece中的pieceContent记录
      * @param pieceId

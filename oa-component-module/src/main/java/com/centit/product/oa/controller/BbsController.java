@@ -54,6 +54,26 @@ public class BbsController extends BaseController{
          return PageQueryResult.createResultMapDict(bbsPieces, pageDesc);
     }
 
+    @GetMapping(value = "/getPieceContent")
+    @ApiOperation(value = "分页显示出pieceContent中的信息")
+    @WrapUpResponseBody
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+            name = "applicationId", required = true,
+            paramType = "query"),
+        @ApiImplicitParam(
+            name = "optTag", required = true,
+            paramType = "query"),
+        @ApiImplicitParam(
+            name = "optId", required = true,
+            paramType = "query")
+    })
+    public PageQueryResult<BbsPiece> listPieceContents( PageDesc pageDesc, HttpServletRequest request){
+        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
+        List<BbsPiece> bbsPieces = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
+        return PageQueryResult.createResultMapDict(bbsPieces, pageDesc);
+    }
+
     @DeleteMapping(value = "/deletePiece/{pieceId}")
     @ApiOperation(value = "用户删除自己发表的评论信息")
     @ApiImplicitParam(name = "pieceId",required = true)

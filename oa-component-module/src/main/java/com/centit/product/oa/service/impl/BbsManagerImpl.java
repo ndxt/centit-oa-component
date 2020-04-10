@@ -1,5 +1,6 @@
 package com.centit.product.oa.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
@@ -9,10 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
-import java.util.Comparator;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 @Transactional
@@ -44,6 +42,24 @@ public class BbsManagerImpl implements BbsManager {
         return bbsPiecesList;
     }
 
+    @Override
+    public List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
+        List<BbsPiece> bbsPiecesList = bbsPieceDao.listObjects(filterMap, pageDesc);
+        List<BbsPiece> bbsPiecesListFilter = new ArrayList<BbsPiece>();
+        JSONObject pieceContent ;
+        for (BbsPiece bbsPiece : bbsPiecesList) {
+            pieceContent = bbsPiece.getPieceContent();
+            if (null == bbsPiece.getPieceContent()||null == pieceContent){
+                continue;
+            }
+
+            if (null !=pieceContent.get("contentType") &&
+                pieceContent.get("contentType").equals(filterMap.get("contentType"))){
+                bbsPiecesListFilter.add(bbsPiece);
+            }
+        }
+        return bbsPiecesListFilter;
+    }
     @Override
     public BbsPiece getBbsPieces(String pieceId) {
         List<BbsPiece> pieceIds = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
