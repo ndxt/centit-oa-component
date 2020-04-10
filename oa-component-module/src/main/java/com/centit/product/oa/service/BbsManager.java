@@ -1,5 +1,6 @@
 package com.centit.product.oa.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.support.database.utils.PageDesc;
 import javax.servlet.http.HttpServletResponse;
@@ -25,7 +26,7 @@ public interface BbsManager {
      */
     List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc);
 
-    List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc);
+     JSONArray listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc);
 
     /**
      * 根据pieceId获取一条BbsPiece中的pieceContent记录

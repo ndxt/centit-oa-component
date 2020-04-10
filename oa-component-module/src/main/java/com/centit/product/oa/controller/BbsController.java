@@ -1,5 +1,6 @@
 package com.centit.product.oa.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
@@ -11,6 +12,7 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -26,7 +28,9 @@ import java.util.Map;
 public class BbsController extends BaseController{
     @Autowired
     private BbsManager bbsManager;
-
+    public String getOptId() {
+        return "BbsPiece";
+    }
 
     @PostMapping(value = "/addPiece")
     @ApiOperation(value = "新增评论信息")
@@ -54,6 +58,28 @@ public class BbsController extends BaseController{
          return PageQueryResult.createResultMapDict(bbsPieces, pageDesc);
     }
 
+    @GetMapping(value = "/getPieceContent")
+    @ApiOperation(value = "分页显示出pieceContent中的信息")
+    @WrapUpResponseBody
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+            name = "applicationId", required = true,
+            paramType = "query"),
+        @ApiImplicitParam(
+            name = "optTag", required = true,
+            paramType = "query"),
+        @ApiImplicitParam(
+            name = "optId", required = true,
+            paramType = "query")
+    })
+    public PageQueryResult<Object> listPieceContents( PageDesc pageDesc, HttpServletRequest request){
+        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
+        JSONArray objects = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
+        return PageQueryResult.createJSONArrayResult(objects, pageDesc);
+    }
+
+
+
     @DeleteMapping(value = "/deletePiece/{pieceId}")
     @ApiOperation(value = "用户删除自己发表的评论信息")
     @ApiImplicitParam(name = "pieceId",required = true)
@@ -72,6 +98,4 @@ public class BbsController extends BaseController{
     public BbsPiece getBbsPieces(@PathVariable String pieceId){
         return bbsManager.getBbsPieces(pieceId);
     }
-
-
 }

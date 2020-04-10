@@ -29,7 +29,7 @@ public class BbsPiece implements Serializable {
 
     //发送消息的人
     @Column(name="DELIVERER")
-    @DictionaryMap(fieldName="userName",value="userCode")
+    @DictionaryMap(fieldName="delivererUserName",value="userCode")
     private String deliverer;
 
     //消息发送的时间
@@ -51,7 +51,7 @@ public class BbsPiece implements Serializable {
 
     //回复者回复消息对应的id
     @Column(name = "REPLY_NAME")
-    @DictionaryMap(fieldName="userName",value="userCode")
+    @DictionaryMap(fieldName="replayUserName",value="userCode")
     private String replayName;
 
     /**

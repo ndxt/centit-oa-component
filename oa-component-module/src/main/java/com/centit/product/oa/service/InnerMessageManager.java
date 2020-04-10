@@ -4,7 +4,6 @@ import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.support.database.utils.PageDesc;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -23,7 +22,8 @@ public interface InnerMessageManager {
     List<InnerMsgRecipient> listMsgRecipientsCascade(Map<String, Object> filterMap);
 
     List<InnerMsgRecipient> listMsgRecipients(Map<String, Object> filterMap, PageDesc pageDesc);
-    List<HashMap<String,Object>> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc);
+    List<InnerMsg> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc);
+
 
     List<InnerMsgRecipient> getExchangeMsgRecipients(String sender, String receiver);
 

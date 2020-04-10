@@ -1,5 +1,6 @@
 package com.centit.product.oa.service.impl;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.model.adapter.MessageSender;
@@ -16,7 +17,6 @@ import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,9 +38,9 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Autowired
     private InnerMsgAnnexDao innerMsgAnnexDao;
 
-    /*
-     * 更新接受者信息
-     *
+    /**
+     * 更新接受者信息;
+     *  主要更新内容为msgStatue,
      */
     @Override
     @Transactional
@@ -48,11 +48,11 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         innerMsgRecipientDao.updateInnerMsgRecipient(recipient);
 
     }
-    //todo:发送消息
+
     /**
+     * 发送消息
      * 1.把邮件中的信息写入到innerMsg表中
      * 2.把收件人信息写入到innerMsgRecipient中
-     *
      */
     @Override
     @Transactional
@@ -66,7 +66,9 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             return false;
         }
         innerMsg.setSender(sysUserCode);
-        sendToMany(innerMsg);
+        //sendToMany(innerMsg);
+        innerMsgDao.saveNewObject(innerMsg);
+        innerMsgDao.saveObjectReferences(innerMsg);
         return true;
     }
 
@@ -95,9 +97,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
 
 
-    /*
+    /**
      * 获取两者间来往消息列表
-     *
      */
     @Override
     @Transactional
@@ -108,7 +109,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         return innerMsgRecipientDao.getExchangeMsgs(sender, receiver);
     }
 
-    /*
+    /**
      * 给部门成员，所有直属或间接下级部门成员发消息
      */
     @Override
@@ -221,75 +222,49 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     /**
      * 先由收件人userCode在InnerMsgRecipient中找到收件人的所有的邮件msgCode;
-     * 在根据msgCode和optId获取InnerMsg表中对应的信息;
+     * 再根据msgCode和optId获取InnerMsg表中对应的信息;
      * @param filterMap 过滤条件
      * @param pageDesc 分页条件
      * @return 返回值List<map<string,String>> 只返回发件人姓名和邮件标题
      */
     @Override
-    public List<HashMap<String,Object>> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
-
-        List<InnerMsgRecipient> innerMsgRecipients = innerMsgRecipientDao.listObjectsByProperties(filterMap);
-        InnerMsg innerMsg = null;
-        ArrayList<HashMap<String,Object>> innerMsgList = new ArrayList<>();
-        HashMap<String, Object> innerMsgMap = null;
-        for (InnerMsgRecipient innerMsgRecipient : innerMsgRecipients) {
-            innerMsgMap = new HashMap<>();
-            innerMsg = innerMsgDao.getObjectWithReferences(innerMsgRecipient.getMsgCode());
-            //过滤掉从数据库中查询出来的与optId不符的数据
-            if (!StringUtils.isNotBlank(innerMsg.getOptId())
-                &&innerMsg.getOptId().equals(filterMap.get("optId"))){
-                continue;
+    public List<InnerMsg> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
+        String sql = " where OPT_ID = :optId and MSG_CODE in (SELECT Msg_Code FROM `f_inner_msg_recipient` WHERE Receive = :receive ";
+        if (null != filterMap.get("msgState")){
+            sql = sql + " and msg_State = :msgState )";
+        }else {
+            sql = sql + " )";
+        }
+        JSONArray objects = innerMsgDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
+        List<InnerMsg> innerMsgs = objects.toJavaList(InnerMsg.class);
+        innerMsgs.sort(new Comparator<InnerMsg>() {
+            @Override
+            public int compare(InnerMsg o1, InnerMsg o2) {
+                return o1.getSendDate().compareTo(o2.getSendDate());
             }
-            innerMsgMap.put("MSG_CODE",innerMsg.getMsgCode());
-            innerMsgMap.put("sender",innerMsg.getSender());
-            innerMsgMap.put("msgTitle",innerMsg.getMsgTitle());
-            innerMsgMap.put("sendDate",innerMsg.getSendDate());
-            //这个msgState特指的是innerMsgRecipient中的属性
-            innerMsgMap.put("msgState",innerMsgRecipient.getMsgState());
-            innerMsgList.add(innerMsgMap);
+        });
+        for (InnerMsg innerMsg : innerMsgs) {
+            System.out.println(innerMsg);
         }
 
-        return innerMsgList;
+        return innerMsgs;
     }
+
 
     /**
      * 更新邮件;可能更新的内容包括:innerMsg,innerMsgAnnex,innerMsgRecipient
-     * 更新步骤:
-     * 1.根据id查找出innerMsg中所有信息包括子集中的数据;
-     * 2.根据id删除有关数据(包括子集中所有数据);
-     * 3.把数据重新添加到数据库中
      * @param msg
      */
     @Override
+    @Transactional
     public void updateInnerMsg(InnerMsg msg,InnerMsg copMsg) {
-       // innerMsgDao.updateInnerMsg(msg);
-        //innerMsgDao.deleteObjectReferences(msg);
-        innerMsgDao.deleteObject(copMsg);
-        List<InnerMsgAnnex> innerMsgAnnexs = copMsg.getInnerMsgAnnexs();
-        if (null != innerMsgAnnexs){
-            HashMap<String, Object> map = new HashMap<>();
-            for (InnerMsgAnnex innerMsgAnnex : innerMsgAnnexs) {
-                map.put("msgCode",innerMsgAnnex.getMsgCode());
-            }
-            innerMsgAnnexDao.deleteObjectsByProperties(map);
-        }
-
-        List<InnerMsgRecipient> recipients = copMsg.getRecipients();
-        if (null != recipients){
-            HashMap<String, Object> map = new HashMap<>();
-            for (InnerMsgRecipient recipient : recipients) {
-                map.put("msgCode",recipient.getMsgCode());
-            }
-            innerMsgRecipientDao.deleteObjectsByProperties(map);
-        }
-
-        sendToMany(msg);
-
+        innerMsgDao.updateInnerMsg(msg);
+        innerMsgDao.saveObjectReferences(msg);
     }
 
 
     @Override
+    @Transactional
     public void deleteInnerMsgById(String msgCode) {
         InnerMsg msg= innerMsgDao.getObjectById(msgCode);
         msg.setMsgState("D");
@@ -322,7 +297,6 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         if (!StringUtils.isNotBlank(sysUserCode)){//||!StringUtils.isNotBlank(innerMsg.getSender())
             return false;
         }
-
         ArrayList<String> arrayList = new  ArrayList<String>();
         arrayList.add(innerMsg.getMsgTitle());
         arrayList.add(innerMsg.getMsgContent());

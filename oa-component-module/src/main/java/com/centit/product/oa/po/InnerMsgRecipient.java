@@ -44,7 +44,6 @@ public class InnerMsgRecipient implements Serializable{
     /**
      * 回复消息编号
      */
-    //TODO:replyMsgCode和InnerMsg.replyMsgCode重复；是否需要清除
     @Column(name = "REPLY_MSG_CODE")
     private int replyMsgCode;
 

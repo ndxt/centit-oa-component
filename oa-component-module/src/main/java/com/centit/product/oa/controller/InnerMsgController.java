@@ -13,6 +13,8 @@ import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -44,11 +46,10 @@ public class InnerMsgController extends BaseController {
     public String getOptId() {
         return "InnerMsg";
     }
-//1.todo：查询收件箱业务可以进行复用
+
     /**
      * 查询收件箱;希望返回的邮件主要数据发件人姓名,邮件标题,邮件状态信息
-     *
-     * @param pageDesc PageDesc
+     *  @param pageDesc PageDesc
      * @param request  HttpServletRequest
      * @param response HttpServletResponse
      */
@@ -58,16 +59,32 @@ public class InnerMsgController extends BaseController {
         paramType = "body", dataTypeClass = PageDesc.class)
     @RequestMapping(value = "/inbox", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public PageQueryResult<HashMap<String,Object>> listInbox( PageDesc pageDesc, HttpServletRequest request, HttpServletResponse response) {
+    public PageQueryResult<InnerMsg> listInbox(PageDesc pageDesc, HttpServletRequest request, HttpServletResponse response) {
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
         //先从request中获取receive对应的值;如果获取不到,从springSession获取登录用户信息
         String receive = (String) searchColumn.get("receive");
         if (StringUtils.isBlank(receive)) {
             searchColumn.put("receive", WebOptUtils.getCurrentUserCode(request));
         }
-        List<HashMap<String,Object>> listObjects = innerMessageManager.listMsgRecipientsCascade(searchColumn, pageDesc);
-        return PageQueryResult.createResultMapDict(listObjects, pageDesc);
+        List<InnerMsg> innerMsgs = innerMessageManager.listMsgRecipientsCascade(searchColumn, pageDesc);
+        String[] filterFields = {"msgCode","sender","msgTitle","mailType"};
+        return PageQueryResult.createResultMapDict(innerMsgs, pageDesc,filterFields);
     }
+
+    /**
+     * 更新消息的状态
+     *
+     * @param innerMsgRecipient
+     */
+   /* @ApiOperation(value = "未读消息数量", notes = "未读消息数量。")
+    @RequestMapping(value = "/updateRecipient", method = {RequestMethod.PUT})
+    @WrapUpResponseBody
+    public void updateRecipient(@RequestBody InnerMsgRecipient innerMsgRecipient) {
+        //更新之前先查询数据库验证数据是否存在
+        innerMessageManager.updateRecipient(innerMsgRecipient);
+        //return 0;
+        //return ResponseData.makeResponseData(unreadMsg);
+    }*/
 
     /**
      * 未读消息数量
@@ -124,9 +141,8 @@ public class InnerMsgController extends BaseController {
     @ApiOperation(value = "是否有发公告权限", notes = "是否有发公告权限。")
     @RequestMapping(value = "/cangivenotify", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public ResponseData cangivenotify() {
-        boolean s = CodeRepositoryUtil.checkUserOptPower("MSGMAG", "givenotify");
-        return ResponseData.makeResponseData(s);
+    public boolean cangivenotify() {
+        return CodeRepositoryUtil.checkUserOptPower("MSGMAG", "givenotify");
     }
 
     /**
@@ -134,6 +150,7 @@ public class InnerMsgController extends BaseController {
      *
      * @param msgCode  msgCode
      * @param response HttpServletResponse
+     * @return InnerMsgRecipient
      */
   //  @ApiOperation(value = "是否有发公告权限", notes = "是否有发公告权限。")
     @ApiOperation(value = "获取内部消息的接收者信息", notes = "获取内部消息的接收者信息。")
@@ -142,9 +159,8 @@ public class InnerMsgController extends BaseController {
         required = true, paramType = "path", dataType = "String")
     @RequestMapping(value = "/{msgCode}", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public ResponseData getInnerMsg(@PathVariable Map<String, Object> msgCode, HttpServletResponse response) {
-        InnerMsgRecipient msgCopy = innerMessageManager.getMsgRecipientById(msgCode);
-        return ResponseData.makeResponseData(msgCopy);
+    public InnerMsgRecipient getInnerMsg(@PathVariable Map<String, Object> msgCode, HttpServletResponse response) {
+        return innerMessageManager.getMsgRecipientById(msgCode);
     }
 
     /**
@@ -153,6 +169,7 @@ public class InnerMsgController extends BaseController {
      * @param field    显示结果中只需要显示的字段
      * @param pageDesc PageDesc
      * @param request  HttpServletRequest
+     * @return PageQueryResult
      */
     @ApiOperation(value = "公告列表", notes = "公告列表。")
     @ApiImplicitParams({
@@ -235,7 +252,7 @@ public class InnerMsgController extends BaseController {
     public String getLoginUserCode(HttpServletRequest request) {
         return WebOptUtils.getCurrentUserCode(request);
     }
-    //todo:更新消息,功能复用
+
     /**
      * 更新消息内容;
      *
@@ -255,19 +272,18 @@ public class InnerMsgController extends BaseController {
     @WrapUpResponseBody
     public ResponseData mergInnerMsg(@Valid @RequestBody InnerMsg msg, @PathVariable String msgCode,
                                      HttpServletRequest request) {
-        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
-        String sender = (String) searchColumn.get("sender");
+        String sender = msg.getSender();
         String currentUserCode = WebOptUtils.getCurrentUserCode(request);
 
         InnerMsg msgCopy = innerMessageManager.getInnerMsgById(msgCode);
         if (null == msgCopy || !msgCode.equals(msg.getMsgCode())
-            || !(msg.getMsgCode().equals(sender)||msgCode.equals(currentUserCode))) {
+            || !(msg.getSender().equals(sender)||msg.getSender().equals(currentUserCode))) {
             return ResponseData.makeErrorMessage("当前机构中无此信息!");
         }
         if ("I".equals(msgCopy.getMailType()) || "O".equals(msgCopy.getMailType())){
             return ResponseData.makeErrorMessage("邮件当前状态不允许修改!");
         }
-        innerMessageManager.updateInnerMsg(msgCopy,msg);
+        innerMessageManager.updateInnerMsg(msg,msgCopy);
         // 需要返回msg的msgCode给前端recipient保存用
         return ResponseData.makeResponseData(msg);
     }
@@ -325,8 +341,6 @@ public class InnerMsgController extends BaseController {
      *         U=未读
      *         R=已读
      *         D=删除
-     *
-     *
      */
     @ApiOperation(value = "更新信息状态", notes = "删除接受者信息,并没有删除该条记录，而是把msgState字段标记为D。")
     @ApiImplicitParams(

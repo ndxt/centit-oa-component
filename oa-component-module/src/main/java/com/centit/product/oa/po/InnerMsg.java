@@ -1,6 +1,5 @@
 package com.centit.product.oa.po;
 
-import com.alibaba.fastjson.annotation.JSONField;
 import com.centit.framework.core.dao.DictionaryMap;
 import com.centit.framework.model.basedata.NoticeMessage;
 import com.centit.support.database.orm.GeneratorType;
@@ -101,6 +100,7 @@ public class InnerMsg implements Serializable{
 
     /**
      * 消息状态：未读/已读/删除
+     * note:这个状态与innerMsgRecipient.msgState冲突;
     */
     @Column(name = "MSG_STATE")
     @Length(max = 1, message = "字段长度必须为{max}")
@@ -142,9 +142,6 @@ public class InnerMsg implements Serializable{
      *一个消息可以有多个收件人
      */
 
-    /*@Transient
-    @JSONField(serialize=false)*/
-    //把原先的List<InnerMsgRecipient>不进行持久化属性改为持久化
     @OneToMany(targetEntity=InnerMsgRecipient.class)
     @JoinColumn(name="MSG_CODE", referencedColumnName="MSG_CODE")
     private List<InnerMsgRecipient> recipients;

@@ -43,7 +43,14 @@ public class TestInnerMsg {
     public void creatInnerMsgDaoTest(){
         InnerMsg innerMsg = new InnerMsg();
         innerMsg.setOptId("122");
+
+        InnerMsgRecipient innerMsgRecipient = new InnerMsgRecipient();
+        innerMsgRecipient.setReceive("u0000");
+        ArrayList<InnerMsgRecipient> objects = new ArrayList<>();
+        objects.add(innerMsgRecipient);
+        innerMsg.setRecipients(objects);
         innerMsgDao.saveNewObject(innerMsg);
+        innerMsgDao.saveObjectReferences(innerMsg);
         System.out.println(innerMsg.getMsgCode());
     }
 
@@ -111,7 +118,7 @@ public class TestInnerMsg {
         HashMap.put("optTag","123");
         HashMap.put("receive","u1234");
         PageDesc pageDesc = new PageDesc(1, 10);
-        List<java.util.HashMap<String, Object>> hashMaps = innerMessageManager.listMsgRecipientsCascade(HashMap, pageDesc);
+        //List<java.util.HashMap<String, Object>> hashMaps = innerMessageManager.listMsgRecipientsCascade(HashMap, pageDesc);
         System.out.println("success");
 
     }
@@ -123,5 +130,28 @@ public class TestInnerMsg {
 
     }
 
+    @Test
+    public void listMsgRecipientsCascadePlusTest(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("optTag","123");
+        map.put("receive","u1234");
+        map.put("msgState","U");
+        PageDesc pageDesc = new PageDesc(1, 10);
+        //innerMessageManager.listMsgRecipientsCascadePlus(map,pageDesc);
+        System.out.println("success");
+
+    }
+
+    @Test
+    public void updateRecipientTest(){
+        InnerMsgRecipient recipient = new InnerMsgRecipient();
+        recipient.setMsgState("R");
+        recipient.setMsgCode("0nTDk1y_TaCOv1WSvbr1QA");
+        recipient.setReceive("u12345");
+        innerMessageManager.updateRecipient(recipient);
+
+        System.out.println("success");
+
+    }
 
 }
