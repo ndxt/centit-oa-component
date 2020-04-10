@@ -44,7 +44,7 @@ public class InnerMsgController extends BaseController {
     public String getOptId() {
         return "InnerMsg";
     }
-//1.todo：这一个业务可以进行复用
+//1.todo：查询收件箱业务可以进行复用
     /**
      * 查询收件箱;希望返回的邮件主要数据发件人姓名,邮件标题,邮件状态信息
      *
@@ -217,7 +217,10 @@ public class InnerMsgController extends BaseController {
         if (!flag){
             return ResponseData.makeErrorMessage("邮件发送失败!");
         }
-        return ResponseData.successResponse;
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("msgCode",innerMsg.getMsgCode());
+        return ResponseData.makeResponseData(map);
+       // return ResponseData.makeResponseData(innerMsg);
     }
 
 
