@@ -1,10 +1,11 @@
 package com.centit.product.oa.service.impl;
 
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson.JSONArray;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
 import com.centit.support.database.utils.PageDesc;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -42,24 +43,25 @@ public class BbsManagerImpl implements BbsManager {
         return bbsPiecesList;
     }
 
+    /**
+     *  根据操作代码,获取所有附件信息
+     * @param filterMap
+     * @param pageDesc
+     * @return
+     */
     @Override
-    public List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
-        List<BbsPiece> bbsPiecesList = bbsPieceDao.listObjects(filterMap, pageDesc);
-        List<BbsPiece> bbsPiecesListFilter = new ArrayList<BbsPiece>();
-        JSONObject pieceContent ;
-        for (BbsPiece bbsPiece : bbsPiecesList) {
-            pieceContent = bbsPiece.getPieceContent();
-            if (null == bbsPiece.getPieceContent()||null == pieceContent){
-                continue;
-            }
-
-            if (null !=pieceContent.get("contentType") &&
-                pieceContent.get("contentType").equals(filterMap.get("contentType"))){
-                bbsPiecesListFilter.add(bbsPiece);
+    public JSONArray listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
+        String sql ="where OPT_ID = :optId and OPT_TAG = :optTag and APPLICATION_ID = :applicationId and PIECE_CONTENT LIKE :contentType";//'%"contentType":"file"%'
+        String contentType = (String) filterMap.get("contentType");
+        if (StringUtils.isNotBlank(contentType)){
+            if (contentType.equals("file")){
+                filterMap.put("contentType", "%\"contentType\":\"file\"%" );
             }
         }
-        return bbsPiecesListFilter;
+        return bbsPieceDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
     }
+
+
     @Override
     public BbsPiece getBbsPieces(String pieceId) {
         List<BbsPiece> pieceIds = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
