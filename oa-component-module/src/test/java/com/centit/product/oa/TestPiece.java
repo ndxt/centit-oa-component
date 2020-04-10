@@ -141,9 +141,5 @@ public class TestPiece {
     }
 //listBbsPiecesByPieceContentTypePlus
 
-    @Test
-    public void listBbsPiecesByPieceContentTypePlusTest(){
-        bbsManager.listBbsPiecesByPieceContentTypePlus(null,null);
-        System.out.println("success");
-    }
+
 }
