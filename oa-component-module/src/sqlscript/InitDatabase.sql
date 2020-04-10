@@ -11,7 +11,7 @@ create table F_INNER_MSG  (
    Mail_Type             CHAR(1),
    Receive_Name          VARCHAR(2048),
    msg_State             CHAR(1),
-   msg_Content           CLOB,
+   msg_Content           CLOB,/*在mysql中CLOB对应text类型数据；*/
    Opt_ID                VARCHAR(64)                    not null,
    OPT_Method            VARCHAR(64),
    opt_Tag               VARCHAR(200)

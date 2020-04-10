@@ -6,14 +6,17 @@ import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.NoticeMessage;
+import com.centit.product.oa.dao.InnerMsgAnnexDao;
 import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.dao.InnerMsgRecipientDao;
 import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgAnnex;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Length;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,10 +30,13 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Autowired
     @NotNull
-    protected InnerMsgRecipientDao innerMsgRecipientDao;
+    private InnerMsgRecipientDao innerMsgRecipientDao;
 
     @Autowired
     private InnerMsgDao innerMsgDao;
+
+    @Autowired
+    private InnerMsgAnnexDao innerMsgAnnexDao;
 
     /*
      * 更新接受者信息
@@ -42,59 +48,51 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         innerMsgRecipientDao.updateInnerMsgRecipient(recipient);
 
     }
-
-    /*
-     * msg为消息主题，recipient为接收人
-     * 添加消息接受者,群发(receipient.receive为数组，但是保存到数据库是挨个保存)
+    //todo:发送消息
+    /**
+     * 1.把邮件中的信息写入到innerMsg表中
+     * 2.把收件人信息写入到innerMsgRecipient中
      *
      */
     @Override
     @Transactional
-    public void sendInnerMsg(InnerMsgRecipient recipient, String sysUserCode) {
-        String receive = recipient.getReceive();
-        String receives[] = StringUtils.split(receive, ",");
-        //InnerMsg msg = recipient.getMInnerMsg();
-        //拆分recieve
-        /*if (!StringUtils.isNotBlank(msg.getSender())) {
-            msg.setSender(sysUserCode);
-            //msg.setSenderName(CodeRepositoryUtil.getUserInfoByCode(sysUserCode).getUserName());
-            if (null == msg.getSendDate()) {
-                msg.setSendDate(new Date());
-            }
+    public boolean sendInnerMsg(InnerMsg innerMsg, String sysUserCode) {
+        //由于需要用户登录后才能获取到sysUserCode中的值;为方便测试这里直接给sysUserCode赋值;
+        Random random = new Random();
+        sysUserCode ="u666"+random.nextInt(3);
+        /////////////////////////////
+        boolean flag = innerMsgValidate(innerMsg, sysUserCode);
+        if (!flag){
+            return false;
         }
-        sendToMany(receives, msg, recipient);*/
+        innerMsg.setSender(sysUserCode);
+        sendToMany(innerMsg);
+        return true;
     }
 
-    public void sendToMany(String[] receives, InnerMsg msg, InnerMsgRecipient recipient) {
-        if (null != receives && receives.length > 0) {
-            String receiveName = "";
-            int bo = 0;
-            for (String userCode : receives) {
-                if (bo > 0) {
-                    receiveName += ",";
-                }
-                IUserInfo userinfo=CodeRepositoryUtil.getUserInfoByCode(userCode);
-                receiveName += userinfo==null?userCode:userinfo.getUserName();
-                bo++;
-            }
-            msg.setReceiveName(receiveName);
-            msg.setMsgCode(innerMsgDao.getNextKey());
-            innerMsgDao.saveNewObject(msg);
-            //recipient.setMInnerMsg(msg);
-            recipient.setMsgCode(msg.getMsgCode());
-            //DataPushSocketServer.pushMessage(msg.getSender(), "你发送邮件："+ msg.getMsgTitle());
-            for (String userCode : receives) {
-                InnerMsgRecipient innerMsgRecipient  = new InnerMsgRecipient();
-                innerMsgRecipient.setMsgCode(recipient.getMsgCode());
-                innerMsgRecipient.setMailType(recipient.getMailType());
-                innerMsgRecipient.setMsgState(recipient.getMsgState());
-//                innerMsgRecipient.copyNotNullProperties(recipient);
-                innerMsgRecipient.setReceive(userCode);
-                innerMsgRecipientDao.saveNewObject(innerMsgRecipient);
-                //DataPushSocketServer.pushMessage(userCode, "你有新邮件：" + recipient.getMsgTitle());
+    /**
+     * 把邮件内容写入到数据库中,并关联收件人信息和附件信息;
+     * @param msg
+     */
+    private void sendToMany( InnerMsg msg) {
+       innerMsgDao.saveNewObject(msg);
+        String msgCode = msg.getMsgCode();
+        List<InnerMsgRecipient> recipients = msg.getRecipients();
+        for (InnerMsgRecipient recipient : recipients) {
+            recipient.setMsgCode(msgCode);
+            innerMsgRecipientDao.saveNewObject(recipient);
+        }
+        List<InnerMsgAnnex> innerMsgAnnexes = msg.getInnerMsgAnnexs();
+        if (null != innerMsgAnnexes){
+            for (InnerMsgAnnex innerMsgAnnex : innerMsgAnnexes) {
+                innerMsgAnnex.setMsgCode(msgCode);
+                innerMsgAnnexDao.saveNewObject(innerMsgAnnex);
             }
         }
+       //innerMsgDao.saveObjectReferences(msg);
+
     }
+
 
 
     /*
@@ -192,7 +190,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         recipient.setMailType("T");
         recipient.setMsgState("U");
         String[] receives = new String[]{receiver};
-        sendToMany(receives, msg, recipient);
+        //sendToMany(receives, msg, recipient);
         return ResponseData.successResponse;
     }
 
@@ -220,18 +218,74 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         }*/
         return recipients;
     }
+
+    /**
+     * 先由收件人userCode在InnerMsgRecipient中找到收件人的所有的邮件msgCode;
+     * 在根据msgCode和optId获取InnerMsg表中对应的信息;
+     * @param filterMap 过滤条件
+     * @param pageDesc 分页条件
+     * @return 返回值List<map<string,String>> 只返回发件人姓名和邮件标题
+     */
     @Override
-    public List<InnerMsgRecipient> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
-        List<InnerMsgRecipient> recipients = listMsgRecipients(filterMap, pageDesc);
-        /*for(InnerMsgRecipient recipient : recipients){
-            recipient.setMInnerMsg(innerMsgDao.getObjectById(recipient.getMsgCode()));
-        }*/
-        return recipients;
+    public List<HashMap<String,Object>> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
+
+        List<InnerMsgRecipient> innerMsgRecipients = innerMsgRecipientDao.listObjectsByProperties(filterMap);
+        InnerMsg innerMsg = null;
+        ArrayList<HashMap<String,Object>> innerMsgList = new ArrayList<>();
+        HashMap<String, Object> innerMsgMap = null;
+        for (InnerMsgRecipient innerMsgRecipient : innerMsgRecipients) {
+            innerMsgMap = new HashMap<>();
+            innerMsg = innerMsgDao.getObjectWithReferences(innerMsgRecipient.getMsgCode());
+            //过滤掉从数据库中查询出来的与optId不符的数据
+            if (!StringUtils.isNotBlank(innerMsg.getOptId())
+                &&innerMsg.getOptId().equals(filterMap.get("optId"))){
+                continue;
+            }
+            innerMsgMap.put("MSG_CODE",innerMsg.getMsgCode());
+            innerMsgMap.put("sender",innerMsg.getSender());
+            innerMsgMap.put("msgTitle",innerMsg.getMsgTitle());
+            innerMsgMap.put("sendDate",innerMsg.getSendDate());
+            //这个msgState特指的是innerMsgRecipient中的属性
+            innerMsgMap.put("msgState",innerMsgRecipient.getMsgState());
+            innerMsgList.add(innerMsgMap);
+        }
+
+        return innerMsgList;
     }
 
+    /**
+     * 更新邮件;可能更新的内容包括:innerMsg,innerMsgAnnex,innerMsgRecipient
+     * 更新步骤:
+     * 1.根据id查找出innerMsg中所有信息包括子集中的数据;
+     * 2.根据id删除有关数据(包括子集中所有数据);
+     * 3.把数据重新添加到数据库中
+     * @param msg
+     */
     @Override
-    public void updateInnerMsg(InnerMsg msg) {
-        innerMsgDao.updateInnerMsg(msg);
+    public void updateInnerMsg(InnerMsg msg,InnerMsg copMsg) {
+       // innerMsgDao.updateInnerMsg(msg);
+        //innerMsgDao.deleteObjectReferences(msg);
+        innerMsgDao.deleteObject(copMsg);
+        List<InnerMsgAnnex> innerMsgAnnexs = copMsg.getInnerMsgAnnexs();
+        if (null != innerMsgAnnexs){
+            HashMap<String, Object> map = new HashMap<>();
+            for (InnerMsgAnnex innerMsgAnnex : innerMsgAnnexs) {
+                map.put("msgCode",innerMsgAnnex.getMsgCode());
+            }
+            innerMsgAnnexDao.deleteObjectsByProperties(map);
+        }
+
+        List<InnerMsgRecipient> recipients = copMsg.getRecipients();
+        if (null != recipients){
+            HashMap<String, Object> map = new HashMap<>();
+            for (InnerMsgRecipient recipient : recipients) {
+                map.put("msgCode",recipient.getMsgCode());
+            }
+            innerMsgRecipientDao.deleteObjectsByProperties(map);
+        }
+
+        sendToMany(msg);
+
     }
 
 
@@ -254,7 +308,36 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     public InnerMsg getInnerMsgById(String msgCode) {
-        return innerMsgDao.getObjectById(msgCode);
+       // return innerMsgDao.getObjectById(msgCode);
+        return innerMsgDao.getObjectWithReferences(msgCode);
+    }
+
+    /**
+     * 对innerMsg和sysUserCode中必要的属性进行空判断
+     * @param innerMsg
+     * @param sysUserCode
+     * @return
+     */
+    private boolean innerMsgValidate(InnerMsg innerMsg,String sysUserCode) {
+        if (!StringUtils.isNotBlank(sysUserCode)){//||!StringUtils.isNotBlank(innerMsg.getSender())
+            return false;
+        }
+
+        ArrayList<String> arrayList = new  ArrayList<String>();
+        arrayList.add(innerMsg.getMsgTitle());
+        arrayList.add(innerMsg.getMsgContent());
+        arrayList.add(innerMsg.getMailType());
+        arrayList.add(innerMsg.getMsgState());
+        arrayList.add(innerMsg.getReceiveName());
+        arrayList.add(innerMsg.getOptId());
+        arrayList.add(innerMsg.getRecipients().get(0).getReceive());
+        for (String s : arrayList) {
+            if (!StringUtils.isNotBlank(s)){
+                return false;
+            }
+
+        }
+        return true;
     }
 
 }

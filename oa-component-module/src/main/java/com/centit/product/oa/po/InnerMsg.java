@@ -93,7 +93,14 @@ public class InnerMsg implements Serializable{
     private String receiveName;
 
     /**
-             消息状态：未读/已读/删除
+     * 抄送人中文名
+     */
+    @Column(name="CARBON_COPY_NAME")
+    @Length(max = 2048, message = "字段长度不能大于{max}")
+    private String carbonCopyName;
+
+    /**
+     * 消息状态：未读/已读/删除
     */
     @Column(name = "MSG_STATE")
     @Length(max = 1, message = "字段长度必须为{max}")
@@ -106,6 +113,12 @@ public class InnerMsg implements Serializable{
     @NotBlank(message = "字段不能为空")
     private String msgContent;
 
+    /**
+     * 附件信息集合；
+     */
+    @OneToMany(targetEntity=InnerMsgAnnex.class)
+    @JoinColumn(name="MSG_CODE", referencedColumnName="MSG_CODE")
+    private List<InnerMsgAnnex> innerMsgAnnexs;
     /**
      *功能模块 */
     @Column(name="OPT_ID")
@@ -129,8 +142,11 @@ public class InnerMsg implements Serializable{
      *一个消息可以有多个收件人
      */
 
-    @Transient
-    @JSONField(serialize=false)
+    /*@Transient
+    @JSONField(serialize=false)*/
+    //把原先的List<InnerMsgRecipient>不进行持久化属性改为持久化
+    @OneToMany(targetEntity=InnerMsgRecipient.class)
+    @JoinColumn(name="MSG_CODE", referencedColumnName="MSG_CODE")
     private List<InnerMsgRecipient> recipients;
 
     public InnerMsg(){

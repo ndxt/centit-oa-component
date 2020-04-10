@@ -1,18 +1,16 @@
 package com.centit.product.oa.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.centit.framework.common.ResponseData;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
+import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -55,25 +53,24 @@ public class BbsController extends BaseController{
         List<BbsPiece> bbsPieces = bbsManager.listBbsPieces(searchColumn, pageDesc);
          return PageQueryResult.createResultMapDict(bbsPieces, pageDesc);
     }
+
     @DeleteMapping(value = "/deletePiece/{pieceId}")
     @ApiOperation(value = "用户删除自己发表的评论信息")
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
-    public ResponseData deleteBbsPieces(@PathVariable String pieceId, HttpServletResponse response){
+    public void deleteBbsPieces(@PathVariable String pieceId, HttpServletResponse response){
         boolean flag = bbsManager.deleteBbsPieceByID(pieceId, response);
         if (!flag){
-          return  ResponseData.makeErrorMessage("消息记录不存在!");
+          throw new ObjectException("消息记录不存在!");
         }
-        return ResponseData.successResponse;
     }
 
     @GetMapping(value = "/getPiece/{pieceId}")
     @ApiOperation(value = "通过pieceId获取评论信息")
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
-    public ResponseData getBbsPieces(@PathVariable String pieceId){
-        BbsPiece bbsPieces = bbsManager.getBbsPieces(pieceId);
-        return ResponseData.makeResponseData(bbsPieces);
+    public BbsPiece getBbsPieces(@PathVariable String pieceId){
+        return bbsManager.getBbsPieces(pieceId);
     }
 
 

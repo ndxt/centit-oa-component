@@ -2,6 +2,8 @@ package com.centit.product.oa;
 
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.jdbc.config.JdbcConfig;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
+import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.impl.BbsManagerImpl;
 import com.centit.support.database.utils.PageDesc;
@@ -11,6 +13,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -29,6 +33,8 @@ public class TestPiece {
 
     @Autowired
     private BbsManagerImpl bbsManager;
+    @Autowired
+    private BbsPieceDao bbsPieceDao;
 
     /*@Autowired
     private BbsController bbsController;*/
@@ -115,6 +121,38 @@ public class TestPiece {
         System.out.println(o.toString());
         Object parse = JSONObject.parse(o.toString());
         System.out.println(parse);
+    }
+
+    @Test
+    public void ContentTypeTest(){
+        HashMap<String, Object> map = new HashMap<>();
+        map.put("contentType","file");
+        PageDesc pageDesc = new PageDesc(1, 10);
+        List<BbsPiece> bbsPieces = bbsManager.listBbsPiecesByPieceContentType(map, pageDesc);
+
+        System.out.println("success");
+    }
+
+    @Test
+    public void ContentTypeBySqlTest(){
+        /*BaseDaoImpl<BbsPiece, String> bbsPieceStringBaseDao = new BaseDaoImpl<BbsPiece, String>() {
+            @Override
+            public Map<String, String> getFilterField() {
+                return null;
+            }
+        };*/
+        JdbcTemplate jdbcTemplate = bbsPieceDao.getJdbcTemplate();
+        String sql = "SELECT * FROM `m_bbs_piece` where OPT_ID = :OPT_ID and OPT_TAG = :OPT_TAG and APPLICATION_ID = :APPLICATION_ID and PIECE_CONTENT LIKE '%\"contentType\":\"file\"%' "; //and PIECE_CONTENT LIKE '%"contentType":"file"%'
+        HashMap<String, Object> map = new HashMap<>();//'%\"contentType\":\"file\"%'"
+        map.put("OPT_ID",123);
+        map.put("APPLICATION_ID",123);
+        map.put("OPT_TAG",123);
+        map.put("PIECE_CONTENT","%\"contentType\":\"file\"%");
+        map.put("ps",0);
+        map.put("pz",10);
+        bbsPieceDao.listObjectsBySql(sql,map);
+        String countsql= "SELECT count(1) FROM `m_bbs_piece` where OPT_ID = :OPT_ID and OPT_TAG = :OPT_TAG and APPLICATION_ID = :APPLICATION_ID and PIECE_CONTENT LIKE '%\"contentType\":\"file\"%' ";
+        System.out.println("success");
     }
 
 
