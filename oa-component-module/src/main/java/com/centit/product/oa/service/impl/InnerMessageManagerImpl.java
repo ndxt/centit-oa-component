@@ -72,6 +72,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             return false;
         }
         innerMsg.setSender(sysUserCode);
+        innerMsg.setMsgState("R");
         sendToMany(innerMsg);
         return true;
 
@@ -311,7 +312,6 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         arrayList.add(innerMsg.getMsgTitle());
         arrayList.add(innerMsg.getMsgContent());
         arrayList.add(innerMsg.getMailType());
-        arrayList.add(innerMsg.getMsgState());
         arrayList.add(innerMsg.getOptId());
         arrayList.add(innerMsg.getRecipients().get(0).getReceive());
         for (String s : arrayList) {

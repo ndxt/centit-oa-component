@@ -93,7 +93,7 @@ public class InnerMsg implements Serializable{
 
     /**
      * 消息状态：未读/已读/删除
-     * note:这个状态与innerMsgRecipient.msgState冲突;
+     *
     */
     @Column(name = "MSG_STATE")
     @Length(max = 1, message = "字段长度必须为{max}")
