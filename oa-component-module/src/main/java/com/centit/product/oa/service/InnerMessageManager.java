@@ -27,7 +27,7 @@ public interface InnerMessageManager {
 
     List<InnerMsgRecipient> getExchangeMsgRecipients(String sender, String receiver);
 
-    void updateRecipient(InnerMsgRecipient recipient);
+    void updateRecipient(InnerMsgRecipient recipient,InnerMsgRecipient recipientCopy);
     /*
      *群发(innerMsg.receiveName,innerMsg.carbonCopyName为数组，但是保存到数据库是挨个保存)
      *

@@ -11,8 +11,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletResponse;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -36,14 +34,11 @@ public class BbsManagerImpl implements BbsManager {
 
     @Override
     public List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc) {
-        List<BbsPiece> bbsPiecesList = bbsPieceDao.listObjects(filterMap, pageDesc);
-        Collections.sort(bbsPiecesList, new Comparator<BbsPiece>() {
-            @Override
-            public int compare(BbsPiece o1, BbsPiece o2) {
-                return o1.getDeliverDate().compareTo(o2.getDeliverDate());
-            }
-        });
-        return bbsPiecesList;
+        if (null ==filterMap.get("sort")||null ==filterMap.get("SORT")){
+            filterMap.put("sort","desc");
+        }
+        filterMap.put("order_by","DELIVER_DATE");
+        return bbsPieceDao.listObjects(filterMap, pageDesc);
     }
 
     /**
@@ -53,22 +48,27 @@ public class BbsManagerImpl implements BbsManager {
      * @return
      */
     @Override
-    public JSONArray listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
-        String sql ="where OPT_ID = :optId and OPT_TAG = :optTag and APPLICATION_ID = :applicationId and PIECE_CONTENT LIKE :contentType";//'%"contentType":"file"%'
+    public List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
+        String sql ="where OPT_ID = :optId and OPT_TAG = :optTag and APPLICATION_ID = :applicationId and PIECE_CONTENT LIKE :contentType  ORDER BY DELIVER_DATE desc ";
         String contentType = (String) filterMap.get("contentType");
         if (StringUtils.isNotBlank(contentType)){
             if (contentType.equals("file")){
                 filterMap.put("contentType", "%\"contentType\":\"file\"%" );
             }
         }
-        return bbsPieceDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
+        JSONArray objects = bbsPieceDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
+        //List<BbsPiece> bbsPieces = objects.toJavaList(BbsPiece.class);
+        return objects.toJavaList(BbsPiece.class);
     }
 
 
     @Override
     public BbsPiece getBbsPieces(String pieceId) {
-        List<BbsPiece> pieceIds = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
-        return pieceIds.get(0);
+        List<BbsPiece> pieces = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
+        if (pieces.isEmpty()){
+            return null;
+        }
+        return pieces.get(0);
     }
 
     @Override

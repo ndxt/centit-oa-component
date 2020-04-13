@@ -92,13 +92,6 @@ public class InnerMsg implements Serializable{
     private String receiveName;
 
     /**
-     * 抄送人中文名
-     */
-    @Column(name="CARBON_COPY_NAME")
-    @Length(max = 2048, message = "字段长度不能大于{max}")
-    private String carbonCopyName;
-
-    /**
      * 消息状态：未读/已读/删除
      * note:这个状态与innerMsgRecipient.msgState冲突;
     */

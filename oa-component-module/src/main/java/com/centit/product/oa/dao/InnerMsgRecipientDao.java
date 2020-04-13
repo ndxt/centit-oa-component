@@ -54,9 +54,8 @@ public class InnerMsgRecipientDao extends BaseDaoImpl<InnerMsgRecipient, String>
                 " and (im.MAIL_TYPE='I' or im.MAIL_TYPE='O')) and RECEIVE= ?) " +
                 "or (MSG_CODE in(Select  im.MSG_CODE from f_inner_msg im where im.sender= ? " +
                 " and (im.MAIL_TYPE='I' or im.MAIL_TYPE='O')) and RECEIVE= ? )) order by msg_Code desc";
-        List<InnerMsgRecipient> l = listObjectsByFilter(queryString,
-                new Object[]{sender,receiver,receiver,sender});
-        return l;
+        return listObjectsByFilter(queryString,
+            new Object[]{sender,receiver,receiver,sender});
     }
 
     public long getUnreadMessageCount(String userCode){

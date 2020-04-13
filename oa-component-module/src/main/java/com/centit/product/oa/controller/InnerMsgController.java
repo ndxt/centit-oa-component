@@ -72,21 +72,6 @@ public class InnerMsgController extends BaseController {
     }
 
     /**
-     * 更新消息的状态
-     *
-     * @param innerMsgRecipient
-     */
-   /* @ApiOperation(value = "未读消息数量", notes = "未读消息数量。")
-    @RequestMapping(value = "/updateRecipient", method = {RequestMethod.PUT})
-    @WrapUpResponseBody
-    public void updateRecipient(@RequestBody InnerMsgRecipient innerMsgRecipient) {
-        //更新之前先查询数据库验证数据是否存在
-        innerMessageManager.updateRecipient(innerMsgRecipient);
-        //return 0;
-        //return ResponseData.makeResponseData(unreadMsg);
-    }*/
-
-    /**
      * 未读消息数量
      *
      * @param request {@link HttpServletRequest}
@@ -97,7 +82,6 @@ public class InnerMsgController extends BaseController {
     public long unreadMsgCount(HttpServletRequest request) {
         String currUser = WebOptUtils.getCurrentUserCode(request);
         return innerMessageManager.getUnreadMessageCount(currUser);
-        //return ResponseData.makeResponseData(unreadMsg);
     }
     /**
      * 未读消息
@@ -152,7 +136,6 @@ public class InnerMsgController extends BaseController {
      * @param response HttpServletResponse
      * @return InnerMsgRecipient
      */
-  //  @ApiOperation(value = "是否有发公告权限", notes = "是否有发公告权限。")
     @ApiOperation(value = "获取内部消息的接收者信息", notes = "获取内部消息的接收者信息。")
     @ApiImplicitParam(
         name = "msgCode", value = "消息代码",
@@ -234,10 +217,10 @@ public class InnerMsgController extends BaseController {
         if (!flag){
             return ResponseData.makeErrorMessage("邮件发送失败!");
         }
-        HashMap<String, Object> map = new HashMap<>();
+        /*HashMap<String, Object> map = new HashMap<>();
         map.put("msgCode",innerMsg.getMsgCode());
-        return ResponseData.makeResponseData(map);
-       // return ResponseData.makeResponseData(innerMsg);
+        return ResponseData.makeResponseData(map);*/
+        return ResponseData.makeResponseData(innerMsg);
     }
 
 
@@ -312,7 +295,7 @@ public class InnerMsgController extends BaseController {
         if (null == recipientCopy) {
             return ResponseData.makeErrorMessage("当前机构中无此信息");
         }
-        innerMessageManager.updateRecipient(recipient);
+        innerMessageManager.updateRecipient(recipient,recipientCopy);
         // 需要返回msg的msgCode给前端recipient保存用
         return ResponseData.makeResponseData(recipient);
     }

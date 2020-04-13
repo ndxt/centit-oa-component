@@ -1,6 +1,5 @@
 package com.centit.product.oa.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
@@ -12,7 +11,6 @@ import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -72,10 +70,10 @@ public class BbsController extends BaseController{
             name = "optId", required = true,
             paramType = "query")
     })
-    public PageQueryResult<Object> listPieceContents( PageDesc pageDesc, HttpServletRequest request){
+    public PageQueryResult<BbsPiece> listPieceContents(PageDesc pageDesc, HttpServletRequest request){
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
-        JSONArray objects = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
-        return PageQueryResult.createJSONArrayResult(objects, pageDesc);
+        List<BbsPiece> bbsPieces = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
+        return PageQueryResult.createResult(bbsPieces,pageDesc);
     }
 
 
@@ -84,11 +82,8 @@ public class BbsController extends BaseController{
     @ApiOperation(value = "用户删除自己发表的评论信息")
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
-    public void deleteBbsPieces(@PathVariable String pieceId, HttpServletResponse response){
-        boolean flag = bbsManager.deleteBbsPieceByID(pieceId, response);
-        if (!flag){
-          throw new ObjectException("消息记录不存在!");
-        }
+    public boolean deleteBbsPieces(@PathVariable String pieceId, HttpServletResponse response){
+        return  bbsManager.deleteBbsPieceByID(pieceId, response);
     }
 
     @GetMapping(value = "/getPiece/{pieceId}")

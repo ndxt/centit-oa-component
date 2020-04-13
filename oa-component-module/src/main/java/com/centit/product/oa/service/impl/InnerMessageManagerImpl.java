@@ -3,6 +3,7 @@ package com.centit.product.oa.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.components.CodeRepositoryUtil;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -17,6 +18,10 @@ import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,13 +43,14 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Autowired
     private InnerMsgAnnexDao innerMsgAnnexDao;
 
+    protected static Logger logger = LoggerFactory.getLogger(InnerMessageManagerImpl.class);
     /**
      * 更新接受者信息;
      *  主要更新内容为msgStatue,
      */
     @Override
     @Transactional
-    public void updateRecipient(InnerMsgRecipient recipient) {
+    public void updateRecipient(InnerMsgRecipient recipient,InnerMsgRecipient recipientCopy) {
         innerMsgRecipientDao.updateInnerMsgRecipient(recipient);
 
     }
@@ -66,32 +72,39 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             return false;
         }
         innerMsg.setSender(sysUserCode);
-        //sendToMany(innerMsg);
-        innerMsgDao.saveNewObject(innerMsg);
-        innerMsgDao.saveObjectReferences(innerMsg);
+        sendToMany(innerMsg);
         return true;
+
     }
 
     /**
      * 把邮件内容写入到数据库中,并关联收件人信息和附件信息;
-     * @param msg
+     * @param innerMsg
      */
-    private void sendToMany( InnerMsg msg) {
-       innerMsgDao.saveNewObject(msg);
-        String msgCode = msg.getMsgCode();
-        List<InnerMsgRecipient> recipients = msg.getRecipients();
+    private void sendToMany( InnerMsg innerMsg) {
+        List<InnerMsgRecipient> recipients = innerMsg.getRecipients();
+        String receiveName = "";
+        int bo = 0;
         for (InnerMsgRecipient recipient : recipients) {
-            recipient.setMsgCode(msgCode);
-            innerMsgRecipientDao.saveNewObject(recipient);
-        }
-        List<InnerMsgAnnex> innerMsgAnnexes = msg.getInnerMsgAnnexs();
-        if (null != innerMsgAnnexes){
-            for (InnerMsgAnnex innerMsgAnnex : innerMsgAnnexes) {
-                innerMsgAnnex.setMsgCode(msgCode);
-                innerMsgAnnexDao.saveNewObject(innerMsgAnnex);
+            String receive = recipient.getReceive();
+            String nextReceiveName = null;
+            try {
+                 nextReceiveName = CodeRepositoryUtil.getUserInfoByCode(receive).getUserName();
+            }catch (NullPointerException e){
+                logger.error(e.getMessage());
             }
+
+            if (bo > 0) {
+                receiveName += ",";
+            }
+            bo++;
+
+            receiveName += nextReceiveName==null?receive:nextReceiveName;
+
         }
-       //innerMsgDao.saveObjectReferences(msg);
+        innerMsg.setReceiveName(receiveName);
+        innerMsgDao.saveNewObject(innerMsg);
+        innerMsgDao.saveObjectReferences(innerMsg);
 
     }
 
@@ -231,23 +244,13 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     public List<InnerMsg> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
         String sql = " where OPT_ID = :optId and MSG_CODE in (SELECT Msg_Code FROM `f_inner_msg_recipient` WHERE Receive = :receive ";
         if (null != filterMap.get("msgState")){
-            sql = sql + " and msg_State = :msgState )";
+            sql = sql + " and msg_State = :msgState ) ORDER BY SEND_DATE desc ";
         }else {
-            sql = sql + " )";
-        }
-        JSONArray objects = innerMsgDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
-        List<InnerMsg> innerMsgs = objects.toJavaList(InnerMsg.class);
-        innerMsgs.sort(new Comparator<InnerMsg>() {
-            @Override
-            public int compare(InnerMsg o1, InnerMsg o2) {
-                return o1.getSendDate().compareTo(o2.getSendDate());
-            }
-        });
-        for (InnerMsg innerMsg : innerMsgs) {
-            System.out.println(innerMsg);
+            sql = sql + " ) ORDER BY SEND_DATE desc ";
         }
 
-        return innerMsgs;
+        JSONArray objects = innerMsgDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
+        return objects.toJavaList(InnerMsg.class);
     }
 
 
@@ -278,6 +281,10 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     public List<InnerMsg> listInnerMsgs(Map<String, Object> filterMap, PageDesc pageDesc) {
+        if (null ==filterMap.get("sort")||null ==filterMap.get("SORT")){
+            filterMap.put("sort","desc");
+        }
+        filterMap.put("order_by","SEND_DATE");
         return innerMsgDao.listObjects(filterMap,pageDesc);
     }
 
@@ -297,19 +304,20 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         if (!StringUtils.isNotBlank(sysUserCode)){//||!StringUtils.isNotBlank(innerMsg.getSender())
             return false;
         }
-        ArrayList<String> arrayList = new  ArrayList<String>();
+        if (null == innerMsg.getRecipients() || innerMsg.getRecipients().size()==0){
+            return false;
+        }
+        ArrayList<String> arrayList = new  ArrayList<>();
         arrayList.add(innerMsg.getMsgTitle());
         arrayList.add(innerMsg.getMsgContent());
         arrayList.add(innerMsg.getMailType());
         arrayList.add(innerMsg.getMsgState());
-        arrayList.add(innerMsg.getReceiveName());
         arrayList.add(innerMsg.getOptId());
         arrayList.add(innerMsg.getRecipients().get(0).getReceive());
         for (String s : arrayList) {
             if (!StringUtils.isNotBlank(s)){
                 return false;
             }
-
         }
         return true;
     }
