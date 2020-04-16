@@ -1,11 +1,11 @@
 package com.centit.product.oa.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
-import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
@@ -70,10 +70,10 @@ public class BbsController extends BaseController{
             name = "optId", required = true,
             paramType = "query")
     })
-    public PageQueryResult<BbsPiece> listPieceContents(PageDesc pageDesc, HttpServletRequest request){
+    public PageQueryResult<Object> listPieceContents(PageDesc pageDesc, HttpServletRequest request){
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
-        List<BbsPiece> bbsPieces = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
-        return PageQueryResult.createResult(bbsPieces,pageDesc);
+        JSONArray objects = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
+        return PageQueryResult.createJSONArrayResult(objects,pageDesc);
     }
 
 

@@ -5,7 +5,6 @@ import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
 import com.centit.support.database.utils.PageDesc;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -34,10 +33,6 @@ public class BbsManagerImpl implements BbsManager {
 
     @Override
     public List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc) {
-        if (null ==filterMap.get("sort")||null ==filterMap.get("SORT")){
-            filterMap.put("sort","desc");
-        }
-        filterMap.put("order_by","DELIVER_DATE");
         return bbsPieceDao.listObjects(filterMap, pageDesc);
     }
 
@@ -48,17 +43,18 @@ public class BbsManagerImpl implements BbsManager {
      * @return
      */
     @Override
-    public List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
-        String sql ="where OPT_ID = :optId and OPT_TAG = :optTag and APPLICATION_ID = :applicationId and PIECE_CONTENT LIKE :contentType  ORDER BY DELIVER_DATE desc ";
-        String contentType = (String) filterMap.get("contentType");
-        if (StringUtils.isNotBlank(contentType)){
-            if (contentType.equals("file")){
-                filterMap.put("contentType", "%\"contentType\":\"file\"%" );
-            }
+    public JSONArray listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
+        if (null == filterMap.get("contentType") || !filterMap.get("contentType").equals("file")){
+            return null;
         }
-        JSONArray objects = bbsPieceDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
-        //List<BbsPiece> bbsPieces = objects.toJavaList(BbsPiece.class);
-        return objects.toJavaList(BbsPiece.class);
+        filterMap.put("pieceContent_lk","%\"contentType\":\"file\"%");
+        filterMap.remove("contentType");
+        //把查询起始页向前推移1个单位;如果页码起始页有误,设置起始页为默认值
+        pageDesc.setPageNo(pageDesc.getPageNo()-1);
+        if (pageDesc.getPageNo()<0){
+            pageDesc.setPageNo(0);
+        }
+        return bbsPieceDao.listObjectsByPropertiesAsJson(filterMap,pageDesc);
     }
 
 

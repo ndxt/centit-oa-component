@@ -9,6 +9,8 @@ import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.product.oa.service.impl.BbsManagerImpl;
 import com.centit.product.oa.service.impl.InnerMessageManagerImpl;
 import com.centit.support.database.utils.PageDesc;
+import com.centit.support.database.utils.QueryAndNamedParams;
+import com.centit.support.database.utils.QueryUtils;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,10 +20,7 @@ import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 
 @PropertySource(value = "classpath:system.properties")
 @ComponentScan(basePackages = {"com.centit"},
@@ -105,6 +104,12 @@ public class TestInnerMsg {
     }
 
     @Test
+    public void orderTest(){
+        InnerMsg inn = innerMsgDao.getObjectWithReferences("brG69TeSTPqmUFWqy0Tzgg");
+        System.out.println(inn);
+    }
+
+    @Test
     public void randomTest(){
         Random random = new Random();
         String sysUserCode ="u666"+random.nextInt(3);
@@ -114,25 +119,32 @@ public class TestInnerMsg {
     //listMsgRecipientsCascade
     @Test
     public void listMsgRecipientsCascadeTest(){
-        HashMap<String, Object> HashMap = new HashMap<String,Object>();
-        HashMap.put("optTag","123");
-        HashMap.put("receive","u1234");
+        HashMap<String, Object> hashMap = new HashMap<>();
+        hashMap.put("optTag","123");
+        hashMap.put("receive","u1234");
+        hashMap.put("sort","msgCode");
+        hashMap.put("order","desc");
+        hashMap.put("ORDER_BY","qq");
+        List<InnerMsg> innerMsgs = innerMsgDao.listObjects(hashMap);
         PageDesc pageDesc = new PageDesc(1, 10);
-        //List<java.util.HashMap<String, Object>> hashMaps = innerMessageManager.listMsgRecipientsCascade(HashMap, pageDesc);
         System.out.println("success");
 
     }
 
     @Test
     public void deleteMsgTest(){
-        innerMsgDao.getObjectWithReferences("VWf54rCJQ9iK1YYxAsgMFQ");
+        //innerMsgDao.getObjectWithReferences("VWf54rCJQ9iK1YYxAsgMFQ");
+        HashMap<String, Object> HashMap = new HashMap<String,Object>();
+        HashMap.put("optTag","123");
+        HashMap.put("receive","u1234");
+        innerMsgDao.listObjects(HashMap);
         System.out.println("success");
 
     }
 
     @Test
     public void listMsgRecipientsCascadePlusTest(){
-        HashMap<String, Object> map = new HashMap<>();
+      /*  HashMap<String, Object> map = new HashMap<>();
         map.put("optTag","123");
         map.put("receive","u1234");
         map.put("msgState","U");
@@ -140,18 +152,30 @@ public class TestInnerMsg {
         //innerMessageManager.listMsgRecipientsCascadePlus(map,pageDesc);
         System.out.println("success");
 
+        */
+        Map<String,Object> paramsMap = new HashMap<String,Object>();
+        paramsMap.put("punitCode", "null");
+        paramsMap.put("createDate", "2010-12-01");
+        paramsMap.put("mathName", "江苏 先腾");
+        paramsMap.put("array", "1,2,3,4,5");
+        paramsMap.put("sort", "uu.unitType asc");
+
+        String queryStatement =
+            "select uu.unitCode,uu.unitName,uu.unitType,uu.isValid,uu.unitTag"
+                +"  from projectTable uu  "
+                +" where 1=1 [:(SPLITFORIN,LONG,CREEPFORIN)array| and uu.unitType in (:array)]"
+                + "[:(date)createDate | and uu.createDate >= :createDate ]"
+                + "[:(like)mathName | and uu.unitName like :mathName ]"
+                +"[:(inplace)sort | order by :sort  ]";
+        String query = QueryUtils.translateQuery(
+            queryStatement, null,
+            paramsMap, true).getQuery();
+        QueryAndNamedParams queryAndNamedParams = new QueryAndNamedParams(query,paramsMap);
+        System.out.println(queryAndNamedParams);
+
+
     }
 
-    @Test
-    public void updateRecipientTest(){
-        InnerMsgRecipient recipient = new InnerMsgRecipient();
-        recipient.setMsgState("R");
-        recipient.setMsgCode("0nTDk1y_TaCOv1WSvbr1QA");
-        recipient.setReceive("u12345");
-        innerMessageManager.updateRecipient(recipient);
 
-        System.out.println("success");
-
-    }
 
 }

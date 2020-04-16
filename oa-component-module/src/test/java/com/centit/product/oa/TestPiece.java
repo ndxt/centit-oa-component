@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
+import sun.java2d.pipe.SpanIterator;
 
 import java.util.*;
 
@@ -78,9 +79,9 @@ public class TestPiece {
     @Test
     public void listBbsPiecesTest(){
         HashMap<String, Object> map = new HashMap<>();
-        map.put("applicationId","asjfioadfa");
-        map.put("optId","sfs");
-        List<BbsPiece> bbsPieces = bbsManager.listBbsPieces(map, new PageDesc(1,20));
+        map.put("applicationId","123");
+        map.put("optId","123");
+        List<BbsPiece> bbsPieces = bbsManager.listBbsPieces(map, new PageDesc(1,200));
         for (BbsPiece bbsPiece : bbsPieces) {
             System.out.println(bbsPiece.getDeliverDate());
         }
@@ -152,11 +153,17 @@ public class TestPiece {
     @Test
     public void ContentTypeTest(){
         HashMap<String, Object> map = new HashMap<>();
+        map.put("optId",123);
+        map.put("optTag",123);
+        map.put("applicationId",123);
         map.put("contentType","file");
-        PageDesc pageDesc = new PageDesc(1, 10);
-        //List<BbsPiece> bbsPieces = bbsManager.listBbsPiecesByPieceContentType(map, pageDesc);
+        PageDesc pageDesc = new PageDesc(1, 20);
+        JSONArray bbsPieces = bbsManager.listBbsPiecesByPieceContentType(map, pageDesc);
+        List<BbsPiece> pieces = bbsPieces.toJavaList(BbsPiece.class);
+        for (BbsPiece bbsPiece : pieces) {
+            System.out.println(bbsPiece.getDeliverDate());
+        }
 
-        System.out.println("success");
     }
 
     @Test
