@@ -1,9 +1,11 @@
 package com.centit.product.oa.dao;
 
 import com.centit.framework.core.dao.CodeBook;
+import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.support.algorithm.StringBaseOpt;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
@@ -51,7 +53,7 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
     }
     public List<InnerMsg> listUnreadMessage(String userCode){
         String queryString ="where MSG_CODE in (Select im.MSG_CODE from f_inner_msg_recipient im where  im.MAIL_TYPE='T'" +
-            " and im.msg_state='U' and RECEIVE= ?) order by msg_Code desc";
+            " and im.msg_state='U' and RECEIVE= ?) order by SEND_DATE desc";
         return listObjectsByFilter(queryString,
             new Object[]{userCode});
     }
@@ -59,6 +61,23 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
     public String getNextKey() {
         return StringBaseOpt.objectToString(
             DatabaseOptUtils.getSequenceNextValue(this, "S_MSGCODE"));
+    }
+
+
+    /**
+     * 两人间来往消息列表,返回List<InnerMsg>
+     * @param sender 用户甲
+     * @param receiver 用户乙
+     * @return
+     */
+    @Transactional
+    public  List<InnerMsg> getExchangeMsgs(String sender, String receiver) {
+        String queryString ="where( (MSG_CODE in (Select im.MSG_CODE from f_inner_msg_recipient im where im.RECEIVE= ? " +
+            " ) and SENDER= ? and (MAIL_TYPE='I' or MAIL_TYPE='O')) " +
+            "or (MSG_CODE in(Select  im.MSG_CODE from f_inner_msg_recipient im where im.RECEIVE= ? " +
+            " ) and SENDER= ? and (MAIL_TYPE='I' or MAIL_TYPE='O'))) order by SEND_DATE desc";
+        return listObjectsByFilter(queryString,
+            new Object[]{sender,receiver,receiver,sender});
     }
 
 }

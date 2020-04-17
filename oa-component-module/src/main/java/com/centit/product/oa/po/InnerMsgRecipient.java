@@ -45,7 +45,7 @@ public class InnerMsgRecipient implements Serializable{
      * 回复消息编号
      */
     @Column(name = "REPLY_MSG_CODE")
-    private int replyMsgCode;
+    private String replyMsgCode;
 
     /**
      *  消息类型:

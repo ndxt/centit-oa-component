@@ -3,7 +3,7 @@ package com.centit.product.oa.service.impl;
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.components.CodeRepositoryUtil;
-import com.centit.framework.jdbc.dao.BaseDaoImpl;
+import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -12,14 +12,11 @@ import com.centit.product.oa.dao.InnerMsgAnnexDao;
 import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.dao.InnerMsgRecipientDao;
 import com.centit.product.oa.po.InnerMsg;
-import com.centit.product.oa.po.InnerMsgAnnex;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -51,6 +48,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Override
     @Transactional
     public void updateRecipient(InnerMsgRecipient recipient,InnerMsgRecipient recipientCopy) {
+        recipient.setMsgCode(recipientCopy.getMsgCode());
+        recipient.setReceive(recipientCopy.getReceive());
         innerMsgRecipientDao.updateInnerMsgRecipient(recipient);
 
     }
@@ -66,12 +65,12 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         //由于需要用户登录后才能获取到sysUserCode中的值;为方便测试这里直接给sysUserCode赋值;
         Random random = new Random();
         sysUserCode ="u666"+random.nextInt(3);
-        /////////////////////////////
+        //**********************************************/
         boolean flag = innerMsgValidate(innerMsg, sysUserCode);
         if (!flag){
             return false;
         }
-        innerMsg.setSender(sysUserCode);
+        innerMsg.setSender(innerMsg.getSender());
         innerMsg.setMsgState("R");
         sendToMany(innerMsg);
         return true;
@@ -112,19 +111,21 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
 
     /**
-     * 获取两者间来往消息列表
+     * 获取两者间来往消息列表;返回List<InnerMsg>
      */
     @Override
     @Transactional
-    public List<InnerMsgRecipient> getExchangeMsgRecipients(String sender, String receiver) {
+    public JSONArray getExchangeMsgRecipients(String sender, String receiver) {
         Map<String, String> map = new HashMap<>();
         map.put("sender", sender);
         map.put("receiver", receiver);
-        return innerMsgRecipientDao.getExchangeMsgs(sender, receiver);
+        List<InnerMsg> exchangeMsgs = innerMsgDao.getExchangeMsgs(sender, receiver);
+        return DictionaryMapUtils.objectsToJSONArray(exchangeMsgs);
     }
 
     /**
      * 给部门成员，所有直属或间接下级部门成员发消息
+     * note:这个方法未经测试
      */
     @Override
     @Transactional
@@ -200,7 +201,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 //        msg.setReceiveName(CodeRepositoryUtil.getUserInfoByCode(receiver).getUserName());
         InnerMsgRecipient recipient = new InnerMsgRecipient();
         //recipient.setMInnerMsg(msg);
-        recipient.setReplyMsgCode(0);
+        //recipient.setReplyMsgCode(0);
         //recipient.setReceiveType("P");
         recipient.setMailType("T");
         recipient.setMsgState("U");
@@ -225,21 +226,22 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     }
 
     @Override
+    public List<InnerMsgRecipient> getMsgRecipientByMsgCode(Map<String, Object> msgCode) {
+        return innerMsgRecipientDao.listObjectsByProperties(msgCode);
+    }
+
+    @Override
     public List<InnerMsgRecipient> listMsgRecipientsCascade(Map<String, Object> filterMap){
-//       return innerMsgRecipientDao.listObjectsCascade(filterMap);
-        List<InnerMsgRecipient> recipients = innerMsgRecipientDao.listObjects(filterMap);
-        /*for(InnerMsgRecipient recipient : recipients){
-            recipient.setMInnerMsg(innerMsgDao.getObjectById(recipient.getMsgCode()));
-        }*/
-        return recipients;
+        return innerMsgRecipientDao.listObjects(filterMap);
     }
 
     /**
      * 先由收件人userCode在InnerMsgRecipient中找到收件人的所有的邮件msgCode;
      * 再根据msgCode和optId获取InnerMsg表中对应的信息;
+     *
      * @param filterMap 过滤条件
      * @param pageDesc 分页条件
-     * @return 返回值List<map<string,String>> 只返回发件人姓名和邮件标题
+     * @return 返回值List<InnerMsg>
      */
     @Override
     public List<InnerMsg> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
@@ -249,11 +251,27 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         }else {
             sql = sql + " ) ORDER BY SEND_DATE desc ";
         }
-
         JSONArray objects = innerMsgDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
-        return objects.toJavaList(InnerMsg.class);
+        List<InnerMsg> innerMsgs = objects.toJavaList(InnerMsg.class);
+        //把innerMsg中的msgState字段替换成recipient中的msgState字段内容
+        List<InnerMsgRecipient> innerMsgRecipients = innerMsgRecipientDao.listObjectsByProperties(filterMap);
+        HashMap<String, InnerMsg> temMsgHashMap = new HashMap<>();
+        for (InnerMsg innerMsg : innerMsgs) {
+            temMsgHashMap.put(innerMsg.getMsgCode(),innerMsg);
+        }
+        for (InnerMsgRecipient innerMsgRecipient : innerMsgRecipients) {
+            InnerMsg innerMsg = temMsgHashMap.get(innerMsgRecipient.getMsgCode());
+            if (innerMsg != null){
+                innerMsg.setMsgState(innerMsgRecipient.getMsgState());
+            }
+        }
+        ArrayList<InnerMsg> newInnerMsgs = new ArrayList<>();
+        for(Map.Entry<String, InnerMsg> entry : temMsgHashMap.entrySet()){
+            newInnerMsgs.add(entry.getValue());
+        }
+        newInnerMsgs.sort(Comparator.comparing(InnerMsg::getSendDate));
+        return newInnerMsgs;
     }
-
 
     /**
      * 更新邮件;可能更新的内容包括:innerMsg,innerMsgAnnex,innerMsgRecipient
@@ -291,7 +309,9 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     public InnerMsg getInnerMsgById(String msgCode) {
-       // return innerMsgDao.getObjectById(msgCode);
+        if (innerMsgDao.getObjectById(msgCode) == null){
+            return null;
+        }
         return innerMsgDao.getObjectWithReferences(msgCode);
     }
 
@@ -302,7 +322,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
      * @return
      */
     private boolean innerMsgValidate(InnerMsg innerMsg,String sysUserCode) {
-        if (!StringUtils.isNotBlank(sysUserCode)){//||!StringUtils.isNotBlank(innerMsg.getSender())
+        if (!StringUtils.isNotBlank(sysUserCode)){
             return false;
         }
         if (null == innerMsg.getRecipients() || innerMsg.getRecipients().size()==0){

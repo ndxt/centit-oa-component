@@ -1,6 +1,5 @@
 package com.centit.product.oa.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
@@ -17,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -48,9 +48,13 @@ public class BbsController extends BaseController{
             paramType = "query"),
         @ApiImplicitParam(
             name = "optId", required = true,
-            paramType = "query")
+            paramType = "query"),
+        @ApiImplicitParam(
+            name = "pageDesc", value = "分页对象",
+            paramType = "query", dataTypeClass = PageDesc.class)
     })
-    public PageQueryResult<BbsPiece> listBbsPieces( PageDesc pageDesc, HttpServletRequest request){
+
+    public PageQueryResult<BbsPiece> listBbsPieces(@Valid PageDesc pageDesc, HttpServletRequest request){
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
         List<BbsPiece> bbsPieces = bbsManager.listBbsPieces(searchColumn, pageDesc);
          return PageQueryResult.createResultMapDict(bbsPieces, pageDesc);
@@ -70,10 +74,10 @@ public class BbsController extends BaseController{
             name = "optId", required = true,
             paramType = "query")
     })
-    public PageQueryResult<Object> listPieceContents(PageDesc pageDesc, HttpServletRequest request){
+    public PageQueryResult<BbsPiece> listPieceContents(PageDesc pageDesc, HttpServletRequest request){
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
-        JSONArray objects = bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc);
-        return PageQueryResult.createJSONArrayResult(objects,pageDesc);
+        return PageQueryResult.createResultMapDict(
+            bbsManager.listBbsPiecesByPieceContentType(searchColumn, pageDesc),pageDesc);
     }
 
 

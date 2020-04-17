@@ -1,5 +1,6 @@
 package com.centit.product.oa.service;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.support.database.utils.PageDesc;
@@ -25,7 +26,7 @@ public interface InnerMessageManager {
     List<InnerMsg> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc);
 
 
-    List<InnerMsgRecipient> getExchangeMsgRecipients(String sender, String receiver);
+    JSONArray getExchangeMsgRecipients(String sender, String receiver);
 
     void updateRecipient(InnerMsgRecipient recipient,InnerMsgRecipient recipientCopy);
     /*
@@ -37,6 +38,7 @@ public interface InnerMessageManager {
     void noticeByUnitCode(String unitCode, InnerMsg msg) throws Exception;
 
     InnerMsgRecipient getMsgRecipientById(Map<String, Object> id);
+    List<InnerMsgRecipient> getMsgRecipientByMsgCode(Map<String, Object> msgCode);
 
     void updateMsgRecipientStateById(Map<String, Object> id, String msgState);
 

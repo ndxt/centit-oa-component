@@ -176,6 +176,17 @@ public class TestInnerMsg {
 
     }
 
+    @Test
+    public void listInboxTest(){
+        //innerMsgDao.getObjectWithReferences("VWf54rCJQ9iK1YYxAsgMFQ");
+        HashMap<String, Object> hashMap = new HashMap<String,Object>();
+        hashMap.put("optId","123");
+        hashMap.put("receive","806");
+        PageDesc pageDesc = new PageDesc(1, 10);
+        innerMessageManager.listMsgRecipientsCascade(hashMap,pageDesc);
+        System.out.println("success");
+
+    }
 
 
 }

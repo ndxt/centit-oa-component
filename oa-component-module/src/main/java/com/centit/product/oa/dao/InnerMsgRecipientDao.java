@@ -44,7 +44,7 @@ public class InnerMsgRecipientDao extends BaseDaoImpl<InnerMsgRecipient, String>
     }
 
     /*
-         * 两人间来往消息列表
+         * 两人间来往消息列表;返回List<InnerMsgRecipient>列表
          *
          */
     @Transactional
@@ -60,8 +60,8 @@ public class InnerMsgRecipientDao extends BaseDaoImpl<InnerMsgRecipient, String>
 
     public long getUnreadMessageCount(String userCode){
 
-        Object obj = DatabaseOptUtils.getScalarObjectQuery(this, "select count(1)"
-                + " Where receive = ? and msgState ='U'",
+        Object obj = DatabaseOptUtils.getScalarObjectQuery(this, "select count(1) from f_inner_msg_recipient"
+                + " Where RECEIVE = ? and msg_state ='U'",
                 new Object[]{userCode});
         Long l = NumberBaseOpt.castObjectToLong(obj);
         return l==null?0L:l;

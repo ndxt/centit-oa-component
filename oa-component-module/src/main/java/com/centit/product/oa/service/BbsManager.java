@@ -1,6 +1,5 @@
 package com.centit.product.oa.service;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.support.database.utils.PageDesc;
 import javax.servlet.http.HttpServletResponse;
@@ -15,8 +14,6 @@ public interface BbsManager {
      * @param bbsPiece
      */
     void createBbsPiece(BbsPiece bbsPiece);
-    //用来添加BbsPiece字段中replyId的值
-    void updateBbsPiece(BbsPiece bbsPiece);
 
     /**
      * 查询根据条件分页查询信息,并根据时间进行排序(先发生的时间靠前);
@@ -26,7 +23,7 @@ public interface BbsManager {
      */
     List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc);
 
-     JSONArray listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc);
+     List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc);
 
     /**
      * 根据pieceId获取一条BbsPiece中的pieceContent记录

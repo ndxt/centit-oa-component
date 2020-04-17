@@ -1,6 +1,5 @@
 package com.centit.product.oa.service.impl;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsManager;
@@ -27,11 +26,6 @@ public class BbsManagerImpl implements BbsManager {
     }
 
     @Override
-    public void updateBbsPiece(BbsPiece bbsPiece) {
-        bbsPieceDao.updateObject(bbsPiece);
-    }
-
-    @Override
     public List<BbsPiece> listBbsPieces(Map<String, Object> filterMap, PageDesc pageDesc) {
         return bbsPieceDao.listObjects(filterMap, pageDesc);
     }
@@ -43,18 +37,13 @@ public class BbsManagerImpl implements BbsManager {
      * @return
      */
     @Override
-    public JSONArray listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
+    public List<BbsPiece> listBbsPiecesByPieceContentType(Map<String, Object> filterMap, PageDesc pageDesc) {
         if (null == filterMap.get("contentType") || !filterMap.get("contentType").equals("file")){
             return null;
         }
         filterMap.put("pieceContent_lk","%\"contentType\":\"file\"%");
         filterMap.remove("contentType");
-        //把查询起始页向前推移1个单位;如果页码起始页有误,设置起始页为默认值
-        pageDesc.setPageNo(pageDesc.getPageNo()-1);
-        if (pageDesc.getPageNo()<0){
-            pageDesc.setPageNo(0);
-        }
-        return bbsPieceDao.listObjectsByPropertiesAsJson(filterMap,pageDesc);
+        return bbsPieceDao.listObjectsByProperties(filterMap, pageDesc);
     }
 
 

@@ -1,20 +1,20 @@
 package com.centit.product.oa.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.ResponseData;
-import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.core.controller.BaseController;
+import com.centit.framework.core.controller.WrapUpContentType;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
+import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -51,7 +51,6 @@ public class InnerMsgController extends BaseController {
      * 查询收件箱;希望返回的邮件主要数据发件人姓名,邮件标题,邮件状态信息
      *  @param pageDesc PageDesc
      * @param request  HttpServletRequest
-     * @param response HttpServletResponse
      */
     @ApiOperation(value = "查询收件箱", notes = "查询收件箱。")
     @ApiImplicitParam(
@@ -59,7 +58,7 @@ public class InnerMsgController extends BaseController {
         paramType = "body", dataTypeClass = PageDesc.class)
     @RequestMapping(value = "/inbox", method = {RequestMethod.GET})
     @WrapUpResponseBody
-    public PageQueryResult<InnerMsg> listInbox(PageDesc pageDesc, HttpServletRequest request, HttpServletResponse response) {
+    public PageQueryResult<InnerMsg> listInbox(PageDesc pageDesc, HttpServletRequest request) {
         Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
         //先从request中获取receive对应的值;如果获取不到,从springSession获取登录用户信息
         String receive = (String) searchColumn.get("receive");
@@ -67,8 +66,7 @@ public class InnerMsgController extends BaseController {
             searchColumn.put("receive", WebOptUtils.getCurrentUserCode(request));
         }
         List<InnerMsg> innerMsgs = innerMessageManager.listMsgRecipientsCascade(searchColumn, pageDesc);
-        String[] filterFields = {"msgCode","sender","msgTitle","mailType"};
-        return PageQueryResult.createResultMapDict(innerMsgs, pageDesc,filterFields);
+        return PageQueryResult.createResultMapDict(innerMsgs, pageDesc);
     }
 
     /**
@@ -81,6 +79,10 @@ public class InnerMsgController extends BaseController {
     @WrapUpResponseBody
     public long unreadMsgCount(HttpServletRequest request) {
         String currUser = WebOptUtils.getCurrentUserCode(request);
+        //为方便测试,这里暂时采用传参的形式,从前端获取userCode
+        if (StringUtils.isBlank(currUser)){
+             currUser = request.getParameter("userCode");
+        }
         return innerMessageManager.getUnreadMessageCount(currUser);
     }
     /**
@@ -90,7 +92,7 @@ public class InnerMsgController extends BaseController {
      */
     @ApiOperation(value = "未读消息", notes = "未读消息数量。")
     @RequestMapping(value = "/unreadMsg/{receive}", method = {RequestMethod.GET})
-    @WrapUpResponseBody
+    @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
     public List<InnerMsg> unreadMsg(String receive,HttpServletRequest request) {
         return innerMessageManager.listUnreadMessage(receive);
     }
@@ -131,9 +133,7 @@ public class InnerMsgController extends BaseController {
 
     /**
      * 获取内部消息的接收者信息
-     *
      * @param msgCode  msgCode
-     * @param response HttpServletResponse
      * @return InnerMsgRecipient
      */
     @ApiOperation(value = "获取内部消息的接收者信息", notes = "获取内部消息的接收者信息。")
@@ -141,9 +141,9 @@ public class InnerMsgController extends BaseController {
         name = "msgCode", value = "消息代码",
         required = true, paramType = "path", dataType = "String")
     @RequestMapping(value = "/{msgCode}", method = {RequestMethod.GET})
-    @WrapUpResponseBody
-    public InnerMsgRecipient getInnerMsg(@PathVariable Map<String, Object> msgCode, HttpServletResponse response) {
-        return innerMessageManager.getMsgRecipientById(msgCode);
+    @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
+    public List<InnerMsgRecipient> getInnerMsg(@PathVariable Map<String, Object> msgCode) {
+        return innerMessageManager.getMsgRecipientByMsgCode(msgCode);
     }
 
     /**
@@ -217,9 +217,6 @@ public class InnerMsgController extends BaseController {
         if (!flag){
             return ResponseData.makeErrorMessage("邮件发送失败!");
         }
-        /*HashMap<String, Object> map = new HashMap<>();
-        map.put("msgCode",innerMsg.getMsgCode());
-        return ResponseData.makeResponseData(map);*/
         return ResponseData.makeResponseData(innerMsg);
     }
 
@@ -279,7 +276,7 @@ public class InnerMsgController extends BaseController {
     @ApiOperation(value = "更新接受者信息", notes = "更新接受者信息。")
     @ApiImplicitParams({
         @ApiImplicitParam(
-            name = "id", value = "接收者信息编号",
+            name = "msgCode", value = "接收者信息编号",
             required = true, paramType = "path", dataType = "String"),
         @ApiImplicitParam(
             name = "recipient", value = "json格式，更新的接受者信息对象",
@@ -287,7 +284,7 @@ public class InnerMsgController extends BaseController {
     })
     @RequestMapping(value = "recipient/{msgCode}/{receive}", method = {RequestMethod.PUT})
     @WrapUpResponseBody
-    public ResponseData mergInnerMsgRecipient(@Valid InnerMsgRecipient recipient, @PathVariable String msgCode,String receive) {
+    public ResponseData mergInnerMsgRecipient(@RequestBody InnerMsgRecipient recipient, @PathVariable String msgCode,@PathVariable String receive) {
         Map<String,Object> id=new HashMap<>();
         id.put("msgCode",msgCode);
         id.put("receive",receive);
@@ -304,7 +301,6 @@ public class InnerMsgController extends BaseController {
      * 删除消息,并没有删除该条记录，而是把msgState字段标记为D
      *
      * @param msgCode  消息编号
-     * @param response HttpServletResponse
      */
     @ApiOperation(value = "删除消息", notes = "删除消息,并没有删除该条记录，而是把msgState字段标记为D。")
     @ApiImplicitParam(
@@ -312,8 +308,10 @@ public class InnerMsgController extends BaseController {
         required = true, paramType = "path", dataType = "String")
     @RequestMapping(value = "/{msgCode}", method = {RequestMethod.DELETE})
     @WrapUpResponseBody
-    public ResponseData deleteMsg(@PathVariable String msgCode,
-                                  HttpServletResponse response) {
+    public ResponseData deleteMsg(@PathVariable String msgCode) {
+        if (innerMessageManager.getInnerMsgById(msgCode)==null){
+           return ResponseData.makeErrorMessage("当前机构中无此信息");
+        }
         innerMessageManager.deleteInnerMsgById(msgCode);
         return ResponseData.successResponse;
     }
@@ -338,13 +336,14 @@ public class InnerMsgController extends BaseController {
         required = true, paramType = "path", dataType = "String")})
     @RequestMapping(value = "/recipient/{msgCode}/{receive}/{msgState}", method = {RequestMethod.PUT})
     @WrapUpResponseBody
-    public ResponseData deleteRecipient(@PathVariable String msgCode,@PathVariable String receive,@PathVariable String msgState,
-                                        HttpServletRequest request) {
-        /*InnerMsgRecipient recipient = innerMsgRecipientManager
-                .getObjectById(id);*/
+    public ResponseData deleteRecipient(@PathVariable String msgCode,@PathVariable String receive,
+                                        @PathVariable String msgState) {
         Map<String,Object> id=new HashMap<>();
         id.put("msgCode",msgCode);
         id.put("receive",receive);
+        if (innerMessageManager.getMsgRecipientById(id) ==null){
+           return ResponseData.makeErrorMessage("当前机构中无此信息");
+        }
         innerMessageManager.updateMsgRecipientStateById(id,msgState);
         return ResponseData.successResponse;
     }
@@ -352,8 +351,7 @@ public class InnerMsgController extends BaseController {
 
     /**
      * 往来消息列表
-     *
-     * @param sender   用户1
+     *  @param sender   用户1
      * @param receiver 用户2
      */
     @ApiOperation(value = "往来消息列表", notes = "获取发送者和接受者往来消息列表")
@@ -366,13 +364,9 @@ public class InnerMsgController extends BaseController {
             required = true, paramType = "path", dataType = "String")
     })
     @RequestMapping(value = "/{sender}/{receiver}", method = {RequestMethod.GET})
-    @WrapUpResponseBody
-    public ResponseData getMsgExchanges(@PathVariable String sender, @PathVariable String receiver) {
-        List<InnerMsgRecipient> recipientlist = innerMessageManager
-            .getExchangeMsgRecipients(sender, receiver);
-        ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(PageQueryResult.OBJECT_LIST_LABEL, recipientlist);
-        return resData;
+    @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
+    public JSONArray getMsgExchanges(@PathVariable String sender, @PathVariable String receiver) {
+        return innerMessageManager.getExchangeMsgRecipients(sender, receiver);
     }
 
 }
