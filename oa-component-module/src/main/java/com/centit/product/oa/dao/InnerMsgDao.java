@@ -1,5 +1,6 @@
 package com.centit.product.oa.dao;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
@@ -7,6 +8,7 @@ import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.support.algorithm.StringBaseOpt;
+import com.centit.support.database.utils.PageDesc;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,6 +80,17 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
             " ) and SENDER= ? and (MAIL_TYPE='I' or MAIL_TYPE='O'))) order by SEND_DATE desc";
         return listObjectsByFilter(queryString,
             new Object[]{sender,receiver,receiver,sender});
+    }
+
+    public List<InnerMsg> getInnerMsgsByRecipientMsgCode(Map<String, Object> filterMap, PageDesc pageDesc) {
+        String sql = " where OPT_ID = :optId and MSG_CODE in (SELECT Msg_Code FROM `f_inner_msg_recipient` WHERE Receive = :receive ";
+        if (null != filterMap.get("msgState")){
+            sql = sql + " and msg_State = :msgState ) ORDER BY SEND_DATE desc ";
+        }else {
+            sql = sql + " ) ORDER BY SEND_DATE desc ";
+        }
+        JSONArray objects = this.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
+        return objects.toJavaList(InnerMsg.class);
     }
 
 }

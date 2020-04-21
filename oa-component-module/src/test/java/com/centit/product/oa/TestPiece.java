@@ -148,24 +148,6 @@ public class TestPiece {
         String countsql= "SELECT count(1) FROM `m_bbs_piece` where OPT_ID = :OPT_ID and OPT_TAG = :OPT_TAG and APPLICATION_ID = :APPLICATION_ID and PIECE_CONTENT LIKE '%\"contentType\":\"file\"%' ";
         System.out.println("success");
     }
-//listBbsPiecesByPieceContentTypePlus
-
-    @Test
-    public void ContentTypeTest(){
-        HashMap<String, Object> map = new HashMap<>();
-        map.put("optId",123);
-        map.put("optTag",123);
-        map.put("applicationId",123);
-        map.put("contentType","file");
-        PageDesc pageDesc = new PageDesc(1, 20);
-        JSONArray bbsPieces = bbsManager.listBbsPiecesByPieceContentType(map, pageDesc);
-        List<BbsPiece> pieces = bbsPieces.toJavaList(BbsPiece.class);
-        for (BbsPiece bbsPiece : pieces) {
-            System.out.println(bbsPiece.getDeliverDate());
-        }
-
-    }
-
     @Test
     public void ContentTypeBySqlPlusTest(){
         /*BaseDaoImpl<BbsPiece, String> bbsPieceStringBaseDao = new BaseDaoImpl<BbsPiece, String>() {

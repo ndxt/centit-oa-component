@@ -12,6 +12,7 @@ import com.centit.product.oa.dao.InnerMsgAnnexDao;
 import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.dao.InnerMsgRecipientDao;
 import com.centit.product.oa.po.InnerMsg;
+import com.centit.product.oa.po.InnerMsgAnnex;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.common.ObjectException;
@@ -62,10 +63,6 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Override
     @Transactional
     public boolean sendInnerMsg(InnerMsg innerMsg, String sysUserCode) {
-        //由于需要用户登录后才能获取到sysUserCode中的值;为方便测试这里直接给sysUserCode赋值;
-        Random random = new Random();
-        sysUserCode ="u666"+random.nextInt(3);
-        //**********************************************/
         boolean flag = innerMsgValidate(innerMsg, sysUserCode);
         if (!flag){
             return false;
@@ -142,18 +139,19 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             String receiveName = CodeRepositoryUtil.getUnitName(unitCode);
             msg.setReceiveName(receiveName);
             msg.setMsgType("A");
-            msg.setMsgCode(innerMsgDao.getNextKey());
+            msg.setMailType("O");
+            msg.setMsgState("R");
+            //由于没有设置存储过程,所以innerMsgDao.getNextKey()方法暂时被自动生成的主键所替代
+           // msg.setMsgCode(innerMsgDao.getNextKey());
             innerMsgDao.saveNewObject(msg);
 
             for (IUserInfo ui : userList) {
                 if(!Objects.equals(msg.getSender(),ui.getUserCode())){
                     InnerMsgRecipient recipient = new InnerMsgRecipient();
-                    recipient.setMsgState(msg.getMsgState());
-                    recipient.setMailType(msg.getMailType());
-                    //recipient.setMInnerMsg(msg);
+                    recipient.setMsgState("U");
+                    recipient.setMailType("T");
                     recipient.setMsgCode(msg.getMsgCode());
                     recipient.setReceive(ui.getUserCode());
-                    //recipient.setId(innerMsgRecipientDao.getNextKey());
                     innerMsgRecipientDao.saveNewObject(recipient);
                     //DataPushSocketServer.pushMessage(ui.getUserCode(), "你有新邮件：" + recipient.getMsgTitle());
                 }
@@ -245,24 +243,22 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
      */
     @Override
     public List<InnerMsg> listMsgRecipientsCascade(Map<String, Object> filterMap, PageDesc pageDesc){
-        String sql = " where OPT_ID = :optId and MSG_CODE in (SELECT Msg_Code FROM `f_inner_msg_recipient` WHERE Receive = :receive ";
-        if (null != filterMap.get("msgState")){
-            sql = sql + " and msg_State = :msgState ) ORDER BY SEND_DATE desc ";
-        }else {
-            sql = sql + " ) ORDER BY SEND_DATE desc ";
-        }
-        JSONArray objects = innerMsgDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
-        List<InnerMsg> innerMsgs = objects.toJavaList(InnerMsg.class);
+        List<InnerMsg> innerMsgs = innerMsgDao.getInnerMsgsByRecipientMsgCode(filterMap, pageDesc);
         //把innerMsg中的msgState字段替换成recipient中的msgState字段内容
         List<InnerMsgRecipient> innerMsgRecipients = innerMsgRecipientDao.listObjectsByProperties(filterMap);
         HashMap<String, InnerMsg> temMsgHashMap = new HashMap<>();
         for (InnerMsg innerMsg : innerMsgs) {
             temMsgHashMap.put(innerMsg.getMsgCode(),innerMsg);
         }
+        HashMap<String, Object> annerxFilterMap = new HashMap<>();
         for (InnerMsgRecipient innerMsgRecipient : innerMsgRecipients) {
             InnerMsg innerMsg = temMsgHashMap.get(innerMsgRecipient.getMsgCode());
             if (innerMsg != null){
                 innerMsg.setMsgState(innerMsgRecipient.getMsgState());
+                //获取innerAex中的信息,并添加到InnerMsg对象中
+                annerxFilterMap.put("msgCode",innerMsg.getMsgCode());
+                List<InnerMsgAnnex> innerMsgAnnexes = innerMsgAnnexDao.listObjectsByProperties(annerxFilterMap);
+                innerMsg.setInnerMsgAnnexs(innerMsgAnnexes);
             }
         }
         ArrayList<InnerMsg> newInnerMsgs = new ArrayList<>();

@@ -15,6 +15,8 @@ import com.centit.product.oa.service.InnerMessageManager;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.*;
 import org.apache.commons.lang3.StringUtils;
+import org.hibernate.validator.constraints.Length;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -187,7 +189,7 @@ public class InnerMsgController extends BaseController {
     @ApiParam(name = "innerMsg", value = "群发的对象信息", required = true)
     @RequestMapping(value = "/notify/{unitCode}", method = {RequestMethod.POST})
     @WrapUpResponseBody
-    public ResponseData noticeByUnit(@PathVariable String unitCode, @Valid InnerMsg innerMsg, HttpServletRequest request) throws Exception {
+    public ResponseData noticeByUnit(@PathVariable String unitCode, @Valid@RequestBody InnerMsg innerMsg, HttpServletRequest request) throws Exception {
 
         if (!StringUtils.isNotBlank(innerMsg.getSender())) {
             innerMsg.setSender(WebOptUtils.getCurrentUserCode(request));
@@ -212,7 +214,11 @@ public class InnerMsgController extends BaseController {
     @RequestMapping(value = "/sendMsg", method = {RequestMethod.POST})
     @WrapUpResponseBody
     public ResponseData sendMsg(@Valid @RequestBody InnerMsg innerMsg, HttpServletRequest request) {
-        boolean flag = innerMessageManager.sendInnerMsg(innerMsg, WebOptUtils.getCurrentUserCode(request));
+        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
+        if (StringUtils.isBlank(currentUserCode)){
+            currentUserCode = innerMsg.getSender();
+        }
+        boolean flag = innerMessageManager.sendInnerMsg(innerMsg, currentUserCode);
         //DataPushSocketServer.pushMessage(recipient.getReceive(), "你有新邮件："+ recipient.getMsgTitle());
         if (!flag){
             return ResponseData.makeErrorMessage("邮件发送失败!");
