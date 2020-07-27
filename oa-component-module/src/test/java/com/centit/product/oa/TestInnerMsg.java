@@ -6,7 +6,6 @@ import com.centit.product.oa.dao.InnerMsgRecipientDao;
 import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgAnnex;
 import com.centit.product.oa.po.InnerMsgRecipient;
-import com.centit.product.oa.service.impl.BbsManagerImpl;
 import com.centit.product.oa.service.impl.InnerMessageManagerImpl;
 import com.centit.support.database.utils.PageDesc;
 import com.centit.support.database.utils.QueryAndNamedParams;
@@ -134,7 +133,7 @@ public class TestInnerMsg {
     @Test
     public void deleteMsgTest(){
         //innerMsgDao.getObjectWithReferences("VWf54rCJQ9iK1YYxAsgMFQ");
-        HashMap<String, Object> HashMap = new HashMap<String,Object>();
+        HashMap<String, Object> HashMap = new HashMap<>();
         HashMap.put("optTag","123");
         HashMap.put("receive","u1234");
         innerMsgDao.listObjects(HashMap);
@@ -153,7 +152,7 @@ public class TestInnerMsg {
         System.out.println("success");
 
         */
-        Map<String,Object> paramsMap = new HashMap<String,Object>();
+        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("punitCode", "null");
         paramsMap.put("createDate", "2010-12-01");
         paramsMap.put("mathName", "江苏 先腾");
@@ -179,7 +178,7 @@ public class TestInnerMsg {
     @Test
     public void listInboxTest(){
         //innerMsgDao.getObjectWithReferences("VWf54rCJQ9iK1YYxAsgMFQ");
-        HashMap<String, Object> hashMap = new HashMap<String,Object>();
+        HashMap<String, Object> hashMap = new HashMap<>();
         hashMap.put("optId","123");
         hashMap.put("receive","806");
         PageDesc pageDesc = new PageDesc(1, 10);
