@@ -10,7 +10,6 @@ import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.service.impl.BbsManagerImpl;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
-import org.flywaydb.core.internal.dbsupport.JdbcTemplate;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,9 +18,9 @@ import org.springframework.context.annotation.Import;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringRunner;
-import sun.java2d.pipe.SpanIterator;
 
-import java.util.*;
+import java.util.HashMap;
+import java.util.List;
 
 @PropertySource(value = "classpath:system.properties")
 @ComponentScan(basePackages = {"com.centit"},

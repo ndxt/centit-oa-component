@@ -11,7 +11,6 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.Map;
 
 @Data
 @Entity
@@ -45,11 +44,11 @@ public class BbsPiece implements Serializable {
     private JSONObject pieceContent;
    // private String pieceContent;
 
-    //回复者回复的消息对应的id
+    //回复（引用）的消息id
     @Column(name = "REPLY_ID")
     private String replyId;
 
-    //回复者回复消息对应的id
+    //回复（引用）的消息id对应的发送人
     @Column(name = "REPLY_NAME")
     @DictionaryMap(fieldName="replayUserName",value="userCode")
     private String replayName;
