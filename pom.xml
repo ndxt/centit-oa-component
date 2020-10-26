@@ -4,9 +4,10 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <modules>
-        <module>oa-component-module</module>
+        <module>communion-module</module>
         <module>oa-component-server</module>
-        <module>oa-component-client</module>
+        <module>enterprise-calendar</module>
+        <module>optflow-serial-number</module>
     </modules>
 
     <parent>
