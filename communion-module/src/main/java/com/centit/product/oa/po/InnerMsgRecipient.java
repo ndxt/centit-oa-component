@@ -35,7 +35,6 @@ public class InnerMsgRecipient implements Serializable{
      */
     @Id
     @Column(name = "RECEIVE")
-    @NotBlank
     @Length(max = 2048, message = "字段长度不能大于{max}")
     @DictionaryMap(fieldName="receiverName",value="userCode")
     @ApiModelProperty(value = "接收人编号",name = "receive",required = true)

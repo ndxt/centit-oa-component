@@ -6,6 +6,7 @@ import com.centit.framework.core.controller.BaseController;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.workday.po.WorkDay;
 import com.centit.support.workday.service.WorkDayManager;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
@@ -26,7 +27,7 @@ import java.util.Map;
  */
 
 @Controller
-@RequestMapping("/enterpriseCalendar")
+@RequestMapping("/calendar")
 public class EnterpriseCalendarController extends BaseController {
 
     @Resource
@@ -39,7 +40,8 @@ public class EnterpriseCalendarController extends BaseController {
      * @param curDate  当前选中时间,默认取系统当前时间
      * @param response HttpServletResponse
      */
-    @RequestMapping(value = "/findMarkDay", method = RequestMethod.GET)
+    @ApiOperation("获取当前月份所有标记日期，包括：加班和调休。")
+    @RequestMapping(value = "/markdays", method = RequestMethod.GET)
     public void findMarkDay(@Valid Date curDate, HttpServletResponse response) {
         curDate = curDate == null ? new Date() : curDate;
         Date startDate = DatetimeOpt.truncateToMonth(curDate);
@@ -63,6 +65,7 @@ public class EnterpriseCalendarController extends BaseController {
      * @param workDay 工作日信息
      * @param response HttpServletResponse
      */
+    @ApiOperation("保存日期标记，如果日期标记为‘0’表示还原默认值，系统会删除对应的标记记录。")
     @RequestMapping(value = "/saveData", method = RequestMethod.POST)
     public void saveData(WorkDay workDay, HttpServletResponse response) {
         if ("0".equals(workDay.getDayType())) {//还原日期默认标记
@@ -82,7 +85,7 @@ public class EnterpriseCalendarController extends BaseController {
     @RequestMapping(value = "/getCurrData", method = RequestMethod.GET)
     public void getCurrData(@Valid Date curDate, HttpServletResponse response,HttpServletRequest request) {
         curDate = curDate == null ? new Date() : curDate;
-        Map<String, Object> paramsMap = new HashMap<String, Object>();
+        Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("startDate", curDate);
         paramsMap.put("endDate", curDate);
         List<WorkDay> workDays = this.workDayMag.listObjects(paramsMap);

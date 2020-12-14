@@ -46,7 +46,6 @@ public class InnerMsg implements Serializable{
      * 发送人
      */
     @Column(name="SENDER")
-    @NotBlank
     @Length(max = 128, message = "字段长度不能大于{max}")
     @DictionaryMap(fieldName="senderName",value="userCode")
     @ApiModelProperty(value = "发送人",name = "sender",required = true)
@@ -103,7 +102,6 @@ public class InnerMsg implements Serializable{
      * 消息正文
      */
     @Column(name="MSG_CONTENT")
-    @NotBlank(message = "字段不能为空")
     private String msgContent;
 
     /**

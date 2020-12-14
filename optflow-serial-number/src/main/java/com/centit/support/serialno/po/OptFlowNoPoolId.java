@@ -18,7 +18,6 @@ public class OptFlowNoPoolId implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "OWNER_CODE")
-    @NotBlank(message = "字段不能为空")
     @Length(max = 32, message = "字段长度不能大于{max}")
     private String ownerCode;
 
@@ -27,12 +26,10 @@ public class OptFlowNoPoolId implements java.io.Serializable {
     private Date codeDate;
 
     @Column(name = "CODE_CODE")
-    @NotBlank(message = "字段不能为空")
     @Length(max = 32, message = "字段长度不能大于{max}")
     private String codeCode;
 
     @Column(name = "CUR_NO")
-    @NotBlank(message = "字段不能为空")
     @Length(max = 6, message = "字段长度不能大于{max}")
     private Long curNo;
 

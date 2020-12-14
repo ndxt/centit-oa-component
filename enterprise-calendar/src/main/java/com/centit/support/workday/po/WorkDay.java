@@ -26,11 +26,12 @@ public class WorkDay implements Serializable {
         name = "WORK_DAY"
     )
     private Date workDay;
+
+    /**
+     * 0: 未做标记
+     */
     @Column(
         name = "DAY_TYPE"
-    )
-    @NotBlank(
-        message = "字段不能为空"
     )
     @Length(
         min = 0,
