@@ -30,8 +30,8 @@ alter table F_WORK_CLASS
 /*==============================================================*/
 create table F_WORK_DAY
 (
-   Work_Day              datetime not null,
-   Day_Type              char(1) not null comment 'A:工作日放假，B:周末调休成工作时间 C 正常上班 D正常休假',
+   Work_Day               varchar(8) not null comment 'YYYYMMDD',
+   Day_Type               char(1) not null comment 'A:工作日放假，B:周末调休成工作时间 C 正常上班 D正常休假',
    Work_Time_Type         varchar(20),
    Work_Day_Desc          varchar(255)
 );
@@ -46,7 +46,7 @@ create table F_STAT_MONTH
 (
    YEAR_MONTH            varchar(6) not null comment 'YYYYMM',
    Begin_Day             datetime not null,
-   End_Day              datetime not null,
+   End_Day               datetime not null,
    End_Schedule          char(1) comment '这个字段忽略',
    Begin_Schedule        char(1) comment '这个字段忽略'
 );
@@ -92,7 +92,7 @@ alter table F_WORK_CLASS
 /*==============================================================*/
 create table F_WORK_DAY
 (
-   Work_Day              datetime not null,
+   Work_Day               varchar(8) not null comment 'YYYYMMDD',
    Day_Type              char(1) not null comment 'A:工作日放假，B:周末调休成工作时间 C 正常上班 D正常休假',
    Work_Time_Type         varchar(20),
    Work_Day_Desc          varchar(255)
@@ -153,7 +153,7 @@ alter table F_WORK_CLASS  add primary key (CLASS_ID);
 
 create table F_WORK_DAY
 (
-   Work_Day              date not null,
+   Work_Day              varchar2(8) not null,
    Day_Type              char(1) not null,
    Work_Time_Type         varchar2(20),
    Work_Day_Desc          varchar2(255)

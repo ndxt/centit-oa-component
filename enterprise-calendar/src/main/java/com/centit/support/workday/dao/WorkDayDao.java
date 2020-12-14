@@ -2,11 +2,8 @@ package com.centit.support.workday.dao;
 
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.support.workday.po.WorkDay;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.stereotype.Repository;
 
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +13,8 @@ import java.util.Map;
  * Description:
  */
 @Repository
-public class WorkDayDao extends BaseDaoImpl<WorkDay, Date> {
-    public static final Log log = LogFactory.getLog(WorkDayDao.class);
+public class WorkDayDao extends BaseDaoImpl<WorkDay, String> {
+   // public static final Log log = LogFactory.getLog(WorkDayDao.class);
 
     public WorkDayDao() {
     }

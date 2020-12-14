@@ -22,7 +22,7 @@ import java.util.Map;
  * Description:
  */
 @Service
-public class WorkDayManagerImpl extends BaseEntityManagerImpl<WorkDay, Date, WorkDayDao> implements WorkDayManager {
+public class WorkDayManagerImpl extends BaseEntityManagerImpl<WorkDay, String, WorkDayDao> implements WorkDayManager {
 
     public static final Log log = LogFactory.getLog(WorkDayManagerImpl.class);
 
@@ -38,15 +38,17 @@ public class WorkDayManagerImpl extends BaseEntityManagerImpl<WorkDay, Date, Wor
     @Override
     public boolean isWorkDay(Date workDay) {
         boolean result = false;
-        WorkDay day = this.workDayDao.getObjectById(workDay);
+
+        WorkDay day = this.workDayDao.getObjectById(WorkDay.toWorkDayId(workDay));
         if (day == null) {
             if (DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6) {
                 result = true;
             }
         } else /*if (day != null)*/ {
-            if ("B".equals(day.getDayType())) {//B:周末调休成工作时间
+            if (WorkDay.WORK_DAY_TYPE_SHIFT.equals(day.getDayType())) {//B:周末调休成工作时间
                 result = true;
-            } else if ("C".equals(day.getDayType()) && DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6) {//C: 正常上班
+            } else if (WorkDay.WORK_DAY_TYPE_WORKDAY.equals(day.getDayType())
+                && DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6) {//C: 正常上班
                 result = true;
             }
         }
@@ -62,9 +64,14 @@ public class WorkDayManagerImpl extends BaseEntityManagerImpl<WorkDay, Date, Wor
         List<WorkDay> list = this.listObjects(paramsMap);
         if (null != list) {
             for (WorkDay workDay : list) {
-                if ("A".equals(workDay.getDayType()) && DatetimeOpt.getDayOfWeek(workDay.getWorkDay()) > 0 && DatetimeOpt.getDayOfWeek(workDay.getWorkDay()) < 6) {
+                Date workDate = WorkDay.toWorkDayDate(workDay.getWorkDay());
+                if (WorkDay.WORK_DAY_TYPE_HOLIDAY.equals(workDay.getDayType())
+                    && DatetimeOpt.getDayOfWeek(workDate) > 0
+                    && DatetimeOpt.getDayOfWeek(workDate) < 6) {
                     holidays++;
-                } else if ("B".equals(workDay.getDayType()) && (DatetimeOpt.getDayOfWeek(workDay.getWorkDay()) == 0 || DatetimeOpt.getDayOfWeek(workDay.getWorkDay()) == 6)) {
+                } else if (WorkDay.WORK_DAY_TYPE_SHIFT.equals(workDay.getDayType())
+                    && (DatetimeOpt.getDayOfWeek(workDate) == 0
+                    || DatetimeOpt.getDayOfWeek(workDate) == 6)) {
                     holidays--;
                 }
             }

@@ -1,7 +1,6 @@
 package com.centit.support.serialno.po;
 
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;

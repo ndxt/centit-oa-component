@@ -10,7 +10,7 @@ import java.util.Date;
  *  2018/6/29 11:01
  *  WorkDayManager
  */
-public interface WorkDayManager extends BaseEntityManager<WorkDay, Date> {
+public interface WorkDayManager extends BaseEntityManager<WorkDay, String> {
 
     boolean isWorkDay(Date workDay);
 

@@ -1,7 +1,8 @@
 package com.centit.support.workday.po;
 
+import com.centit.support.algorithm.DatetimeOpt;
+import lombok.Data;
 import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotBlank;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,22 +20,38 @@ import java.util.Date;
 @Table(
     name = "F_WORK_DAY"
 )
+@Data
 public class WorkDay implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
     @Column(
         name = "WORK_DAY"
     )
-    private Date workDay;
+    private String workDay;
 
+    public static String toWorkDayId(Date date){
+        return DatetimeOpt.convertDateToString(date, "yyyyMMDD");
+    }
+
+    public static Date toWorkDayDate(String date){
+        return DatetimeOpt.convertStringToDate(date, "yyyyMMDD");
+    }
     /**
-     * 0: 未做标记
+     * 0: 未做标记（永远不会有，作为删除标记）
+     * A：工作日放假
+     * B：周末调休
+     * C：正常上班（按道理不需要）
+     * D: 正常休息（按道理不需要）
      */
+    public static String WORK_DAY_TYPE_IGNORE="0";
+    public static String WORK_DAY_TYPE_HOLIDAY="A";
+    public static String WORK_DAY_TYPE_SHIFT="B";
+    public static String WORK_DAY_TYPE_WORKDAY="C";
+    public static String WORK_DAY_TYPE_WEEKEND="D";
     @Column(
         name = "DAY_TYPE"
     )
     @Length(
-        min = 0,
         max = 1,
         message = "字段长度不能小于{min}大于{max}"
     )
@@ -43,7 +60,6 @@ public class WorkDay implements Serializable {
         name = "WORK_TIME_TYPE"
     )
     @Length(
-        min = 0,
         max = 20,
         message = "字段长度不能小于{min}大于{max}"
     )
@@ -59,50 +75,6 @@ public class WorkDay implements Serializable {
     private String workDayDesc;
 
     public WorkDay() {
-    }
-
-    public WorkDay(Date workDay, String dayType) {
-        this.workDay = workDay;
-        this.dayType = dayType;
-    }
-
-    public WorkDay(Date workDay, String dayType, String workTimeType, String workDayDesc) {
-        this.workDay = workDay;
-        this.dayType = dayType;
-        this.workTimeType = workTimeType;
-        this.workDayDesc = workDayDesc;
-    }
-
-    public Date getWorkDay() {
-        return this.workDay;
-    }
-
-    public void setWorkDay(Date workDay) {
-        this.workDay = workDay;
-    }
-
-    public String getDayType() {
-        return this.dayType;
-    }
-
-    public void setDayType(String dayType) {
-        this.dayType = dayType;
-    }
-
-    public String getWorkTimeType() {
-        return this.workTimeType;
-    }
-
-    public void setWorkTimeType(String workTimeType) {
-        this.workTimeType = workTimeType;
-    }
-
-    public String getWorkDayDesc() {
-        return this.workDayDesc;
-    }
-
-    public void setWorkDayDesc(String workDayDesc) {
-        this.workDayDesc = workDayDesc;
     }
 
     public WorkDay copy(WorkDay other) {

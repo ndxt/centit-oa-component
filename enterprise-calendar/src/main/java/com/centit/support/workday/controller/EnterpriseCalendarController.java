@@ -53,7 +53,8 @@ public class EnterpriseCalendarController extends BaseController {
         Map<String, String> markMap = new HashMap<String, String>();
         if (null != workDays && workDays.size() > 0) {
             for (WorkDay workDay : workDays) {
-                markMap.put(DatetimeOpt.convertDateToString(workDay.getWorkDay()), CodeRepositoryUtil.getValue("DAY_TYPE", workDay.getDayType()));
+                markMap.put(workDay.getWorkDay(),
+                    CodeRepositoryUtil.getValue("DAY_TYPE", workDay.getDayType()));
             }
         }
         JsonResultUtils.writeSingleDataJson(markMap, response);
@@ -68,7 +69,7 @@ public class EnterpriseCalendarController extends BaseController {
     @ApiOperation("保存日期标记，如果日期标记为‘0’表示还原默认值，系统会删除对应的标记记录。")
     @RequestMapping(value = "/saveData", method = RequestMethod.POST)
     public void saveData(WorkDay workDay, HttpServletResponse response) {
-        if ("0".equals(workDay.getDayType())) {//还原日期默认标记
+        if (WorkDay.WORK_DAY_TYPE_IGNORE.equals(workDay.getDayType())) {//还原日期默认标记
             this.workDayMag.deleteObjectById(workDay.getWorkDay());
         } else {//新增或更新日期标记
             WorkDay dbWorkDay = this.workDayMag.getObjectById(workDay.getWorkDay());
@@ -79,7 +80,7 @@ public class EnterpriseCalendarController extends BaseController {
                 this.workDayMag.saveNewObject(workDay);
             }
         }
-        JsonResultUtils.writeSingleDataJson(DatetimeOpt.convertDateToString(workDay.getWorkDay()), response);
+        JsonResultUtils.writeSingleDataJson(workDay, response);
     }
 
     @RequestMapping(value = "/getCurrData", method = RequestMethod.GET)
@@ -93,7 +94,7 @@ public class EnterpriseCalendarController extends BaseController {
         if(workDays!=null && workDays.size()>0){
             day = workDays.get(0);
         }else{
-            day.setWorkDay(curDate);
+            day.setWorkDay(WorkDay.toWorkDayId(curDate));
         }
         request.setAttribute("day",day);
         try {
