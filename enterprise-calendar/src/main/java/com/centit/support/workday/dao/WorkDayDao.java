@@ -20,13 +20,12 @@ public class WorkDayDao extends BaseDaoImpl<WorkDay, String> {
     }
 
     public Map<String, String> getFilterField() {
-        Map<String, String> filterField = new HashMap();
+        Map<String, String> filterField = new HashMap<>();
         filterField.put("workDay", "EQUAL");
         filterField.put("dayType", "EQUAL");
         filterField.put("workTimeType", "EQUAL");
-        filterField.put("workDayDesc", "EQUAL");
-        filterField.put("startDate", "to_char(workDay,'yyyy-MM-dd') >= to_char(:startDate,'yyyy-MM-dd')");
-        filterField.put("endDate", "to_char(workDay,'yyyy-MM-dd') <= to_char(:endDate,'yyyy-MM-dd')");
+        filterField.put("startDate", "WORK_DAY >= :startDate");
+        filterField.put("endDate", "workDay <= :endDate");
         return filterField;
     }
 }

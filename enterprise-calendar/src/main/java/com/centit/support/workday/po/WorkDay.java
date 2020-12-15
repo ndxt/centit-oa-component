@@ -1,5 +1,6 @@
 package com.centit.support.workday.po;
 
+import com.centit.framework.core.dao.DictionaryMap;
 import com.centit.support.algorithm.DatetimeOpt;
 import lombok.Data;
 import org.hibernate.validator.constraints.Length;
@@ -29,6 +30,11 @@ public class WorkDay implements Serializable {
     )
     private String workDay;
 
+    public static String toWorkDayId(String sDate){
+        return DatetimeOpt.convertDateToString(
+            DatetimeOpt.smartPraseDate(sDate), "yyyyMMDD");
+    }
+
     public static String toWorkDayId(Date date){
         return DatetimeOpt.convertDateToString(date, "yyyyMMDD");
     }
@@ -39,7 +45,7 @@ public class WorkDay implements Serializable {
     /**
      * 0: 未做标记（永远不会有，作为删除标记）
      * A：工作日放假
-     * B：周末调休
+     * B：周末调班
      * C：正常上班（按道理不需要）
      * D: 正常休息（按道理不需要）
      */
@@ -55,7 +61,9 @@ public class WorkDay implements Serializable {
         max = 1,
         message = "字段长度不能小于{min}大于{max}"
     )
+    @DictionaryMap(value = "DAY_TYPE", fieldName = "dayTypeDesc")
     private String dayType;
+
     @Column(
         name = "WORK_TIME_TYPE"
     )
@@ -68,13 +76,16 @@ public class WorkDay implements Serializable {
         name = "WORK_DAY_DESC"
     )
     @Length(
-        min = 0,
         max = 255,
         message = "字段长度不能小于{min}大于{max}"
     )
     private String workDayDesc;
 
     public WorkDay() {
+    }
+
+    public Date getWorkDate(){
+        return toWorkDayDate(this.getWorkDay());
     }
 
     public WorkDay copy(WorkDay other) {
