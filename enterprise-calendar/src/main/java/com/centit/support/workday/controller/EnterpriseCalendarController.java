@@ -8,7 +8,6 @@ import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.workday.po.WorkDay;
 import com.centit.support.workday.service.WorkDayManager;
 import io.swagger.annotations.ApiOperation;
-import org.apache.http.impl.client.HttpRequestFutureTask;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
