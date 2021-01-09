@@ -3,6 +3,7 @@ package com.centit.product.oa.po;
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import lombok.Data;
+import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -37,9 +38,30 @@ public class BbsScore implements java.io.Serializable {
     /**
      * 文档评分 null
      */
-    @Column(name = "DOC_SCORE")
+    @Column(name = "BBS_SCORE")
 //    @NotBlank(message = "字段不能为空")
-    private int  docScore;
+    private int  bbsScore;
+
+    /**
+     * 项目ID 类似与 OSID
+     */
+    @Column(name="APPLICATION_ID")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String applicationId;
+
+
+    /**
+     *功能模块 */
+    @Column(name="OPT_ID")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String optId;
+
+    /**
+     *操作方法 */
+    @Column(name="OPT_METHOD")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String optMethod;
+
     /**
      * 用户代码 null
      */
@@ -63,11 +85,9 @@ public class BbsScore implements java.io.Serializable {
     public BbsScore() {
     }
     /** minimal constructor */
-    public BbsScore(
-        String scoreId
-        ,int  docScore) {
+    public BbsScore(String scoreId ,int  bbsScore) {
         this.scoreId = scoreId;
-        this.docScore= docScore;
+        this.bbsScore= bbsScore;
     }
 
 
@@ -77,7 +97,7 @@ public class BbsScore implements java.io.Serializable {
         this.setScoreId(other.getScoreId());
 
         this.refObjectId= other.getRefObjectId();
-        this.docScore= other.getDocScore();
+        this.bbsScore= other.getBbsScore();
         this.userCode= other.getUserCode();
         this.userName= other.getUserName();
         this.createTime= other.getCreateTime();
@@ -92,8 +112,8 @@ public class BbsScore implements java.io.Serializable {
 
         if( other.getRefObjectId() != null)
             this.refObjectId= other.getRefObjectId();
-        if( other.getDocScore() != -1)
-            this.docScore= other.getDocScore();
+        if( other.getBbsScore() != -1)
+            this.bbsScore= other.getBbsScore();
         if( other.getUserCode() != null)
             this.userCode= other.getUserCode();
         if( other.getUserName() != null)
@@ -107,7 +127,7 @@ public class BbsScore implements java.io.Serializable {
     public BbsScore clearProperties(){
 
         this.refObjectId= null;
-        this.docScore= -1;
+        this.bbsScore= -1;
         this.userCode= null;
         this.userName= null;
         this.createTime= null;
