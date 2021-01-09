@@ -25,6 +25,11 @@ public class BbsPiece implements Serializable {
     @ValueGenerator(strategy = GeneratorType.UUID22)
     private String pieceId;
 
+    /**
+     * 讨论的对象ID
+     */
+    @Column(name = "REF_OBJECT_ID")
+    private String refObjectId;
 
     //发送消息的人
     @Column(name="DELIVERER")

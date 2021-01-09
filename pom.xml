@@ -8,6 +8,7 @@
         <module>oa-component-demo</module>
         <module>enterprise-calendar</module>
         <module>optflow-serial-number</module>
+        <module>inner-message</module>
     </modules>
 
     <parent>

@@ -16,7 +16,7 @@ public interface InnerMessageManager {
 
     InnerMsg getInnerMsgById(String msgCode);
 
-    void updateInnerMsg(InnerMsg msg,InnerMsg copMsg);
+    void updateInnerMsg(InnerMsg msg, InnerMsg copMsg);
     void deleteInnerMsgById(String msgCode);
 
     List<InnerMsgRecipient> listMsgRecipients(Map<String, Object> filterMap);
@@ -28,7 +28,7 @@ public interface InnerMessageManager {
 
     JSONArray getExchangeMsgRecipients(String sender, String receiver);
 
-    void updateRecipient(InnerMsgRecipient recipient,InnerMsgRecipient recipientCopy);
+    void updateRecipient(InnerMsgRecipient recipient, InnerMsgRecipient recipientCopy);
     /*
      *群发(innerMsg.receiveName,innerMsg.carbonCopyName为数组，但是保存到数据库是挨个保存)
      *

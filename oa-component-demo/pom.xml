@@ -9,7 +9,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>oa-component-demo</artifactId>
+    <artifactId>com.centit.product.oa-component-demo</artifactId>
     <packaging>war</packaging>
 
     <build>

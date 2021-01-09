@@ -12,7 +12,6 @@
     <name>com.centit.product:optflow-serial-number</name>
 
     <dependencies>
-
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-jdbc</artifactId>

@@ -1,5 +1,6 @@
 package com.centit.product.oa;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.jdbc.config.JdbcConfig;
 import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.dao.InnerMsgRecipientDao;
@@ -25,7 +26,7 @@ import java.util.*;
 @ComponentScan(basePackages = {"com.centit"},
     excludeFilters = @ComponentScan.Filter(value = org.springframework.stereotype.Controller.class))
 @Import(value = {JdbcConfig.class})
-@ContextConfiguration(classes = TestPiece.class)
+@ContextConfiguration(classes = TestInnerMsg.class)
 @RunWith(SpringRunner.class)
 public class TestInnerMsg {
 
@@ -34,7 +35,7 @@ public class TestInnerMsg {
     @Autowired
     private InnerMsgRecipientDao innerMsgRecipientDao;
     @Autowired
-    InnerMessageManagerImpl innerMessageManager;
+    private InnerMessageManagerImpl innerMessageManager;
 
 
     @Test
@@ -188,4 +189,31 @@ public class TestInnerMsg {
     }
 
 
+    @Test
+    public void DemoTest(){
+        HashMap<String, Object> filterMap = new HashMap<>();
+        filterMap.put("optId","123");
+        filterMap.put("receive","u1234");
+        // filterMap.put("order","desc");
+
+        PageDesc pageDesc = new PageDesc(1, 10);
+        String sql = " where OPT_ID = :optId and MSG_CODE in (SELECT Msg_Code FROM `f_inner_msg_recipient` WHERE Receive = :receive ";
+        if (null != filterMap.get("msgState")){
+            sql = sql + " and msg_State = :msgState ) ORDER BY SEND_DATE desc ";
+        }else {
+            sql = sql + " ) ORDER BY SEND_DATE desc ";
+        }
+        JSONArray objects = innerMsgDao.listObjectsByFilterAsJson(sql, filterMap, pageDesc);
+        List<InnerMsg> innerMsgs = objects.toJavaList(InnerMsg.class);
+       /* innerMsgs.sort(new Comparator<InnerMsg>() {
+            @Override
+            public int compare(InnerMsg o1, InnerMsg o2) {
+                return o1.getSendDate().compareTo(o2.getSendDate());
+            }
+        });*/
+        for (InnerMsg innerMsg : innerMsgs) {
+            System.out.println(innerMsg);
+        }
+
+    }
 }
