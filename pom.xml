@@ -9,6 +9,7 @@
         <module>enterprise-calendar</module>
         <module>optflow-serial-number</module>
         <module>inner-message</module>
+        <module>message-sender-utils</module>
     </modules>
 
     <parent>
