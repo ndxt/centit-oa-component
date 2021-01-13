@@ -1,6 +1,7 @@
 package com.centit.product.oa.service;
 
 import com.centit.product.oa.po.BbsPiece;
+import com.centit.product.oa.po.BbsScore;
 import com.centit.support.database.utils.PageDesc;
 
 import javax.servlet.http.HttpServletResponse;
@@ -14,8 +15,9 @@ public interface BbsManager {
      * 写入bbsPiece信息
      * @param bbsPiece
      */
-    void createBbsPiece(BbsPiece bbsPiece);
+    void saveBbsPiece(BbsPiece bbsPiece);
 
+    void updateBbsPiece(BbsPiece bbsPiece);
     /**
      * 查询根据条件分页查询信息,并根据时间进行排序(先发生的时间靠前);
      * @param filterMap 需要过滤的字段;以key-value的类型保存到map集合中
@@ -37,6 +39,20 @@ public interface BbsManager {
      * 通过id删除消息记录
      * @param pieceId
      */
-    boolean deleteBbsPieceByID(String pieceId, HttpServletResponse httpResponse);
+    boolean deleteBbsPieceByID(String pieceId);
+
+    void deleteBbsPieceByRefObject(String applicationId, String optId, String refObjectId);
+
+    void replyPiece(String pieceId, BbsPiece bbsPiece);
+
+    void saveBbsScore(BbsScore bbsScore);
+
+    List<BbsScore> listBbsScore(Map<String, Object> filterMap, PageDesc pageDesc);
+
+    String statBbsScore(String applicationId, String optId, String refObjectId);
+
+    void deleteBbsScoreById(String scoreId);
+
+    void deleteBbsScoreByRefObject(String applicationId, String optId, String refObjectId);
 
 }

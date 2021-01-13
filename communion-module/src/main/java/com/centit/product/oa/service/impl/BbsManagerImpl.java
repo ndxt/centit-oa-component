@@ -1,8 +1,14 @@
 package com.centit.product.oa.service.impl;
 
+import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.dao.BbsPieceDao;
+import com.centit.product.oa.dao.BbsScoreDao;
 import com.centit.product.oa.po.BbsPiece;
+import com.centit.product.oa.po.BbsScore;
 import com.centit.product.oa.service.BbsManager;
+import com.centit.support.algorithm.CollectionsOpt;
+import com.centit.support.algorithm.StringBaseOpt;
+import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,10 +25,19 @@ public class BbsManagerImpl implements BbsManager {
     @Autowired
     private BbsPieceDao bbsPieceDao;
 
+    @Autowired
+    private BbsScoreDao bbsScoreDao;
+
     @Override
-    public void createBbsPiece(BbsPiece bbsPiece) {
+    public void saveBbsPiece(BbsPiece bbsPiece) {
         bbsPiece.setPieceId(null);
         bbsPieceDao.saveNewObject(bbsPiece);
+    }
+
+    @Override
+    public void updateBbsPiece(BbsPiece bbsPiece) {
+        bbsPiece.setPieceState("U");
+        bbsPieceDao.updateObject(bbsPiece);
     }
 
     @Override
@@ -57,7 +72,7 @@ public class BbsManagerImpl implements BbsManager {
     }
 
     @Override
-    public boolean deleteBbsPieceByID(String pieceId , HttpServletResponse httpResponse) {
+    public boolean deleteBbsPieceByID(String pieceId) {
         List<BbsPiece> piece = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
         if (piece.isEmpty()){
             return false;
@@ -66,5 +81,63 @@ public class BbsManagerImpl implements BbsManager {
         return true;
     }
 
+    @Override
+    public void deleteBbsPieceByRefObject(String applicationId, String optId, String refObjectId){
+        bbsPieceDao.deleteObjectsByProperties(CollectionsOpt.createHashMap(
+            "applicationId", applicationId,"optId", optId,"refObjectId", refObjectId
+        ));
+    }
+
+    @Override
+    public void replyPiece(String pieceId, BbsPiece bbsPiece) {
+        BbsPiece oldPiece = bbsPieceDao.getObjectById(pieceId);
+        if(oldPiece==null){
+            throw new ObjectException("找不到被回复的对象："+pieceId);
+        }
+        bbsPiece.setReplyId(pieceId);
+        bbsPiece.setOptId(oldPiece.getOptId());
+        bbsPiece.setApplicationId(oldPiece.getApplicationId());
+        bbsPiece.setRefObjectId(oldPiece.getRefObjectId());
+        bbsPieceDao.saveNewObject(bbsPiece);
+    }
+
+    @Override
+    public void saveBbsScore(BbsScore bbsScore) {
+        int isExists  = bbsScoreDao.countObject(CollectionsOpt.createHashMap(
+            "applicationId", bbsScore.getApplicationId(),
+            "optId", bbsScore.getOptId(),"refObjectId", bbsScore.getRefObjectId(),
+            "userCode", bbsScore.getUserCode()
+        ));
+        if(isExists>0){
+            throw new ObjectException("用户"+bbsScore.getUserCode()+"已经对："+bbsScore.getRefObjectId()+"评分过！");
+        }
+        bbsScoreDao.saveNewObject(bbsScore);
+    }
+
+    @Override
+    public List<BbsScore> listBbsScore(Map<String, Object> filterMap, PageDesc pageDesc) {
+        return bbsScoreDao.listObjectsByProperties(filterMap, pageDesc);
+    }
+
+    @Override
+    public String statBbsScore(String applicationId, String optId, String refObjectId) {
+        Object obj = DatabaseOptUtils.getScalarObjectQuery(bbsScoreDao,
+            "select avg(BBS_SCORE) as score from M_BBS_SCORE " +
+                "where APPLICATION_ID=? and OPT_ID=? and REF_OBJECT_ID=?",
+                new Object[]{applicationId, optId, refObjectId});
+        return StringBaseOpt.castObjectToString(obj);
+    }
+
+    @Override
+    public void deleteBbsScoreById(String scoreId) {
+        bbsScoreDao.deleteObjectById(scoreId);
+    }
+
+    @Override
+    public void deleteBbsScoreByRefObject(String applicationId, String optId, String refObjectId) {
+        bbsScoreDao.deleteObjectsByProperties(CollectionsOpt.createHashMap(
+            "applicationId", applicationId,"optId", optId,"refObjectId", refObjectId
+        ));
+    }
 
 }

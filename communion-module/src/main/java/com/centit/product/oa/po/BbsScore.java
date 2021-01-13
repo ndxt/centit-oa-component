@@ -27,7 +27,7 @@ public class BbsScore implements java.io.Serializable {
     @Id
     @Column(name = "SCORE_ID")
     @GeneratedValue(generator = "assignedGenerator")
-    @ValueGenerator(strategy = GeneratorType.UUID)
+    @ValueGenerator(strategy = GeneratorType.UUID22)
     private String scoreId;
 
     /**

@@ -34,7 +34,7 @@ public class BbsController extends BaseController{
     @ApiOperation(value = "新增评论信息")
     @WrapUpResponseBody
     public void createBbsPiece(@RequestBody BbsPiece bbsPiece){
-        bbsManager.createBbsPiece(bbsPiece);
+        bbsManager.saveBbsPiece(bbsPiece);
     }
     @GetMapping(value = "/getPiece")
     @ApiOperation(value = "分页显示出评论信息")
@@ -86,8 +86,8 @@ public class BbsController extends BaseController{
     @ApiOperation(value = "用户删除自己发表的评论信息")
     @ApiImplicitParam(name = "pieceId",required = true)
     @WrapUpResponseBody
-    public boolean deleteBbsPieces(@PathVariable String pieceId, HttpServletResponse response){
-        return  bbsManager.deleteBbsPieceByID(pieceId, response);
+    public boolean deleteBbsPieces(@PathVariable String pieceId){
+        return  bbsManager.deleteBbsPieceByID(pieceId);
     }
 
     @GetMapping(value = "/getPiece/{pieceId}")
@@ -97,4 +97,6 @@ public class BbsController extends BaseController{
     public BbsPiece getBbsPieces(@PathVariable String pieceId){
         return bbsManager.getBbsPieces(pieceId);
     }
+
+
 }

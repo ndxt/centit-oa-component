@@ -164,7 +164,7 @@ public class TestInnerMsg {
             "select uu.unitCode,uu.unitName,uu.unitType,uu.isValid,uu.unitTag"
                 +"  from projectTable uu  "
                 +" where 1=1 [:(SPLITFORIN,LONG,CREEPFORIN)array| and uu.unitType in (:array)]"
-                + "[:(date)createDate | and uu.createDate >= :createDate ]"
+                + "[:(date)createTime | and uu.createTime >= :createTime ]"
                 + "[:(like)mathName | and uu.unitName like :mathName ]"
                 +"[:(inplace)sort | order by :sort  ]";
         String query = QueryUtils.translateQuery(

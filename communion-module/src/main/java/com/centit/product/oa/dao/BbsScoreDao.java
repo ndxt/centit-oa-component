@@ -27,13 +27,13 @@ public class BbsScoreDao extends BaseDaoImpl<BbsScore, String>
 
     @Override
     public Map<String, String> getFilterField() {
-        Map<String, String> filterField = new HashMap<>();
+        /*Map<String, String> filterField = new HashMap<>();
         filterField.put("scoreId" , CodeBook.EQUAL_HQL_ID);
         filterField.put("docId" , CodeBook.EQUAL_HQL_ID);
         filterField.put("docScore" , CodeBook.EQUAL_HQL_ID);
         filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
         filterField.put("userName" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);
-        return filterField;
+        filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);*/
+        return null;
     }
 }

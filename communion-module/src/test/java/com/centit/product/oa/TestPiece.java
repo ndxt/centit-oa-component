@@ -43,7 +43,7 @@ public class TestPiece {
         bbsPiece.setApplicationId("asjfioadfa");
         bbsPiece.setOptId("sfs");
         bbsPiece.setOptTag("你好");
-        bbsManager.createBbsPiece(bbsPiece);
+        bbsManager.saveBbsPiece(bbsPiece);
         System.out.println("successful");*/
         for (int i=0;i<10;i++){
             createBbsPieceTest();
@@ -56,7 +56,7 @@ public class TestPiece {
         bbsPiece.setApplicationId("asjfioadfa");
         bbsPiece.setOptId("sfs");
         bbsPiece.setOptTag("你好啊");
-        bbsManager.createBbsPiece(bbsPiece);
+        bbsManager.saveBbsPiece(bbsPiece);
         System.out.println("successful");
     }
 
@@ -66,7 +66,7 @@ public class TestPiece {
         bbsPiece.setApplicationId("asjfioadfa");
         bbsPiece.setOptId("sfs");
         bbsPiece.setOptTag("你好啊");
-        bbsManager.createBbsPiece(bbsPiece);
+        bbsManager.saveBbsPiece(bbsPiece);
         System.out.println("successful");
     }
 
@@ -78,7 +78,7 @@ public class TestPiece {
         map.put("optId","123");
         List<BbsPiece> bbsPieces = bbsManager.listBbsPieces(map, new PageDesc(1,200));
         for (BbsPiece bbsPiece : bbsPieces) {
-            System.out.println(bbsPiece.getDeliverDate());
+            System.out.println(bbsPiece.getCreateTime());
         }
         System.out.println("successful");
     }
@@ -108,7 +108,7 @@ public class TestPiece {
         bbsPiece.setApplicationId("1234648");
         bbsPiece.setOptId("query");
         bbsPiece.setOptTag("欢迎回来");
-      //  bbsController.createBbsPiece(bbsPiece);
+      //  bbsController.saveBbsPiece(bbsPiece);
         System.out.println("hahah");
     }
 

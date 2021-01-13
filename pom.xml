@@ -5,7 +5,6 @@
     <modelVersion>4.0.0</modelVersion>
     <modules>
         <module>communion-module</module>
-        <module>oa-component-demo</module>
         <module>enterprise-calendar</module>
         <module>optflow-serial-number</module>
         <module>inner-message</module>
