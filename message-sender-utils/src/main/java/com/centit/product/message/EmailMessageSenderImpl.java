@@ -69,7 +69,8 @@ public class EmailMessageSenderImpl implements MessageSender {
         //multMail.setFrom(CodeRepositoryUtil.getValue("SysMail", "admin_email"));
         multMail.setFrom(mailFrom);
         multMail.addTo(mailTo);
-        multMail.setSubject(MimeUtility.decodeText(msgSubject));
+        multMail.setCharset("utf-8");
+        multMail.setSubject(msgSubject);
         if(msgContent.endsWith("</html>") || msgContent.endsWith("</HTML>")){
             multMail.addPart(msgContent, "text/html;charset=utf-8");
         }else{
