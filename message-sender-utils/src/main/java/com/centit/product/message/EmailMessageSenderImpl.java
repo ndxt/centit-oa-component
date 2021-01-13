@@ -1,4 +1,4 @@
-/**
+/*
  *
  */
 package com.centit.product.message;
@@ -19,7 +19,7 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 
-/**
+/*
  *
  * @author ljy codefan
  * 2012-2-22

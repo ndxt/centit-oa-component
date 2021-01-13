@@ -2,7 +2,7 @@ package com.centit.support.serialno.po;
 
 import javax.persistence.*;
 
-/**
+/*
  * create by scaffold
  *
  * @author codefan@hotmail.com
@@ -20,13 +20,13 @@ public class OptFlowNoPool implements java.io.Serializable {
 
     // Constructors
 
-    /**
+    /*
      * default constructor
      */
     public OptFlowNoPool() {
     }
 
-    /**
+    /*
      * minimal constructor
      * @param id OptFlowNoPoolId
      */

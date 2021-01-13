@@ -29,7 +29,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-/**
+/*
  * 内部消息、公告
  */
 @Controller
@@ -45,7 +45,7 @@ public class InnerMsgController extends BaseController {
         return "InnerMsg";
     }
 
-    /**
+   /*
      * 查询收件箱;希望返回的邮件主要数据发件人姓名,邮件标题,邮件状态信息
      *  @param pageDesc PageDesc
      * @param request  HttpServletRequest
@@ -67,7 +67,7 @@ public class InnerMsgController extends BaseController {
         return PageQueryResult.createResultMapDict(innerMsgs, pageDesc);
     }
 
-    /**
+   /*
      * 未读消息数量
      *
      * @param request {@link HttpServletRequest}
@@ -83,7 +83,7 @@ public class InnerMsgController extends BaseController {
         }
         return innerMessageManager.getUnreadMessageCount(currUser);
     }
-    /**
+   /*
      * 未读消息
      *
      * @param request {@link HttpServletRequest}
@@ -95,7 +95,7 @@ public class InnerMsgController extends BaseController {
         return innerMessageManager.listUnreadMessage(receive);
     }
 
-    /**
+   /*
      * 查询发件箱
      *
      * @param pageDesc PageDesc
@@ -119,7 +119,7 @@ public class InnerMsgController extends BaseController {
         return PageQueryResult.createResultMapDict(listObjects, pageDesc);
     }
 
-    /**
+   /*
      * 是否有发公告权限
      */
     @ApiOperation(value = "是否有发公告权限", notes = "是否有发公告权限。")
@@ -129,7 +129,7 @@ public class InnerMsgController extends BaseController {
         return CodeRepositoryUtil.checkUserOptPower("MSGMAG", "givenotify");
     }
 
-    /**
+   /*
      * 获取内部消息的接收者信息
      * @param msgCode  msgCode
      * @return InnerMsgRecipient
@@ -144,7 +144,7 @@ public class InnerMsgController extends BaseController {
         return innerMessageManager.getMsgRecipientByMsgCode(msgCode);
     }
 
-    /**
+   /*
      * 公告列表
      *
      * @param field    显示结果中只需要显示的字段
@@ -170,7 +170,7 @@ public class InnerMsgController extends BaseController {
         return PageQueryResult.createResultMapDict(listObjects, pageDesc, field);
     }
 
-    /**
+   /*
      * 按部门发公告，会匹配该部门以及所有子部门的用户，群发消息
      *
      * @param unitCode unitCode
@@ -199,7 +199,7 @@ public class InnerMsgController extends BaseController {
     }
 
 
-    /**
+   /*
      * 发送或群发消息，recipient必须包含mInnerMsg对象属性，recipient.receive传入是由userCode拼接成的字符串，以逗号隔开
      *
      * @param innerMsg InnerMsgRecipient
@@ -223,7 +223,7 @@ public class InnerMsgController extends BaseController {
     }
 
 
-    /**
+   /*
      * 获取当前登录用户
      *
      * @param request HttpServletReqeust
@@ -235,7 +235,7 @@ public class InnerMsgController extends BaseController {
         return WebOptUtils.getCurrentUserCode(request);
     }
 
-    /**
+   /*
      * 更新消息内容;
      *
      * @param msg     InnerMsg
@@ -270,7 +270,7 @@ public class InnerMsgController extends BaseController {
         return ResponseData.makeResponseData(msg);
     }
 
-    /**
+   /*
      * 更新接受者信息
      *
      * @param recipient InnerMsgRecipient
@@ -299,7 +299,7 @@ public class InnerMsgController extends BaseController {
         return ResponseData.makeResponseData(recipient);
     }
 
-    /**
+   /*
      * 删除消息,并没有删除该条记录，而是把msgState字段标记为D
      *
      * @param msgCode  消息编号
@@ -318,7 +318,7 @@ public class InnerMsgController extends BaseController {
         return ResponseData.successResponse;
     }
 
-    /**
+   /*
      * 删除接受者信息,并没有删除该条记录，
      * //修改InnerMsgRecipient中的msgState状态，不一定是要删除，有可能是：
      *         U=未读
@@ -351,7 +351,7 @@ public class InnerMsgController extends BaseController {
     }
 
 
-    /**
+   /*
      * 往来消息列表
      *  @param sender   用户1
      * @param receiver 用户2

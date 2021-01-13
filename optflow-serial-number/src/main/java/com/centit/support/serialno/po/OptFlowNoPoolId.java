@@ -7,7 +7,7 @@ import javax.persistence.Embeddable;
 import javax.validation.constraints.NotNull;
 import java.sql.Date;
 
-/**
+/*
  * FAddressBook entity.
  *
  * @author codefan@hotmail.com
@@ -34,7 +34,7 @@ public class OptFlowNoPoolId implements java.io.Serializable {
 
     // Constructors
 
-    /**
+    /*
      * default constructor
      */
     public OptFlowNoPoolId() {

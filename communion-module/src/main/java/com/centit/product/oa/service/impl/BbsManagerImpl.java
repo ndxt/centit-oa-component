@@ -45,7 +45,7 @@ public class BbsManagerImpl implements BbsManager {
         return bbsPieceDao.listObjects(filterMap, pageDesc);
     }
 
-    /**
+    /*
      *  根据操作代码,获取所有附件信息
      * @param filterMap
      * @param pageDesc

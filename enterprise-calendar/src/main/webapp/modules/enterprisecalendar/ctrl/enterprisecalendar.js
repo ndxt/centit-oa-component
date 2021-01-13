@@ -26,7 +26,7 @@ layui.config({
     findMarkDay();
   })
 
-  /**
+  /*
    * 切换日期时触发，更新当前月的日期标记
    * @param value 得到日期生成的值，如：2017-08-18
    * @param date  得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
@@ -44,7 +44,7 @@ layui.config({
     }
   }
 
-  /**
+  /*
    * 点击日期时触发
    * @param value 得到日期生成的值，如：2017-08-18
    * @param date  得到日期时间对象：{year: 2017, month: 8, date: 18, hours: 0, minutes: 0, seconds: 0}
@@ -66,7 +66,7 @@ layui.config({
     });
   }
 
-  /**
+  /*
    * 获取范围内标记日期集合
    * @param curDate   当前时间，用于日历初始化赋值
    */
@@ -89,7 +89,7 @@ layui.config({
     });
   }
 
-  /**
+  /*
    * 初始化企业日历
    * @param value 日历初始值
    */

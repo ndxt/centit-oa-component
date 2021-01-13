@@ -18,7 +18,7 @@ import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.List;
 
-/**
+/*
  * @author : guo_jh
  * Date: 2018/6/27 19:31
  * Description:企业工作日历
@@ -32,7 +32,7 @@ public class EnterpriseCalendarController extends BaseController {
     private WorkDayManager workDayMag;
 
 
-    /**
+    /*
      * 获取当前日期标记
      *
      * @param sCurDate  当前选中时间,默认取系统当前时间
@@ -44,7 +44,7 @@ public class EnterpriseCalendarController extends BaseController {
           return this.workDayMag.getWorkDay(sCurDate);
     }
 
-    /**
+    /*
      * 更新日期标记
      *
      * @param workDay 工作日信息
@@ -66,7 +66,7 @@ public class EnterpriseCalendarController extends BaseController {
         }
     }
 
-    /**
+    /*
      * 删除日期标记
      *
      * @param sCurDate 工作日信息
@@ -78,7 +78,7 @@ public class EnterpriseCalendarController extends BaseController {
         this.workDayMag.deleteWorkDay(sCurDate);
     }
 
-    /**
+    /*
      * 获取指定范围内特殊日期集合
      *
      * @param sCurDate  当前选中时间,默认取系统当前时间

@@ -16,7 +16,6 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name="M_BBS_PIECE")
-@NoArgsConstructor
 public class BbsPiece implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -26,7 +25,7 @@ public class BbsPiece implements Serializable {
     @ValueGenerator(strategy = GeneratorType.UUID22)
     private String pieceId;
 
-    /**
+    /*
      * 讨论的对象ID
      */
     @Column(name = "REF_OBJECT_ID")
@@ -44,7 +43,7 @@ public class BbsPiece implements Serializable {
     @ValueGenerator(occasion = GeneratorTime.NEW, strategy = GeneratorType.FUNCTION, value = "today()")
     private Date createTime;
 
-    /**
+    /*
      * N ： normal正常 U：update 被修改过
      */
     @Column(name = "PIECE_SATE")
@@ -70,7 +69,7 @@ public class BbsPiece implements Serializable {
     @DictionaryMap(fieldName="replayUserName",value="userCode")
     private String replayName;
 
-    /**
+    /*
      * 项目ID 类似与 OSID
      */
     @Column(name="APPLICATION_ID")
@@ -78,19 +77,19 @@ public class BbsPiece implements Serializable {
     private String applicationId;
 
 
-    /**
+    /*
      *功能模块 */
     @Column(name="OPT_ID")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optId;
 
-    /**
+    /*
      *操作方法 */
     @Column(name="OPT_METHOD")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optMethod;
 
-    /**
+    /*
      *操作业务标记
      * */
     @Column(name="OPT_TAG")

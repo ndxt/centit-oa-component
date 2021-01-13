@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 
-/**
+/*
  * create by scaffold 2017-05-08
  * @author codefan@sina.com
 
@@ -21,7 +21,7 @@ import java.util.Date;
 public class BbsScore implements java.io.Serializable {
     private static final long serialVersionUID =  1L;
 
-    /**
+    /*
      * 评分ID null
      */
     @Id
@@ -30,19 +30,19 @@ public class BbsScore implements java.io.Serializable {
     @ValueGenerator(strategy = GeneratorType.UUID22)
     private String scoreId;
 
-    /**
+    /*
      * 评价的对象ID
      */
     @Column(name = "REF_OBJECT_ID")
     private String refObjectId;
-    /**
+    /*
      * 文档评分 null
      */
     @Column(name = "BBS_SCORE")
 //    @NotBlank(message = "字段不能为空")
     private int  bbsScore;
 
-    /**
+    /*
      * 项目ID 类似与 OSID
      */
     @Column(name="APPLICATION_ID")
@@ -50,41 +50,41 @@ public class BbsScore implements java.io.Serializable {
     private String applicationId;
 
 
-    /**
+    /*
      *功能模块 */
     @Column(name="OPT_ID")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optId;
 
-    /**
+    /*
      *操作方法 */
     @Column(name="OPT_METHOD")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optMethod;
 
-    /**
+    /*
      * 用户代码 null
      */
     @Column(name = "USER_CODE")
     //@Length(max = 32, message = "字段长度不能大于{max}")
     private String  userCode;
-    /**
+    /*
      * 用户名称 null
      */
     @Column(name = "USER_NAME")
     //@Length(max = 64, message = "字段长度不能大于{max}")
     private String  userName;
-    /**
+    /*
      * 评价时间 null
      */
     @Column(name = "CREATE_TIME")
     private Date  createTime;
 
     // Constructors
-    /** default constructor */
+    /* default constructor */
     public BbsScore() {
     }
-    /** minimal constructor */
+    /* minimal constructor */
     public BbsScore(String scoreId ,int  bbsScore) {
         this.scoreId = scoreId;
         this.bbsScore= bbsScore;

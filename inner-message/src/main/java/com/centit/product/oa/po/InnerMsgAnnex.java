@@ -12,7 +12,7 @@ import java.util.Date;
 @Entity
 @Table(name="F_INNER_MSG_ANNEX")
 public class InnerMsgAnnex implements Serializable{
-    /**
+    /*
      *
      */
     private static final long serialVersionUID = 1L;
