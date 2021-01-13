@@ -42,7 +42,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     private InnerMsgAnnexDao innerMsgAnnexDao;
 
     protected static Logger logger = LoggerFactory.getLogger(InnerMessageManagerImpl.class);
-    /**
+    /*
      * 更新接受者信息;
      *  主要更新内容为msgStatue,
      */
@@ -55,7 +55,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     }
 
-    /**
+    /*
      * 发送消息
      * 1.把邮件中的信息写入到innerMsg表中
      * 2.把收件人信息写入到innerMsgRecipient中
@@ -74,7 +74,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     }
 
-    /**
+    /*
      * 把邮件内容写入到数据库中,并关联收件人信息和附件信息;
      * @param innerMsg
      */
@@ -107,7 +107,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
 
 
-    /**
+    /*
      * 获取两者间来往消息列表;返回List<InnerMsg>
      */
     @Override
@@ -120,7 +120,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         return DictionaryMapUtils.objectsToJSONArray(exchangeMsgs);
     }
 
-    /**
+    /*
      * 给部门成员，所有直属或间接下级部门成员发消息
      * note:这个方法未经测试
      */
@@ -183,7 +183,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         return innerMsgDao.listUnreadMessage(userCode);
     }
 
-    /**
+    /*
      * 发送消息
      */
     @Override
@@ -233,7 +233,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         return innerMsgRecipientDao.listObjects(filterMap);
     }
 
-    /**
+    /*
      * 先由收件人userCode在InnerMsgRecipient中找到收件人的所有的邮件msgCode;
      * 再根据msgCode和optId获取InnerMsg表中对应的信息;
      *
@@ -269,7 +269,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         return newInnerMsgs;
     }
 
-    /**
+    /*
      * 更新邮件;可能更新的内容包括:innerMsg,innerMsgAnnex,innerMsgRecipient
      * @param msg
      */
@@ -311,7 +311,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
         return innerMsgDao.getObjectWithReferences(msgCode);
     }
 
-    /**
+    /*
      * 对innerMsg和sysUserCode中必要的属性进行空判断
      * @param innerMsg
      * @param sysUserCode

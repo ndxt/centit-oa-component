@@ -12,7 +12,7 @@ import java.util.Map;
 
 
 
-/**
+/*
  * HelpDocScoreDao  Repository.
  * create by scaffold 2017-05-08
  * @author codefan@sina.com

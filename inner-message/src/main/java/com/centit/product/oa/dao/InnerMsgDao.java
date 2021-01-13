@@ -64,7 +64,7 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
     }
 
 
-    /**
+    /*
      * 两人间来往消息列表,返回List<InnerMsg>
      * @param sender 用户甲
      * @param receiver 用户乙

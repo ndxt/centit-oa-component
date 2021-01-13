@@ -41,7 +41,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         this.optFlowNoPoolDao = baseDao;
     }
 
-    /**
+    /*
      * 获取最新的流水号，并标记+1
      */
     @Override
@@ -98,7 +98,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         return false;
     }
 
-    /**
+    /*
      * 以天为单位记录流水号
      */
     @Override
@@ -106,7 +106,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         return newNextLsh(ownerCode, codeCode, DatetimeOpt.truncateToDay(codeBaseDate));
     }
 
-    /**
+    /*
      * 以月为单位记录流水号
      */
     @Override
@@ -114,7 +114,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         return newNextLsh(ownerCode, codeCode, DatetimeOpt.truncateToMonth(codeBaseDate));
     }
 
-    /**
+    /*
      * 以年为单位记录流水号
      */
     @Override
@@ -122,7 +122,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         return newNextLsh(ownerCode, codeCode, DatetimeOpt.truncateToYear(codeBaseDate));
     }
 
-    /**
+    /*
      * 获取下一个流水号，流水好是根据 拥有者、类别代码、编码的基准时间这个时间是按照周来编制的就是同一周中顺序编号
      *
      * @param ownerCode    根据 拥有者
@@ -145,7 +145,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         return newNextLsh(ownerCode, codeCode, DefaultCodeDate);
     }
 
-    /**
+    /*
      * 查看最新流水号
      */
     @Override

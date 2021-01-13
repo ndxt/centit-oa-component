@@ -5,7 +5,7 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-/**
+/*
  * create by scaffold
  *
  * @author codefan@hotmail.com
@@ -25,13 +25,13 @@ public class OptFlowNoInfo implements java.io.Serializable {
 
     // Constructors
 
-    /**
+    /*
      * default constructor
      */
     public OptFlowNoInfo() {
     }
 
-    /**
+    /*
      *
      * @param id OptFlowNoInfoId
      * @param curNo Long
@@ -44,7 +44,7 @@ public class OptFlowNoInfo implements java.io.Serializable {
         this.curNo = curNo;
     }
 
-    /**
+    /*
      *
      * @param id OptFlowNoInfoId
      * @param curNo Long

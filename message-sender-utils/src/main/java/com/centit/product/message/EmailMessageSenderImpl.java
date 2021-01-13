@@ -1,4 +1,4 @@
-/**
+/*
  *
  */
 package com.centit.product.message;
@@ -13,7 +13,7 @@ import org.apache.commons.mail.MultiPartEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-/**
+/*
  *
  * @author ljy codefan
  * 2012-2-22

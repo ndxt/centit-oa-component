@@ -18,18 +18,18 @@ import java.util.Date;
 @ApiModel(value="接受者信息",description="接受者信息对象InnerMsgRecipient")
 public class InnerMsgRecipient implements Serializable{
 
-    /**
+    /*
      * 接收人主键
      */
     private static final long serialVersionUID = 1L;
-    /**
+    /*
      * 消息编码
      */
     @Id
     @Column(name="MSG_CODE")
     private String msgCode;
 
-    /**
+    /*
      * 接收人编号
      */
     @Id
@@ -39,13 +39,13 @@ public class InnerMsgRecipient implements Serializable{
     @ApiModelProperty(value = "接收人编号",name = "receive",required = true)
     private String receive;
 
-    /**
+    /*
      * 回复消息编号
      */
     @Column(name = "REPLY_MSG_CODE")
     private String replyMsgCode;
 
-    /**
+    /*
      *  消息类型:
         T=收件人
         C=抄送
@@ -55,7 +55,7 @@ public class InnerMsgRecipient implements Serializable{
     @Length(max = 1, message = "字段长度必须为{max}")
     private String mailType;
 
-    /**
+    /*
      * 消息状态：
      *  U=未读
         R=已读
@@ -65,7 +65,7 @@ public class InnerMsgRecipient implements Serializable{
     @Length(max = 1, message = "字段长度必须为{max}")
     private String msgState;
 
-    /**
+    /*
      * 接收时间
      */
     @OrderBy("desc")

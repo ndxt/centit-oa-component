@@ -12,7 +12,7 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-/**
+/*
  * @author : guo_jh
  * Date: 2018/6/29 10:46
  * Description:
@@ -42,7 +42,7 @@ public class WorkDay implements Serializable {
     public static Date toWorkDayDate(String date){
         return DatetimeOpt.convertStringToDate(date, "yyyyMMDD");
     }
-    /**
+    /*
      * 0: 未做标记（永远不会有，作为删除标记）
      * A：工作日放假
      * B：周末调班
