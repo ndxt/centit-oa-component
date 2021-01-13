@@ -12,6 +12,12 @@ import org.apache.commons.mail.EmailException;
 import org.apache.commons.mail.MultiPartEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import sun.misc.BASE64Encoder;
+
+import javax.mail.internet.MimeUtility;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 
 /*
  *
@@ -49,7 +55,7 @@ public class EmailMessageSenderImpl implements MessageSender {
     }
 
     private void sendEmailMessage(String mailTo,String mailFrom,String msgSubject,String msgContent)
-        throws EmailException{
+        throws EmailException, UnsupportedEncodingException {
 
         MultiPartEmail multMail = new MultiPartEmail();
         // SMTP
@@ -63,11 +69,11 @@ public class EmailMessageSenderImpl implements MessageSender {
         //multMail.setFrom(CodeRepositoryUtil.getValue("SysMail", "admin_email"));
         multMail.setFrom(mailFrom);
         multMail.addTo(mailTo);
-        multMail.setSubject(msgSubject);
+        multMail.setSubject(MimeUtility.decodeText(msgSubject));
         if(msgContent.endsWith("</html>") || msgContent.endsWith("</HTML>")){
             multMail.addPart(msgContent, "text/html;charset=utf-8");
         }else{
-            multMail.setMsg(msgContent);
+            multMail.setContent(msgContent, "text/plain;charset=gb2312");
         }
         multMail.send();
     }
@@ -79,9 +85,9 @@ public class EmailMessageSenderImpl implements MessageSender {
         if(userinfo==null){
             mailFrom = serverEmail;
             //CodeRepositoryUtil.getValue("SysMail", "admin_email");
-        }else
-            mailFrom =  userinfo.getRegEmail();
-
+        }else {
+            mailFrom = userinfo.getRegEmail();
+        }
         userinfo = CodeRepositoryUtil.getUserInfoByCode(receiver);
         if(userinfo==null){
             logger.error("找不到用户："+receiver);
@@ -94,7 +100,7 @@ public class EmailMessageSenderImpl implements MessageSender {
             try {
                 sendEmailMessage(email, mailFrom, message.getMsgSubject(), message.getMsgContent());
                 return ResponseData.successResponse;
-            } catch (EmailException e) {
+            } catch (EmailException | UnsupportedEncodingException e) {
                 logger.error(e.getMessage(),e);
                 return ResponseData.makeErrorMessage(e.getMessage());
             }
