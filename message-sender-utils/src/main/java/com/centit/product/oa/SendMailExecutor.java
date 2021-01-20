@@ -50,6 +50,7 @@ public class SendMailExecutor {
             //multMail.setFrom(CodeRepositoryUtil.getRight("SysMail", "admin_email"));
         multMail.setFrom(mailFrom);
         multMail.addTo(mailTo);
+        multMail.setCharset("utf-8");
         multMail.setSubject(msgSubject);
         msgContent = msgContent.trim();
         if(msgContent.endsWith("</html>") || msgContent.endsWith("</HTML>")){
