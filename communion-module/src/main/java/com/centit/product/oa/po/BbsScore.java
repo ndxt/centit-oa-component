@@ -39,7 +39,7 @@ public class BbsScore implements java.io.Serializable {
      * 文档评分 null
      */
     @Column(name = "BBS_SCORE")
-//    @NotBlank(message = "字段不能为空")
+//    @NotBlank(oa = "字段不能为空")
     private int  bbsScore;
 
     /*
@@ -66,13 +66,13 @@ public class BbsScore implements java.io.Serializable {
      * 用户代码 null
      */
     @Column(name = "USER_CODE")
-    //@Length(max = 32, message = "字段长度不能大于{max}")
+    //@Length(max = 32, oa = "字段长度不能大于{max}")
     private String  userCode;
     /*
      * 用户名称 null
      */
     @Column(name = "USER_NAME")
-    //@Length(max = 64, message = "字段长度不能大于{max}")
+    //@Length(max = 64, oa = "字段长度不能大于{max}")
     private String  userName;
     /*
      * 评价时间 null

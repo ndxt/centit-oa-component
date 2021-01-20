@@ -21,5 +21,12 @@
             <groupId>org.apache.commons</groupId>
             <artifactId>commons-email</artifactId>
         </dependency>
+
+        <!--获取OutLook的日程信息 OutlookMeetingUtils -->
+        <dependency>
+            <groupId>org.mnode.ical4j</groupId>
+            <artifactId>ical4j</artifactId>
+            <scope>test</scope>
+        </dependency>
     </dependencies>
 </project>
