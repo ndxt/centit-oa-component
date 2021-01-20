@@ -9,70 +9,24 @@ import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.NoticeMessage;
 import org.apache.commons.mail.EmailException;
-import org.apache.commons.mail.MultiPartEmail;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.UnsupportedEncodingException;
-
 /*
  *
- * @author ljy codefan
+ * @author codefan
  * 2012-2-22
  */
 public class EmailMessageSenderImpl implements MessageSender {
 
     private static final Logger logger = LoggerFactory.getLogger(EmailMessageSenderImpl.class);
 
-    //@Value("${oa.sender.email.hostName:}")
-    //@NotNull
-    private String hostName;
-
-    //@Value("${oa.sender.email.smtpPort:25}")
-    //@NotNull
-    private int smtpPort;
-
-    //@Value("${oa.sender.email.userName:}")
-    private String userName;
-
-    //@Value("${oa.sender.email.userPassword:}")
-    private String userPassword;
-
+    private SendMailExecutor emailSender;
     //@Value("${oa.sender.email.serverEmail:}")
     private String serverEmail;
 
     public EmailMessageSenderImpl(){
-        this.smtpPort = 25;
-    }
-
-    public EmailMessageSenderImpl(String hostName, int smtpPort){
-        this.hostName = hostName;
-        this.smtpPort = smtpPort;
-    }
-
-    private void sendEmailMessage(String mailTo,String mailFrom,String msgSubject,String msgContent)
-        throws EmailException, UnsupportedEncodingException {
-
-        MultiPartEmail multMail = new MultiPartEmail();
-        // SMTP
-        multMail.setHostName(hostName);
-                //CodeRepositoryUtil.getValue("SysMail", "host_name"));
-        multMail.setSmtpPort(smtpPort);
-         // 需要提供公用的消息用户名和密码
-        multMail.setAuthentication(userName, userPassword);
-                //CodeRepositoryUtil.getValue("SysMail", "host_user"),
-                //CodeRepositoryUtil.getValue("SysMail", "host_password"));
-        //multMail.setFrom(CodeRepositoryUtil.getValue("SysMail", "admin_email"));
-        multMail.setFrom(mailFrom);
-        multMail.addTo(mailTo);
-        multMail.setCharset("utf-8");
-        multMail.setSubject(msgSubject);
-        if(msgContent.endsWith("</html>") || msgContent.endsWith("</HTML>")){
-            multMail.addPart(msgContent, "text/html;charset=utf-8");
-        }else{
-            multMail.setContent(msgContent, "text/plain;charset=gb2312");
-        }
-        multMail.send();
+        emailSender = new SendMailExecutor();
     }
 
     @Override
@@ -95,9 +49,10 @@ public class EmailMessageSenderImpl implements MessageSender {
 
         if(email!=null && !"".equals(email)) {
             try {
-                sendEmailMessage(email, mailFrom, message.getMsgSubject(), message.getMsgContent());
+                emailSender.sendEmail(new String[]{email}, mailFrom, message.getMsgSubject(),
+                    message.getMsgContent(), null);
                 return ResponseData.successResponse;
-            } catch (EmailException | UnsupportedEncodingException e) {
+            } catch (EmailException e) {
                 logger.error(e.getMessage(),e);
                 return ResponseData.makeErrorMessage(e.getMessage());
             }
@@ -108,19 +63,19 @@ public class EmailMessageSenderImpl implements MessageSender {
     }
 
     public void setHostName(String hostName) {
-        this.hostName = hostName;
+        emailSender.setHostName(hostName);
     }
 
     public void setSmtpPort(int smtpPort) {
-        this.smtpPort = smtpPort;
+        emailSender.setSmtpPort(smtpPort);
     }
 
     public void setUserName(String userName) {
-        this.userName = userName;
+        emailSender.setUserName(userName);
     }
 
     public void setUserPassword(String userPassword) {
-        this.userPassword = userPassword;
+        emailSender.setUserPassword(userPassword);
     }
 
     public void setServerEmail(String serverEmail) {
