@@ -17,7 +17,7 @@ public class OptFlowNoPoolId implements java.io.Serializable {
     private static final long serialVersionUID = 1L;
 
     @Column(name = "OWNER_CODE")
-    @Length(max = 32, message = "字段长度不能大于{max}")
+    @Length(max = 80, message = "字段长度不能大于{max}")
     private String ownerCode;
 
     @Column(name = "CODE_DATE")
