@@ -122,7 +122,7 @@ public class EnterpriseCalendarController extends BaseController {
     }
 
     @ApiOperation("查询一定范围内所有非工作日。")
-    @RequestMapping(value = "/rangeWorkDays", method = RequestMethod.GET)
+    @RequestMapping(value = "/rangeHolidays", method = RequestMethod.GET)
     @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
     public List<WorkDay> rangeHolidays(HttpServletRequest request) {
         String startDate = WebOptUtils.getRequestFirstOneParameter(request,
