@@ -7,6 +7,7 @@ import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.product.oa.po.WorkDay;
 import com.centit.product.oa.service.WorkDayManager;
 import com.centit.support.algorithm.DatetimeOpt;
+import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -26,6 +27,7 @@ import java.util.List;
 
 @Controller
 @RequestMapping("/calendar")
+@Api(value = "企业工作日历", tags = "企业工作日历")
 public class EnterpriseCalendarController extends BaseController {
 
     @Resource
