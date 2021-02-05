@@ -30,11 +30,7 @@ public class BbsScore implements java.io.Serializable {
     @ValueGenerator(strategy = GeneratorType.UUID22)
     private String scoreId;
 
-    /*
-     * 评价的对象ID
-     */
-    @Column(name = "REF_OBJECT_ID")
-    private String refObjectId;
+
     /*
      * 文档评分 null
      */
@@ -62,6 +58,12 @@ public class BbsScore implements java.io.Serializable {
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optMethod;
 
+    /*
+     *操作业务标记
+     * */
+    @Column(name="OPT_TAG")
+    @Length(max = 200, message = "字段长度不能大于{max}")
+    private String optTag;
     /*
      * 用户代码 null
      */
@@ -96,7 +98,7 @@ public class BbsScore implements java.io.Serializable {
 
         this.setScoreId(other.getScoreId());
 
-        this.refObjectId= other.getRefObjectId();
+        this.optTag= other.getOptTag();
         this.bbsScore= other.getBbsScore();
         this.userCode= other.getUserCode();
         this.userName= other.getUserName();
@@ -110,8 +112,8 @@ public class BbsScore implements java.io.Serializable {
     if( other.getScoreId() != null)
         this.setScoreId(other.getScoreId());
 
-        if( other.getRefObjectId() != null)
-            this.refObjectId= other.getRefObjectId();
+        if( other.getOptTag() != null)
+            this.optTag= other.getOptTag();
         if( other.getBbsScore() != -1)
             this.bbsScore= other.getBbsScore();
         if( other.getUserCode() != null)
@@ -126,7 +128,7 @@ public class BbsScore implements java.io.Serializable {
 
     public BbsScore clearProperties(){
 
-        this.refObjectId= null;
+        this.optTag= null;
         this.bbsScore= -1;
         this.userCode= null;
         this.userName= null;

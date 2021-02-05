@@ -15,21 +15,17 @@ import java.util.Date;
 @Data
 @Entity
 @Table(name="M_BBS_PIECE")
-public class BbsPiece implements Serializable {
+public class BbsSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
     //信息id
     @Id
-    @Column(name="PIECE_ID")
     @ValueGenerator(strategy = GeneratorType.UUID22)
-    private String pieceId;
-
-    /*
-     * 讨论的对象ID
-     */
     @Column(name = "SUBJECT_ID")
     private String subjectId;
 
+    @Column(name="MODULE_ID")
+    private String moduleId;
 
     //发送消息的人
     @Column(name="USER_CODE")
@@ -46,8 +42,8 @@ public class BbsPiece implements Serializable {
     /*
      * N ： normal正常 U：update 被修改过
      */
-    @Column(name = "PIECE_SATE")
-    private String pieceState;
+    @Column(name = "SUBJECT_SATE")
+    private String subjectState;
 
     @Column(name = "LAST_UPDATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
@@ -60,17 +56,35 @@ public class BbsPiece implements Serializable {
     private JSONObject pieceContent;
    // private String pieceContent;
 
-    //回复（引用）的消息id
-    @Column(name = "REPLY_ID")
-    private String replyId;
+    /*
+     * 项目ID 类似与 OSID
+     */
+   /* @Column(name="APPLICATION_ID")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String applicationId;*/
 
-    //回复（引用）的消息id对应的发送人
-    @Column(name = "REPLY_NAME")
-    @DictionaryMap(fieldName="replayUserName",value="userCode")
-    private String replayName;
 
-    public BbsPiece(){
-        this.pieceState = "N";
+    /*
+     *功能模块 */
+    @Column(name="OPT_ID")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String optId;
+
+    /*
+     *操作方法 */
+    @Column(name="OPT_METHOD")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String optMethod;
+
+    /*
+     *操作业务标记
+     * */
+    @Column(name="OPT_TAG")
+    @Length(max = 200, message = "字段长度不能大于{max}")
+    private String optTag;
+
+    public BbsSubject(){
+        this.subjectState = "N";
     }
 
 }
