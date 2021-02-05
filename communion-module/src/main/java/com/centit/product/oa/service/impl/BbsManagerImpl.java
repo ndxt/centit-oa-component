@@ -94,9 +94,9 @@ public class BbsManagerImpl implements BbsManager {
             throw new ObjectException("找不到被回复的对象："+pieceId);
         }
         bbsPiece.setReplyId(pieceId);
-        bbsPiece.setOptId(oldPiece.getOptId());
+        /*bbsPiece.setOptId(oldPiece.getOptId());
         bbsPiece.setApplicationId(oldPiece.getApplicationId());
-        bbsPiece.setRefObjectId(oldPiece.getRefObjectId());
+        bbsPiece.setRefObjectId(oldPiece.getRefObjectId());*/
         bbsPieceDao.saveNewObject(bbsPiece);
     }
 
@@ -104,11 +104,11 @@ public class BbsManagerImpl implements BbsManager {
     public void saveBbsScore(BbsScore bbsScore) {
         int isExists  = bbsScoreDao.countObject(CollectionsOpt.createHashMap(
             "applicationId", bbsScore.getApplicationId(),
-            "optId", bbsScore.getOptId(),"refObjectId", bbsScore.getRefObjectId(),
+            "optId", bbsScore.getOptId(),"optTag", bbsScore.getOptTag(),
             "userCode", bbsScore.getUserCode()
         ));
         if(isExists>0){
-            throw new ObjectException("用户"+bbsScore.getUserCode()+"已经对："+bbsScore.getRefObjectId()+"评分过！");
+            throw new ObjectException("用户"+bbsScore.getUserCode()+"已经对："+bbsScore.getOptTag()+"评分过！");
         }
         bbsScoreDao.saveNewObject(bbsScore);
     }
