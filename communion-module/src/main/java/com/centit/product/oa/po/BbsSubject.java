@@ -38,6 +38,11 @@ public class BbsSubject implements Serializable {
     @Temporal(TemporalType.TIMESTAMP)
     @ValueGenerator(occasion = GeneratorTime.NEW, strategy = GeneratorType.FUNCTION, value = "today()")
     private Date createTime;
+    /**
+     * 主题类别 varchar(32)
+     */
+    @Column(name = "SUBJECT_TYPE")
+    private String subjectType;
 
     /*
      * N ： normal正常 U：update 被修改过
