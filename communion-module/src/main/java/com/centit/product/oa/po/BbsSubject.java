@@ -47,9 +47,25 @@ public class BbsSubject implements Serializable {
 
     @Column(name = "LAST_UPDATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
-    @ValueGenerator(occasion = GeneratorTime.NEW_UPDATE, strategy = GeneratorType.FUNCTION, value = "today()")
+    //@ValueGenerator(occasion = GeneratorTime.NEW_UPDATE, strategy = GeneratorType.FUNCTION, value = "today()")
     private Date lastUpdateTime;
 
+    //回复次数
+    @Column(name="REPLY_TIMES")
+    private int replyTimes;
+
+    @OrderBy("DESC")
+    @Column(name = "LAST_REPLY_TIME")
+    @Temporal(TemporalType.TIMESTAMP)
+    //@ValueGenerator(occasion = GeneratorTime.NEW_UPDATE, strategy = GeneratorType.FUNCTION, value = "today()")
+    private Date lastReplyTime;
+
+    //评分次数
+    @Column(name="SCORE_TIMES")
+    private int scoreTimes;
+    //评分总数
+    @Column(name="SCORE_SUM")
+    private int scoreSum;
     //消息的内容
     @Column(name="PIECE_CONTENT")
     @Length(max = 2000, message = "字段长度不能大于{max}")
@@ -59,10 +75,9 @@ public class BbsSubject implements Serializable {
     /*
      * 项目ID 类似与 OSID
      */
-   /* @Column(name="APPLICATION_ID")
+    @Column(name="APPLICATION_ID")
     @Length(max = 64, message = "字段长度不能大于{max}")
-    private String applicationId;*/
-
+    private String applicationId;
 
     /*
      *功能模块 */

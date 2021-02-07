@@ -30,7 +30,6 @@ public class BbsPiece implements Serializable {
     @Column(name = "SUBJECT_ID")
     private String subjectId;
 
-
     //发送消息的人
     @Column(name="USER_CODE")
     @DictionaryMap(fieldName="userName",value="userCode")
