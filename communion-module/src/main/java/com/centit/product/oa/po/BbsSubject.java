@@ -14,7 +14,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_BBS_PIECE")
+@Table(name="M_BBS_SUBJECT")
 public class BbsSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
