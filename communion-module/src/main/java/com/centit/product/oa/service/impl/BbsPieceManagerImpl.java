@@ -61,14 +61,4 @@ public class BbsPieceManagerImpl implements BbsPieceManager {
         bbsPieceDao.updateObject(bbsPiece);
     }
 
-    /**
-     * 查询某话题的评论列表信息
-     *
-     * @param subjectId 话题id
-     * @return List<BbsPiece>
-     */
-    @Override
-    public List<BbsPiece> getPieceBySubjectId(String subjectId) {
-        return bbsPieceDao.getPieceBySubjectId(subjectId);
-    }
 }

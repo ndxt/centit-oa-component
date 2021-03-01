@@ -29,12 +29,4 @@ public interface BbsModuleManager extends BaseEntityManager<BbsModule, String> {
      */
     void updateBbsModule(BbsModule bbsModule);
 
-    /**
-     * 查询模块列表信息
-     *
-     * @param filterMap 筛选条件
-     * @return List<BbsModule>
-     */
-    List<BbsModule> getBbsModuleList(Map<String, Object> filterMap);
-
 }

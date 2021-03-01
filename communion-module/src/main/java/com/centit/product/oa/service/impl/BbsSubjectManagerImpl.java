@@ -1,15 +1,12 @@
 package com.centit.product.oa.service.impl;
 
 import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
-import com.centit.product.oa.dao.BbsModuleDao;
 import com.centit.product.oa.dao.BbsSubjectDao;
-import com.centit.product.oa.po.BbsModule;
 import com.centit.product.oa.po.BbsSubject;
 import com.centit.product.oa.service.BbsSubjectManager;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -78,14 +75,4 @@ public class BbsSubjectManagerImpl extends BaseEntityManagerImpl<BbsSubject, Str
         bbsSubjectDao.updateObject(bbsSubject);
     }
 
-    /**
-     * 根据模块id查询话题列表信息
-     *
-     * @param moduleId 模块id
-     * @return List<BbsSubject>
-     */
-    @Override
-    public List<BbsSubject> getSubjectByModuleId(String moduleId) {
-        return bbsSubjectDao.getSubjectByModuleId(moduleId);
-    }
 }

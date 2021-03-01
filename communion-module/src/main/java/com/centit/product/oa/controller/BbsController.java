@@ -138,6 +138,21 @@ public class BbsController extends BaseController{
         JsonResultUtils.writeSuccessJson(response);
     }
 
+    @DeleteMapping(value = "/delBbsSubject/{subjectId}")
+    @ApiOperation(value = "删除话题信息", notes = "删除话题信息,并没有删除该话题数据，而是把dataValidFlag字段标记为0。")
+    @ApiImplicitParam(name = "subjectId", value = "话题ID",required = true,dataType = "String")
+    @WrapUpResponseBody
+    public void delBbsSubject(@PathVariable String subjectId, HttpServletResponse response) {
+        bbsSubjectManager.deleteBbsSubject(subjectId);
+        JsonResultUtils.writeSuccessJson(response);
+    }
+
+    //添加评论信息
+
+    //查询话题下的评论信息列表
+
+    //删除评论信息
+
 
 
 

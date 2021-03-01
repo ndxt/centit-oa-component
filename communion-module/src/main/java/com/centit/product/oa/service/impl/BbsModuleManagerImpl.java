@@ -75,16 +75,5 @@ public class BbsModuleManagerImpl extends BaseEntityManagerImpl<BbsModule, Strin
         bbsModuleDao.updateObject(bbsModule);
     }
 
-    /**
-     * 查询模块列表信息
-     *
-     * @param filterMap 筛选条件
-     * @return List<BbsModule>
-     */
-    @Override
-    public List<BbsModule> getBbsModuleList(Map<String, Object> filterMap) {
-        return bbsModuleDao.listObjects(filterMap);
-    }
-
 
 }

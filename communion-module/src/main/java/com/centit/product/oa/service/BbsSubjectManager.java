@@ -29,13 +29,4 @@ public interface BbsSubjectManager extends BaseEntityManager<BbsSubject, String>
      */
     void updateBbsModule(BbsSubject bbsSubject);
 
-    /**
-     * 根据模块id查询话题列表信息
-     *
-     * @param moduleId 模块id
-     * @return List<BbsSubject>
-     */
-    List<BbsSubject> getSubjectByModuleId(String moduleId);
-
-
 }

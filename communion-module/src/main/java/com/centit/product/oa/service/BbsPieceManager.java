@@ -27,12 +27,4 @@ public interface BbsPieceManager {
      */
     void updateBbsPiece(BbsPiece bbsPiece);
 
-    /**
-     * 查询某话题的评论列表信息
-     *
-     * @param subjectId 话题id
-     * @return List<BbsPiece>
-     */
-    List<BbsPiece> getPieceBySubjectId(String subjectId);
-
 }

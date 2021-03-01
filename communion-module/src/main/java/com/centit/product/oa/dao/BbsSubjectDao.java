@@ -38,18 +38,6 @@ public class BbsSubjectDao extends BaseDaoImpl<BbsSubject, String> {
         filterField.put("scoreSum", CodeBook.EQUAL_HQL_ID);
         filterField.put("subjectContent", CodeBook.EQUAL_HQL_ID);
         filterField.put("dataValidFlag", CodeBook.EQUAL_HQL_ID);
-        return null;
-    }
-
-    /**
-     * 根据模块id查询话题列表信息
-     *
-     * @param moduleId 模块id
-     * @return List<BbsSubject>
-     */
-    public List<BbsSubject> getSubjectByModuleId(String moduleId) {
-        Map<String, Object> param = new HashMap<>();
-        param.put("moduleId", moduleId);
-        return this.listObjects(param);
+        return filterField;
     }
 }
