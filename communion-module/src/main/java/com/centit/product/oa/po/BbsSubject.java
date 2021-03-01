@@ -1,6 +1,5 @@
 package com.centit.product.oa.po;
 
-import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.core.dao.DictionaryMap;
 import com.centit.support.database.orm.GeneratorTime;
 import com.centit.support.database.orm.GeneratorType;
@@ -18,12 +17,13 @@ import java.util.Date;
 public class BbsSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
-    //信息id
+    //话题对象id
     @Id
     @ValueGenerator(strategy = GeneratorType.UUID22)
     @Column(name = "SUBJECT_ID")
     private String subjectId;
 
+    //模块id
     @Column(name="MODULE_ID")
     private String moduleId;
 
@@ -52,59 +52,127 @@ public class BbsSubject implements Serializable {
 
     @Column(name = "LAST_UPDATE_TIME")
     @Temporal(TemporalType.TIMESTAMP)
-    //@ValueGenerator(occasion = GeneratorTime.NEW_UPDATE, strategy = GeneratorType.FUNCTION, value = "today()")
+    @ValueGenerator(occasion = GeneratorTime.NEW_UPDATE, strategy = GeneratorType.FUNCTION, value = "today()")
     private Date lastUpdateTime;
 
     //回复次数
     @Column(name="REPLY_TIMES")
     private int replyTimes;
 
-    @OrderBy("DESC")
-    @Column(name = "LAST_REPLY_TIME")
-    @Temporal(TemporalType.TIMESTAMP)
-    //@ValueGenerator(occasion = GeneratorTime.NEW_UPDATE, strategy = GeneratorType.FUNCTION, value = "today()")
-    private Date lastReplyTime;
-
     //评分次数
     @Column(name="SCORE_TIMES")
     private int scoreTimes;
+
     //评分总数
     @Column(name="SCORE_SUM")
     private int scoreSum;
-    //消息的内容
-    @Column(name="PIECE_CONTENT")
+
+    //话题内容
+    @Column(name="SUBJECT_CONTENT")
     @Length(max = 2000, message = "字段长度不能大于{max}")
-    private JSONObject pieceContent;
-   // private String pieceContent;
+    private String subjectContent;
 
-    /*
-     * 项目ID 类似与 OSID
-     */
-    @Column(name="APPLICATION_ID")
-    @Length(max = 64, message = "字段长度不能大于{max}")
-    private String applicationId;
-
-    /*
-     *功能模块 */
-    @Column(name="OPT_ID")
-    @Length(max = 64, message = "字段长度不能大于{max}")
-    private String optId;
-
-    /*
-     *操作方法 */
-    @Column(name="OPT_METHOD")
-    @Length(max = 64, message = "字段长度不能大于{max}")
-    private String optMethod;
-
-    /*
-     *操作业务标记
-     * */
-    @Column(name="OPT_TAG")
-    @Length(max = 200, message = "字段长度不能大于{max}")
-    private String optTag;
+    //数据有效性 0无效、1有效
+    @Column(name="DATA_VALID_FLAG")
+    private String dataValidFlag;
 
     public BbsSubject(){
         this.subjectState = "N";
     }
 
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public String getModuleId() {
+        return moduleId;
+    }
+
+    public void setModuleId(String moduleId) {
+        this.moduleId = moduleId;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getSubjectType() {
+        return subjectType;
+    }
+
+    public void setSubjectType(String subjectType) {
+        this.subjectType = subjectType;
+    }
+
+    public String getSubjectState() {
+        return subjectState;
+    }
+
+    public void setSubjectState(String subjectState) {
+        this.subjectState = subjectState;
+    }
+
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public int getReplyTimes() {
+        return replyTimes;
+    }
+
+    public void setReplyTimes(int replyTimes) {
+        this.replyTimes = replyTimes;
+    }
+
+    public int getScoreTimes() {
+        return scoreTimes;
+    }
+
+    public void setScoreTimes(int scoreTimes) {
+        this.scoreTimes = scoreTimes;
+    }
+
+    public int getScoreSum() {
+        return scoreSum;
+    }
+
+    public void setScoreSum(int scoreSum) {
+        this.scoreSum = scoreSum;
+    }
+
+    public String getSubjectContent() {
+        return subjectContent;
+    }
+
+    public void setSubjectContent(String subjectContent) {
+        this.subjectContent = subjectContent;
+    }
+
+    public String getDataValidFlag() {
+        return dataValidFlag;
+    }
+
+    public void setDataValidFlag(String dataValidFlag) {
+        this.dataValidFlag = dataValidFlag;
+    }
 }

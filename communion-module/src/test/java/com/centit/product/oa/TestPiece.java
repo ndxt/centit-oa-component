@@ -37,38 +37,38 @@ public class TestPiece {
 
     /*@Autowired
     private BbsController bbsController;*/
-    @Test
-    public void batchcreateBbsPieceTest(){
-        /*BbsPiece bbsPiece = new BbsPiece();
-        bbsPiece.setApplicationId("asjfioadfa");
-        bbsPiece.setOptId("sfs");
-        bbsPiece.setOptTag("你好");
-        bbsManager.saveBbsPiece(bbsPiece);
-        System.out.println("successful");*/
-        for (int i=0;i<10;i++){
-            createBbsPieceTest();
-        }
-    }
+//    @Test
+//    public void batchcreateBbsPieceTest(){
+//        BbsPiece bbsPiece = new BbsPiece();
+//        bbsPiece.setApplicationId("asjfioadfa");
+//        bbsPiece.setOptId("sfs");
+//        bbsPiece.setOptTag("你好");
+//        bbsManager.saveBbsPiece(bbsPiece);
+//        System.out.println("successful");
+//        for (int i=0;i<10;i++){
+//            createBbsPieceTest();
+//        }
+//    }
    // @Before
-    @Test
-    public void  createBbsPieceTest(){
-        BbsPiece bbsPiece = new BbsPiece();
-        bbsPiece.setApplicationId("asjfioadfa");
-        bbsPiece.setOptId("sfs");
-        bbsPiece.setOptTag("你好啊");
-        bbsManager.saveBbsPiece(bbsPiece);
-        System.out.println("successful");
-    }
+//    @Test
+//    public void  createBbsPieceTest(){
+//        BbsPiece bbsPiece = new BbsPiece();
+//        bbsPiece.setApplicationId("asjfioadfa");
+//        bbsPiece.setOptId("sfs");
+//        bbsPiece.setOptTag("你好啊");
+//        bbsManager.saveBbsPiece(bbsPiece);
+//        System.out.println("successful");
+//    }
 
-    @Test
-    public void updateBbsPieceTest(){
-        BbsPiece bbsPiece = new BbsPiece();
-        bbsPiece.setApplicationId("asjfioadfa");
-        bbsPiece.setOptId("sfs");
-        bbsPiece.setOptTag("你好啊");
-        bbsManager.saveBbsPiece(bbsPiece);
-        System.out.println("successful");
-    }
+//    @Test
+//    public void updateBbsPieceTest(){
+//        BbsPiece bbsPiece = new BbsPiece();
+//        bbsPiece.setApplicationId("asjfioadfa");
+//        bbsPiece.setOptId("sfs");
+//        bbsPiece.setOptTag("你好啊");
+//        bbsManager.saveBbsPiece(bbsPiece);
+//        System.out.println("successful");
+//    }
 
     //listBbsPieces
     @Test
@@ -102,15 +102,15 @@ public class TestPiece {
     }
 
     //对Bbscontroller中的方法进行测试
-    @Test
-    public void createBbsPieceControllerTest(){
-        BbsPiece bbsPiece = new BbsPiece();
-        bbsPiece.setApplicationId("1234648");
-        bbsPiece.setOptId("query");
-        bbsPiece.setOptTag("欢迎回来");
-      //  bbsController.saveBbsPiece(bbsPiece);
-        System.out.println("hahah");
-    }
+//    @Test
+//    public void createBbsPieceControllerTest(){
+//        BbsPiece bbsPiece = new BbsPiece();
+//        bbsPiece.setApplicationId("1234648");
+//        bbsPiece.setOptId("query");
+//        bbsPiece.setOptTag("欢迎回来");
+//      //  bbsController.saveBbsPiece(bbsPiece);
+//        System.out.println("hahah");
+//    }
 
     @Test
     public void jsonTest(){

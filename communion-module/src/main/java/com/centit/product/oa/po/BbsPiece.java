@@ -1,6 +1,5 @@
 package com.centit.product.oa.po;
 
-import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.core.dao.DictionaryMap;
 import com.centit.support.database.orm.GeneratorTime;
 import com.centit.support.database.orm.GeneratorType;
@@ -25,7 +24,7 @@ public class BbsPiece implements Serializable {
     private String pieceId;
 
     /*
-     * 讨论的对象ID
+     * 话题对象id
      */
     @Column(name = "SUBJECT_ID")
     private String subjectId;
@@ -56,8 +55,7 @@ public class BbsPiece implements Serializable {
     //消息的内容
     @Column(name="PIECE_CONTENT")
     @Length(max = 2000, message = "字段长度不能大于{max}")
-    private JSONObject pieceContent;
-   // private String pieceContent;
+    private String pieceContent;
 
     //回复（引用）的消息id
     @Column(name = "REPLY_ID")
@@ -68,8 +66,107 @@ public class BbsPiece implements Serializable {
     @DictionaryMap(fieldName="replayUserName",value="userCode")
     private String replayName;
 
-    public BbsPiece(){
-        this.pieceState = "N";
+    //数据有效性 0无效、1有效
+    @Column(name="DATA_VALID_FLAG")
+    private String dataValidFlag;
+
+    /**
+     * 构造方法
+     */
+    public BbsPiece() {
     }
 
+    public BbsPiece(String pieceId, String subjectId, String userCode, Date createTime, String pieceState,
+                    Date lastUpdateTime, String pieceContent, String replyId, String replayName, String dataValidFlag) {
+        this.pieceId = pieceId;
+        this.subjectId = subjectId;
+        this.userCode = userCode;
+        this.createTime = createTime;
+        this.pieceState = pieceState;
+        this.lastUpdateTime = lastUpdateTime;
+        this.pieceContent = pieceContent;
+        this.replyId = replyId;
+        this.replayName = replayName;
+        this.dataValidFlag = dataValidFlag;
+    }
+
+    public String getPieceId() {
+        return pieceId;
+    }
+
+    public void setPieceId(String pieceId) {
+        this.pieceId = pieceId;
+    }
+
+    public String getSubjectId() {
+        return subjectId;
+    }
+
+    public void setSubjectId(String subjectId) {
+        this.subjectId = subjectId;
+    }
+
+    public String getUserCode() {
+        return userCode;
+    }
+
+    public void setUserCode(String userCode) {
+        this.userCode = userCode;
+    }
+
+    public Date getCreateTime() {
+        return createTime;
+    }
+
+    public void setCreateTime(Date createTime) {
+        this.createTime = createTime;
+    }
+
+    public String getPieceState() {
+        return pieceState;
+    }
+
+    public void setPieceState(String pieceState) {
+        this.pieceState = pieceState;
+    }
+
+    public Date getLastUpdateTime() {
+        return lastUpdateTime;
+    }
+
+    public void setLastUpdateTime(Date lastUpdateTime) {
+        this.lastUpdateTime = lastUpdateTime;
+    }
+
+    public String getPieceContent() {
+        return pieceContent;
+    }
+
+    public void setPieceContent(String pieceContent) {
+        this.pieceContent = pieceContent;
+    }
+
+    public String getReplyId() {
+        return replyId;
+    }
+
+    public void setReplyId(String replyId) {
+        this.replyId = replyId;
+    }
+
+    public String getReplayName() {
+        return replayName;
+    }
+
+    public void setReplayName(String replayName) {
+        this.replayName = replayName;
+    }
+
+    public String getDataValidFlag() {
+        return dataValidFlag;
+    }
+
+    public void setDataValidFlag(String dataValidFlag) {
+        this.dataValidFlag = dataValidFlag;
+    }
 }

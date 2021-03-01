@@ -1,9 +1,12 @@
 package com.centit.product.oa.dao;
 
+import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.product.oa.po.BbsPiece;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 @Repository
 public class BbsPieceDao extends BaseDaoImpl<BbsPiece, String> {
@@ -15,6 +18,30 @@ public class BbsPieceDao extends BaseDaoImpl<BbsPiece, String> {
      */
     @Override
     public Map<String, String> getFilterField() {
+        Map<String, String> filterField = new HashMap<>();
+        filterField.put("pieceId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("subjectId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("pieceState" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("lastUpdateTime" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("pieceContent" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("replyId" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("replayName" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("dataValidFlag" , CodeBook.EQUAL_HQL_ID);
         return null;
+    }
+
+    /**
+     * 查询话题下的评论列表信息
+     *
+     * @param subjectId 话题id
+     * @return List<BbsPiece>
+     */
+    public List<BbsPiece> getPieceBySubjectId(String subjectId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("dataValidFlag", "1");
+        params.put("subjectId", subjectId);
+        return this.listObjects(params);
     }
 }

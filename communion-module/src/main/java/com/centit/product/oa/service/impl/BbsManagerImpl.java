@@ -10,6 +10,9 @@ import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
+import org.apache.commons.lang3.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,9 +30,10 @@ public class BbsManagerImpl implements BbsManager {
     @Autowired
     private BbsScoreDao bbsScoreDao;
 
+    protected static Logger logger = LoggerFactory.getLogger(BbsManagerImpl.class);
+
     @Override
     public void saveBbsPiece(BbsPiece bbsPiece) {
-        bbsPiece.setPieceId(null);
         bbsPieceDao.saveNewObject(bbsPiece);
     }
 
@@ -63,11 +67,16 @@ public class BbsManagerImpl implements BbsManager {
 
     @Override
     public BbsPiece getBbsPieces(String pieceId) {
-        List<BbsPiece> pieces = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
-        if (pieces.isEmpty()){
+//        List<BbsPiece> pieces = bbsPieceDao.listObjectsByProperty("pieceId", pieceId);
+//        if (pieces.isEmpty()){
+//            return null;
+//        }
+//        return pieces.get(0);
+        if(StringUtils.isBlank(pieceId)) {
+            logger.warn("传入参数不合法，请重新传入！");
             return null;
         }
-        return pieces.get(0);
+        return bbsPieceDao.getObjectById(pieceId);
     }
 
     @Override
