@@ -30,4 +30,6 @@ public class BbsPieceDao extends BaseDaoImpl<BbsPiece, String> {
         filterField.put("dataValidFlag" , CodeBook.EQUAL_HQL_ID);
         return filterField;
     }
+
+
 }

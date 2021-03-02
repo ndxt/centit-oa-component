@@ -1,25 +1,34 @@
 package com.centit.product.oa.service.impl;
 
+import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.po.BbsPiece;
 import com.centit.product.oa.service.BbsPieceManager;
+import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+import javax.annotation.Resource;
+import javax.validation.constraints.NotNull;
+import java.util.*;
 
 @Service
 @Transactional
-public class BbsPieceManagerImpl implements BbsPieceManager {
+public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String, BbsPieceDao> implements BbsPieceManager {
 
     private static Logger logger = LoggerFactory.getLogger(BbsPieceManagerImpl.class);
 
-    @Autowired
     private BbsPieceDao bbsPieceDao;
+
+    @Resource(name = "bbsPieceDao")
+    @NotNull
+    public void setBbsModuleDao(BbsPieceDao baseDao) {
+        this.bbsPieceDao = baseDao;
+        setBaseDao(this.bbsPieceDao);
+    }
 
     /**
      * 添加评论信息
@@ -28,6 +37,11 @@ public class BbsPieceManagerImpl implements BbsPieceManager {
      */
     @Override
     public void saveBbsPiece(BbsPiece bbsPiece) {
+        //设置主键id为null,以便自动生成UUID22编码
+        bbsPiece.setPieceId(null);
+        //设置数据有效
+        bbsPiece.setDataValidFlag("1");
+        bbsPiece.setPieceState("N");
         bbsPieceDao.saveNewObject(bbsPiece);
     }
 
@@ -60,5 +74,31 @@ public class BbsPieceManagerImpl implements BbsPieceManager {
     public void updateBbsPiece(BbsPiece bbsPiece) {
         bbsPieceDao.updateObject(bbsPiece);
     }
+
+    @Override
+    public List<Map<String, Object>> getSubjectPieces(String subjectId) {
+        List<Map<String, Object>> result = new ArrayList<>();
+
+        Map<String, Object> params = new HashMap<>();
+        params.put("dataValidFlag", "1");
+        params.put("subjectId", subjectId);
+        params.put("replyId", "0");
+        List<BbsPiece> bbsPieces = bbsPieceDao.listObjects(params);
+        if(CollectionUtils.isNotEmpty(bbsPieces)) {
+            Map<String, Object> filterMap = new HashMap<>();
+            for (BbsPiece bbsPiece : bbsPieces) {
+                Map<String, Object> data = new HashMap<>();
+                //获取该评论下的回复信息
+                String pieceId = bbsPiece.getPieceId();
+                filterMap.put("replyId", pieceId);
+                List<BbsPiece> replyInfos = bbsPieceDao.listObjects(filterMap);
+                data.put("bbsPiece", bbsPiece);
+                data.put("replyInfos", replyInfos);
+                result.add(data);
+            }
+        }
+        return result;
+    }
+
 
 }
