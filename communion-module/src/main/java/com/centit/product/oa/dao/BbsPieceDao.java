@@ -7,6 +7,7 @@ import org.springframework.stereotype.Repository;
 
 import java.util.HashMap;
 import java.util.Map;
+
 @Repository
 public class BbsPieceDao extends BaseDaoImpl<BbsPiece, String> {
 
@@ -18,16 +19,16 @@ public class BbsPieceDao extends BaseDaoImpl<BbsPiece, String> {
     @Override
     public Map<String, String> getFilterField() {
         Map<String, String> filterField = new HashMap<>();
-        filterField.put("pieceId" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("subjectId" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("pieceState" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("lastUpdateTime" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("pieceContent" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("replyId" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("replayName" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("dataValidFlag" , CodeBook.EQUAL_HQL_ID);
+        filterField.put("pieceId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("subjectId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("userCode", CodeBook.EQUAL_HQL_ID);
+        filterField.put("createTime", CodeBook.EQUAL_HQL_ID);
+        filterField.put("pieceState", CodeBook.EQUAL_HQL_ID);
+        filterField.put("lastUpdateTime", CodeBook.EQUAL_HQL_ID);
+        filterField.put("pieceContent", CodeBook.EQUAL_HQL_ID);
+        filterField.put("replyId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("replayName", CodeBook.EQUAL_HQL_ID);
+        filterField.put("dataValidFlag", CodeBook.EQUAL_HQL_ID);
         return filterField;
     }
 

@@ -1,5 +1,8 @@
 /* my sql */
--- drop table if exists F_OptFlowNoInfo;
+drop table if exists M_BBS_MODULE;
+drop table if exists M_BBS_PIECE;
+drop table if exists M_BBS_SUBJECT;
+drop table if exists M_BBS_SCORE;
 
 /*==============================================================*/
 /* Table: M_BBS_MODULE                                          */
@@ -56,17 +59,19 @@ CREATE TABLE M_BBS_SUBJECT (
 /* Table: M_BBS_SCORE                                           */
 /*==============================================================*/
 CREATE TABLE M_BBS_SCORE (
-  SCORE_ID 								 varchar(22)  not null,
-	BBS_SCORE 							 numeric(6,0) not null default 0,
-	APPLICATION_ID                varchar(64),
-	OPT_ID							  varchar(64),
-	OPT_METHOD							 varchar(64),
-	OPT_TAG         varchar(200),
-	USER_CODE						 varchar(32),
-	USER_NAME								 varchar(64),
-	CREATE_TIME							 date,
+  SCORE_ID 								 varchar(22)  not null comment '主键id',
+	SUBJECT_ID 							 	 varchar(22)  not null comment '话题id',
+	BBS_SCORE							 		 NUMERIC(11) comment '评分分数',
+	USER_CODE                  varchar(32) comment '用户编码',
+	CREATE_TIME							   timestamp(6) NULL DEFAULT NULL comment '评分时间',
   PRIMARY KEY (SCORE_ID)
-);
+) comment = '评分信息表';
+
+--- 清库脚本
+--- DELETE FROM M_BBS_MODULE
+--- DELETE FROM M_BBS_PIECE
+--- DELETE FROM M_BBS_SUBJECT
+--- DELETE FROM M_BBS_SCORE
 
 
 

@@ -4,6 +4,7 @@ import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.product.oa.dao.BbsModuleDao;
 import com.centit.product.oa.po.BbsModule;
 import com.centit.product.oa.service.BbsModuleManager;
+import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +74,18 @@ public class BbsModuleManagerImpl extends BaseEntityManagerImpl<BbsModule, Strin
     @Override
     public void updateBbsModule(BbsModule bbsModule) {
         bbsModuleDao.updateObject(bbsModule);
+    }
+
+    /**
+     * 查询模块分页列表信息
+     *
+     * @param filterMap 查询条件
+     * @param pageDesc  分页参数
+     * @return List<BbsModule>
+     */
+    @Override
+    public List<BbsModule> getModuleList(Map<String, Object> filterMap, PageDesc pageDesc) {
+        return bbsModuleDao.listObjectsByProperties(filterMap, pageDesc);
     }
 
 

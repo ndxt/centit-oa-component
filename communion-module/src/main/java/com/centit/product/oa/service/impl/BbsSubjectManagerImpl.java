@@ -4,6 +4,7 @@ import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.product.oa.dao.BbsSubjectDao;
 import com.centit.product.oa.po.BbsSubject;
 import com.centit.product.oa.service.BbsSubjectManager;
+import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -13,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
 import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -73,6 +75,18 @@ public class BbsSubjectManagerImpl extends BaseEntityManagerImpl<BbsSubject, Str
     @Override
     public void updateBbsModule(BbsSubject bbsSubject) {
         bbsSubjectDao.updateObject(bbsSubject);
+    }
+
+    /**
+     * 查询模块下的话题分页列表
+     *
+     * @param filterMap 查询条件
+     * @param pageDesc  分页参数
+     * @return List<BbsSubject>
+     */
+    @Override
+    public List<BbsSubject> getModuleSubjectList(Map<String, Object> filterMap, PageDesc pageDesc) {
+        return bbsSubjectDao.listObjectsByProperties(filterMap, pageDesc);
     }
 
 }

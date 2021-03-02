@@ -2,18 +2,24 @@ package com.centit.product.oa.service.impl;
 
 import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.product.oa.dao.BbsPieceDao;
+import com.centit.product.oa.dao.BbsSubjectDao;
 import com.centit.product.oa.po.BbsPiece;
+import com.centit.product.oa.po.BbsSubject;
 import com.centit.product.oa.service.BbsPieceManager;
 import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import javax.validation.constraints.NotNull;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @Service
 @Transactional
@@ -30,6 +36,9 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         setBaseDao(this.bbsPieceDao);
     }
 
+    @Autowired
+    private BbsSubjectDao bbsSubjectDao;
+
     /**
      * 添加评论信息
      *
@@ -43,6 +52,11 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         bbsPiece.setDataValidFlag("1");
         bbsPiece.setPieceState("N");
         bbsPieceDao.saveNewObject(bbsPiece);
+
+        //评论成功后，更新M_BBS_SUBJECT表回复次数字段
+        BbsSubject subject = bbsSubjectDao.getObjectById(bbsPiece.getSubjectId());
+        subject.setReplyTimes(subject.getReplyTimes() + 1);
+        bbsSubjectDao.updateObject(subject);
     }
 
     /**
@@ -63,6 +77,11 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         }
         bbsPiece.setDataValidFlag("0");
         bbsPieceDao.updateObject(bbsPiece);
+
+        //删除成功后，更新M_BBS_SUBJECT表回复次数字段
+        BbsSubject subject = bbsSubjectDao.getObjectById(bbsPiece.getSubjectId());
+        subject.setReplyTimes(subject.getReplyTimes() - 1);
+        bbsSubjectDao.updateObject(subject);
     }
 
     /**
@@ -75,6 +94,12 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         bbsPieceDao.updateObject(bbsPiece);
     }
 
+    /**
+     * 获取话题下的评论信息
+     *
+     * @param subjectId 话题id
+     * @return List<Map < String ,   Object>>
+     */
     @Override
     public List<Map<String, Object>> getSubjectPieces(String subjectId) {
         List<Map<String, Object>> result = new ArrayList<>();
@@ -84,7 +109,7 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         params.put("subjectId", subjectId);
         params.put("replyId", "0");
         List<BbsPiece> bbsPieces = bbsPieceDao.listObjects(params);
-        if(CollectionUtils.isNotEmpty(bbsPieces)) {
+        if (CollectionUtils.isNotEmpty(bbsPieces)) {
             Map<String, Object> filterMap = new HashMap<>();
             for (BbsPiece bbsPiece : bbsPieces) {
                 Map<String, Object> data = new HashMap<>();
@@ -99,6 +124,4 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         }
         return result;
     }
-
-
 }

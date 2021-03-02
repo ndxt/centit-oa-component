@@ -1,37 +1,43 @@
 package com.centit.product.oa.dao;
 
+import com.centit.framework.core.dao.CodeBook;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
+import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.po.BbsScore;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import com.centit.support.algorithm.StringBaseOpt;
 import org.springframework.stereotype.Repository;
 
+import java.util.HashMap;
 import java.util.Map;
 
-
-
 /*
- * HelpDocScoreDao  Repository.
+ * BbsScoreDao  Repository.
  * create by scaffold 2017-05-08
  * @author codefan@sina.com
- * 帮组文档评分null
-*/
-
+ */
 @Repository
-public class BbsScoreDao extends BaseDaoImpl<BbsScore, String>
-    {
-
-    public static final Log log = LogFactory.getLog(BbsScoreDao.class);
+public class BbsScoreDao extends BaseDaoImpl<BbsScore, String> {
 
     @Override
     public Map<String, String> getFilterField() {
-        /*Map<String, String> filterField = new HashMap<>();
-        filterField.put("scoreId" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("docId" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("docScore" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("userCode" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("userName" , CodeBook.EQUAL_HQL_ID);
-        filterField.put("createTime" , CodeBook.EQUAL_HQL_ID);*/
-        return null;
+        Map<String, String> filterField = new HashMap<>();
+        filterField.put("scoreId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("subjectId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("bbsScore", CodeBook.EQUAL_HQL_ID);
+        filterField.put("userCode", CodeBook.EQUAL_HQL_ID);
+        filterField.put("createTime", CodeBook.EQUAL_HQL_ID);
+        return filterField;
+    }
+
+    /**
+     * 获取话题评分
+     *
+     * @param subjectId 话题id
+     * @return String
+     */
+    public String getSubjectScore(String subjectId) {
+        String sql = "select avg(BBS_SCORE) as score from M_BBS_SCORE where SUBJECT_ID = ?";
+        Object objScore = DatabaseOptUtils.getScalarObjectQuery(this, sql, new Object[]{subjectId});
+        return StringBaseOpt.castObjectToString(objScore);
     }
 }

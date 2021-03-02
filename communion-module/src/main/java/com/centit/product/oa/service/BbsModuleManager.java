@@ -2,6 +2,7 @@ package com.centit.product.oa.service;
 
 import com.centit.framework.jdbc.service.BaseEntityManager;
 import com.centit.product.oa.po.BbsModule;
+import com.centit.support.database.utils.PageDesc;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +30,12 @@ public interface BbsModuleManager extends BaseEntityManager<BbsModule, String> {
      */
     void updateBbsModule(BbsModule bbsModule);
 
+    /**
+     * 查询模块分页列表信息
+     *
+     * @param filterMap 查询条件
+     * @param pageDesc  分页参数
+     * @return List<BbsModule>
+     */
+    List<BbsModule> getModuleList(Map<String, Object> filterMap, PageDesc pageDesc);
 }

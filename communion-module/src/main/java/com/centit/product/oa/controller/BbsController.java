@@ -1,23 +1,24 @@
 package com.centit.product.oa.controller;
 
-import com.alibaba.fastjson.JSONArray;
-import com.centit.framework.common.JsonResultUtils;
-import com.centit.framework.common.ResponseMapData;
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
+import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.product.oa.po.BbsModule;
 import com.centit.product.oa.po.BbsPiece;
+import com.centit.product.oa.po.BbsScore;
 import com.centit.product.oa.po.BbsSubject;
-import com.centit.product.oa.service.BbsManager;
 import com.centit.product.oa.service.BbsModuleManager;
 import com.centit.product.oa.service.BbsPieceManager;
+import com.centit.product.oa.service.BbsScoreManager;
 import com.centit.product.oa.service.BbsSubjectManager;
+import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -32,8 +33,6 @@ import java.util.Map;
 @RequestMapping("/bbs")
 @Api(tags = "BBS操作接口", value = "BBS接口维护")
 public class BbsController extends BaseController {
-    @Autowired
-    private BbsManager bbsManager;
 
     @Autowired
     private BbsModuleManager bbsModuleManager;
@@ -44,6 +43,9 @@ public class BbsController extends BaseController {
     @Autowired
     private BbsSubjectManager bbsSubjectManager;
 
+    @Autowired
+    private BbsScoreManager bbsScoreManager;
+
     public String getOptId() {
         return "BbsPiece";
     }
@@ -51,21 +53,18 @@ public class BbsController extends BaseController {
     @PostMapping(value = "/addModule")
     @ApiOperation(value = "新增模块信息")
     @WrapUpResponseBody
-    public void createBbsModule(@RequestBody BbsModule bbsModule, HttpServletRequest request, HttpServletResponse response) {
+    public void createBbsModule(@RequestBody BbsModule bbsModule, HttpServletRequest request) {
         String userCode = WebOptUtils.getCurrentUserCode(request);
         bbsModule.setUserCode(userCode);
         bbsModuleManager.saveBbsModule(bbsModule);
-
-        JsonResultUtils.writeSuccessJson(response);
     }
 
     @DeleteMapping(value = "/delModule/{moduleId}")
     @ApiOperation(value = "删除模块信息", notes = "删除模块信息,并没有删除该模块数据，而是把dataValidFlag字段标记为0。")
     @ApiImplicitParam(name = "moduleId", value = "模块ID", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void delBbsModule(@PathVariable String moduleId, HttpServletResponse response) {
+    public void delBbsModule(@PathVariable String moduleId) {
         bbsModuleManager.deleteBbsModule(moduleId);
-        JsonResultUtils.writeSuccessJson(response);
     }
 
     @ApiOperation(value = "修改模块信息", notes = "修改模块信息。")
@@ -78,49 +77,40 @@ public class BbsController extends BaseController {
     })
     @PutMapping(value = "/updateModule/{moduleId}")
     @WrapUpResponseBody
-    public void updateBbsModule(@RequestBody BbsModule bbsModule, @PathVariable String moduleId, HttpServletResponse response) {
+    public void updateBbsModule(@RequestBody BbsModule bbsModule, @PathVariable String moduleId) {
         Map<String, Object> params = new HashMap<>();
         params.put("moduleId", moduleId);
         params.put("dataValidFlag", "1");
         BbsModule oldBbsModule = bbsModuleManager.getObjectByProperties(params);
         if (null == oldBbsModule) {
-            JsonResultUtils.writeErrorMessageJson("当前数据库无模块ID为" + moduleId + "的数据", response);
-            return;
+            throw new ObjectException("找不到模块ID为" + moduleId + "的数据");
         }
-        bbsModuleManager.updateBbsModule(bbsModule);
 
-        JsonResultUtils.writeSuccessJson(response);
+        bbsModuleManager.updateBbsModule(bbsModule);
     }
 
     @GetMapping(value = "/getModuleList")
     @ApiOperation(value = "查询模块分页列表信息", notes = "查询模块分页列表信息")
     @WrapUpResponseBody
-    public void getModuleList(PageDesc pageDesc, HttpServletResponse response) {
+    public PageQueryResult<BbsModule> getModuleList(PageDesc pageDesc) {
         Map<String, Object> params = new HashMap<>();
         params.put("dataValidFlag", "1");
-        JSONArray objects = bbsModuleManager.listObjectsAsJson(params, pageDesc);
-        ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, objects);
-        resData.addResponseData(PAGE_DESC, pageDesc);
+        List<BbsModule> moduleList = bbsModuleManager.getModuleList(params, pageDesc);
 
-        JsonResultUtils.writeResponseDataAsJson(resData, response);
+        return PageQueryResult.createResultMapDict(moduleList, pageDesc);
     }
 
-    @GetMapping(value = "/getModuleSubjectList")
+    @GetMapping(value = "/getModuleSubjectList/{moduleId}")
     @ApiOperation(value = "查询模块下的话题分页列表", notes = "查询模块下的话题分页列表")
-    @ApiImplicitParam(name = "moduleId", value = "模块ID", required = true, dataType = "String", paramType = "query")
+    @ApiImplicitParam(name = "moduleId", value = "模块ID", required = true, dataType = "String", paramType = "path")
     @WrapUpResponseBody
-    public void getModuleSubjectList(HttpServletRequest request,
-                                     HttpServletResponse response,
-                                     PageDesc pageDesc) {
-//        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
-        Map<String, Object> searchColumn = BaseController.collectRequestParameters(request);
-        JSONArray objects = bbsSubjectManager.listObjectsAsJson(searchColumn, pageDesc);
-        ResponseMapData resData = new ResponseMapData();
-        resData.addResponseData(OBJLIST, objects);
-        resData.addResponseData(PAGE_DESC, pageDesc);
+    public PageQueryResult<BbsSubject> getModuleSubjectList(@PathVariable String moduleId, PageDesc pageDesc) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("moduleId", moduleId);
+        params.put("dataValidFlag", "1");
+        List<BbsSubject> bbsSubjects = bbsSubjectManager.getModuleSubjectList(params, pageDesc);
 
-        JsonResultUtils.writeResponseDataAsJson(resData, response);
+        return PageQueryResult.createResultMapDict(bbsSubjects, pageDesc);
     }
 
 
@@ -128,53 +118,50 @@ public class BbsController extends BaseController {
     @ApiOperation(value = "新增话题信息")
     @ApiImplicitParam(name = "moduleId", value = "模块ID", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void createBbsSubject(@RequestBody BbsSubject bbsSubject, @PathVariable String moduleId, HttpServletRequest request, HttpServletResponse response) {
+    public void createBbsSubject(@RequestBody BbsSubject bbsSubject, @PathVariable String moduleId, HttpServletRequest request) {
         //新增话题前，先查询该模块是否存在
         Map<String, Object> params = new HashMap<>();
         params.put("moduleId", moduleId);
         params.put("dataValidFlag", "1");
         BbsModule bbsModule = bbsModuleManager.getObjectByProperties(params);
         if (null == bbsModule) {
-            JsonResultUtils.writeErrorMessageJson("模块ID为" + moduleId + "的模块不存在", response);
-            return;
+            throw new ObjectException("模块ID为" + moduleId + "的模块不存在");
         }
+
         String userCode = WebOptUtils.getCurrentUserCode(request);
         bbsSubject.setUserCode(userCode);
-        bbsSubjectManager.saveBbsSubject(bbsSubject);
 
-        JsonResultUtils.writeSuccessJson(response);
+        bbsSubjectManager.saveBbsSubject(bbsSubject);
     }
 
     @DeleteMapping(value = "/delBbsSubject/{subjectId}")
     @ApiOperation(value = "删除话题信息", notes = "删除话题信息,并没有删除该话题数据，而是把dataValidFlag字段标记为0。")
     @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void delBbsSubject(@PathVariable String subjectId, HttpServletResponse response) {
+    public void delBbsSubject(@PathVariable String subjectId) {
         bbsSubjectManager.deleteBbsSubject(subjectId);
-
-        JsonResultUtils.writeSuccessJson(response);
     }
 
     @PostMapping(value = "/addBbsPiece/{subjectId}")
     @ApiOperation(value = "添加评论信息")
     @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void createBbsPiece(@RequestBody BbsPiece bbsPiece, @PathVariable String subjectId, HttpServletRequest request, HttpServletResponse response) {
+    public void createBbsPiece(@RequestBody BbsPiece bbsPiece, @PathVariable String subjectId, HttpServletRequest request) {
         //新增话题前，先查询该模块是否存在
         Map<String, Object> params = new HashMap<>();
         params.put("subjectId", subjectId);
         params.put("dataValidFlag", "1");
         BbsSubject bbsSubject = bbsSubjectManager.getObjectByProperties(params);
         if (null == bbsSubject) {
-            JsonResultUtils.writeErrorMessageJson("话题ID为" + subjectId + "的话题不存在", response);
-            return;
+            throw new ObjectException("话题ID为" + subjectId + "的话题不存在");
         }
-//        String userCode = WebOptUtils.getCurrentUserCode(request);
-//        bbsPiece.setUserCode(userCode);
-        bbsPiece.setReplyId("0");
-        bbsPieceManager.saveBbsPiece(bbsPiece);
 
-        JsonResultUtils.writeSuccessJson(response);
+        String userCode = WebOptUtils.getCurrentUserCode(request);
+        bbsPiece.setUserCode(userCode);
+        //对话题直接评论设置replyId为0
+        bbsPiece.setReplyId("0");
+
+        bbsPieceManager.saveBbsPiece(bbsPiece);
     }
 
     @PostMapping(value = "/replyPiece/{replyId}")
@@ -188,23 +175,21 @@ public class BbsController extends BaseController {
         params.put("dataValidFlag", "1");
         BbsPiece piece = bbsPieceManager.getObjectByProperties(params);
         if (null == piece) {
-            JsonResultUtils.writeErrorMessageJson("评论ID为" + replyId + "的评论不存在", response);
-            return;
+            throw new ObjectException("评论ID为" + replyId + "的评论不存在");
         }
-        //回复内容必填
-//        String userCode = WebOptUtils.getCurrentUserCode(request);
-//        bbsPiece.setUserCode(userCode);
-        bbsPieceManager.saveBbsPiece(bbsPiece);
 
-        JsonResultUtils.writeSuccessJson(response);
+        //回复内容必填
+        String userCode = WebOptUtils.getCurrentUserCode(request);
+        bbsPiece.setUserCode(userCode);
+
+        bbsPieceManager.saveBbsPiece(bbsPiece);
     }
 
     @GetMapping(value = "/getSubjectPieces/{subjectId}")
     @ApiOperation(value = "查询话题下的评论信息列表", notes = "查询话题下的评论信息列表")
     @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String", paramType = "path")
     @WrapUpResponseBody
-    public List<Map<String, Object>> getSubjectPieces(@PathVariable String subjectId,
-                                 HttpServletResponse response) {
+    public List<Map<String, Object>> getSubjectPieces(@PathVariable String subjectId) {
         return bbsPieceManager.getSubjectPieces(subjectId);
     }
 
@@ -212,10 +197,72 @@ public class BbsController extends BaseController {
     @ApiOperation(value = "删除评论信息", notes = "删除评论信息,并没有删除该评论数据，而是把dataValidFlag字段标记为0。")
     @ApiImplicitParam(name = "pieceId", value = "评论ID", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void delBbsPiece(@PathVariable String pieceId, HttpServletResponse response) {
-        bbsSubjectManager.deleteBbsSubject(pieceId);
+    public void delBbsPiece(@PathVariable String pieceId) {
+        bbsPieceManager.deleteBbsPiece(pieceId);
+    }
 
-        JsonResultUtils.writeSuccessJson(response);
+    @PostMapping(value = "/subjectScore/{subjectId}")
+    @ApiOperation(value = "话题评分")
+    @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String")
+    @WrapUpResponseBody
+    public void subjectScore(@RequestBody BbsScore bbsScore, @PathVariable String subjectId, HttpServletRequest request) {
+        //评分前，先查询该模块是否存在
+        Map<String, Object> params = new HashMap<>();
+        params.put("subjectId", subjectId);
+        params.put("dataValidFlag", "1");
+        BbsSubject bbsSubject = bbsSubjectManager.getObjectByProperties(params);
+        if (null == bbsSubject) {
+            throw new ObjectException("话题ID为" + subjectId + "的话题不存在");
+        }
+
+        //检查该用户是否已评分
+        String userCode = WebOptUtils.getCurrentUserCode(request);
+        Map<String, Object> map = new HashMap<>();
+        map.put("userCode", userCode);
+        List<BbsScore> bbsScores = bbsScoreManager.listObjects(map);
+        if (CollectionUtils.isNotEmpty(bbsScores)) {
+            throw new ObjectException("用户" + bbsScore.getUserCode() + "已经对：" + bbsScore.getSubjectId() + "评分过！");
+        }
+
+        bbsScore.setUserCode(userCode);
+        bbsScoreManager.saveBbsScore(bbsScore);
+    }
+
+    @GetMapping(value = "/getUserSubjectScore/{subjectId}")
+    @ApiOperation(value = "获取当前用户对话题的评分信息", notes = "获取当前用户对话题的评分信息")
+    @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String")
+    @WrapUpResponseBody
+    public BbsScore getUserSubjectScore(@PathVariable String subjectId, HttpServletRequest request) {
+        //校验该话题是否存在
+        Map<String, Object> params = new HashMap<>();
+        params.put("subjectId", subjectId);
+        params.put("dataValidFlag", "1");
+        BbsSubject bbsSubject = bbsSubjectManager.getObjectByProperties(params);
+        if (null == bbsSubject) {
+            throw new ObjectException("话题ID为" + subjectId + "的话题不存在");
+        }
+
+        //获取当前用户
+        String userCode = WebOptUtils.getCurrentUserCode(request);
+        return bbsScoreManager.getUserSubjectScore(subjectId, userCode);
+    }
+
+    @GetMapping(value = "/isUserScore/{subjectId}")
+    @ApiOperation(value = "当前用户是否对话题评分", notes = "当前用户是否对话题评分")
+    @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String")
+    @WrapUpResponseBody
+    public boolean isUserScore(@PathVariable String subjectId, HttpServletRequest request) {
+        boolean result = false;
+
+        String userCode = WebOptUtils.getCurrentUserCode(request);
+        Map<String, Object> params = new HashMap<>();
+        params.put("userCode", userCode);
+        List<BbsScore> bbsScores = bbsScoreManager.listObjects(params);
+        if (CollectionUtils.isNotEmpty(bbsScores)) {//用户已评分
+            result = true;
+        }
+
+        return result;
     }
 
 }
