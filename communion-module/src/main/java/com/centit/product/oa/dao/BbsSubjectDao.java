@@ -37,6 +37,10 @@ public class BbsSubjectDao extends BaseDaoImpl<BbsSubject, String> {
         filterField.put("scoreSum", CodeBook.EQUAL_HQL_ID);
         filterField.put("subjectContent", CodeBook.EQUAL_HQL_ID);
         filterField.put("dataValidFlag", CodeBook.EQUAL_HQL_ID);
+        filterField.put("applicationId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("optId", CodeBook.EQUAL_HQL_ID);
+        filterField.put("optMethod", CodeBook.EQUAL_HQL_ID);
+        filterField.put("optTag", CodeBook.EQUAL_HQL_ID);
         return filterField;
     }
 }

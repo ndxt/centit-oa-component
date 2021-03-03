@@ -113,6 +113,17 @@ public class BbsController extends BaseController {
         return PageQueryResult.createResultMapDict(bbsSubjects, pageDesc);
     }
 
+    @GetMapping(value = "/getSubjectList")
+    @ApiOperation(value = "根据条件查询话题分页列表", notes = "根据条件查询话题分页列表")
+    @WrapUpResponseBody
+    public PageQueryResult<BbsSubject> getSubjectList(PageDesc pageDesc, HttpServletRequest request) {
+        Map<String, Object> params = collectRequestParameters(request);
+        params.put("dataValidFlag", "1");
+        List<BbsSubject> bbsSubjects = bbsSubjectManager.getModuleSubjectList(params, pageDesc);
+
+        return PageQueryResult.createResultMapDict(bbsSubjects, pageDesc);
+    }
+
 
     @PostMapping(value = "/addSubject/{moduleId}")
     @ApiOperation(value = "新增话题信息")

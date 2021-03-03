@@ -147,6 +147,38 @@ public class BbsSubject implements Serializable {
         this.subjectType = subjectType;
     }
 
+    public String getApplicationId() {
+        return applicationId;
+    }
+
+    public void setApplicationId(String applicationId) {
+        this.applicationId = applicationId;
+    }
+
+    public String getOptId() {
+        return optId;
+    }
+
+    public void setOptId(String optId) {
+        this.optId = optId;
+    }
+
+    public String getOptMethod() {
+        return optMethod;
+    }
+
+    public void setOptMethod(String optMethod) {
+        this.optMethod = optMethod;
+    }
+
+    public String getOptTag() {
+        return optTag;
+    }
+
+    public void setOptTag(String optTag) {
+        this.optTag = optTag;
+    }
+
     public String getSubjectState() {
         return subjectState;
     }
