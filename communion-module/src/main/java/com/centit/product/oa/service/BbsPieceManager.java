@@ -5,7 +5,6 @@ import com.centit.product.oa.po.BbsPiece;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 
 public interface BbsPieceManager extends BaseEntityManager<BbsPiece, String> {
@@ -35,7 +34,7 @@ public interface BbsPieceManager extends BaseEntityManager<BbsPiece, String> {
      * 获取话题下的评论信息
      *
      * @param subjectId 话题id
-     * @return List<Map<String, Object>>
+     * @return 话题下的评论信息
      */
     List<Map<String, Object>> getSubjectPieces(String subjectId);
 

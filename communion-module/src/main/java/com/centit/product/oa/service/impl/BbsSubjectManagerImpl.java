@@ -82,7 +82,7 @@ public class BbsSubjectManagerImpl extends BaseEntityManagerImpl<BbsSubject, Str
      *
      * @param filterMap 查询条件
      * @param pageDesc  分页参数
-     * @return List<BbsSubject>
+     * @return 话题分页列表
      */
     @Override
     public List<BbsSubject> getModuleSubjectList(Map<String, Object> filterMap, PageDesc pageDesc) {

@@ -49,7 +49,6 @@ public class BbsModuleManagerImpl extends BaseEntityManagerImpl<BbsModule, Strin
      * 根据模块主键id删除模块信息(逻辑删除，更改dataValidFlag字段状态为0)
      *
      * @param moduleId 模块id
-     * @return boolean
      */
     @Override
     public void deleteBbsModule(String moduleId) {
@@ -81,7 +80,7 @@ public class BbsModuleManagerImpl extends BaseEntityManagerImpl<BbsModule, Strin
      *
      * @param filterMap 查询条件
      * @param pageDesc  分页参数
-     * @return List<BbsModule>
+     * @return 模块分页列表信息
      */
     @Override
     public List<BbsModule> getModuleList(Map<String, Object> filterMap, PageDesc pageDesc) {

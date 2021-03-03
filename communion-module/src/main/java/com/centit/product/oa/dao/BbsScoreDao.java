@@ -33,7 +33,7 @@ public class BbsScoreDao extends BaseDaoImpl<BbsScore, String> {
      * 获取话题评分
      *
      * @param subjectId 话题id
-     * @return String
+     * @return 话题评分
      */
     public String getSubjectScore(String subjectId) {
         String sql = "select avg(BBS_SCORE) as score from M_BBS_SCORE where SUBJECT_ID = ?";

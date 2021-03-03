@@ -98,7 +98,7 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
      * 获取话题下的评论信息
      *
      * @param subjectId 话题id
-     * @return List<Map < String ,   Object>>
+     * @return 话题下的评论信息
      */
     @Override
     public List<Map<String, Object>> getSubjectPieces(String subjectId) {

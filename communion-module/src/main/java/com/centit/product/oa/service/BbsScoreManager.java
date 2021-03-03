@@ -32,7 +32,7 @@ public interface BbsScoreManager extends BaseEntityManager<BbsScore, String> {
      *
      * @param subjectId 话题id
      * @param userCode 用户编码
-     * @return BbsScore
+     * @return 评分信息
      */
     BbsScore getUserSubjectScore(String subjectId, String userCode);
 

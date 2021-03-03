@@ -36,7 +36,7 @@ public interface BbsSubjectManager extends BaseEntityManager<BbsSubject, String>
      *
      * @param filterMap 查询条件
      * @param pageDesc 分页参数
-     * @return  List<BbsSubject>
+     * @return  模块下的话题分页列表
      */
     List<BbsSubject> getModuleSubjectList(Map<String, Object> filterMap, PageDesc pageDesc);
 
