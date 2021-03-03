@@ -51,6 +51,10 @@ CREATE TABLE M_BBS_SUBJECT (
 	SCORE_SUM							 		 NUMERIC(11) comment '评分数',
 	SUBJECT_CONTENT						 varchar(2000) comment '话题内容',
 	DATA_VALID_FLAG						 char(2) DEFAULT '1' comment '数据有效性 0无效、1有效',
+	APPLICATION_ID 						 varchar(64)  not null comment '项目ID 类似与 OSID',
+  OPT_ID 									   varchar(64)  not null comment '功能模块',
+  OPT_METHOD 								 varchar(64) comment '操作方法',
+  OPT_TAG 									 varchar(200) not null comment '操作业务标记',
   PRIMARY KEY (SUBJECT_ID)
 ) comment = '讨论话题信息表';
 

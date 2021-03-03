@@ -115,6 +115,18 @@ public class BbsController extends BaseController {
 
     @GetMapping(value = "/getSubjectList")
     @ApiOperation(value = "根据条件查询话题分页列表", notes = "根据条件查询话题分页列表")
+    @ApiImplicitParams({
+        @ApiImplicitParam(
+            name = "moduleId", paramType = "query"),
+        @ApiImplicitParam(
+            name = "subjectType", paramType = "query"),
+        @ApiImplicitParam(
+            name = "applicationId", paramType = "query"),
+        @ApiImplicitParam(
+            name = "optTag", paramType = "query"),
+        @ApiImplicitParam(
+            name = "optId", paramType = "query")
+    })
     @WrapUpResponseBody
     public PageQueryResult<BbsSubject> getSubjectList(PageDesc pageDesc, HttpServletRequest request) {
         Map<String, Object> params = collectRequestParameters(request);
