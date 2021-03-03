@@ -45,6 +45,33 @@ public class BbsSubject implements Serializable {
     private String subjectType;
 
     /*
+     * 项目ID 类似与 OSID
+     */
+    @Column(name="APPLICATION_ID")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String applicationId;
+
+
+    /*
+     *功能模块 */
+    @Column(name="OPT_ID")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String optId;
+
+    /*
+     *操作方法 */
+    @Column(name="OPT_METHOD")
+    @Length(max = 64, message = "字段长度不能大于{max}")
+    private String optMethod;
+
+    /*
+     *操作业务标记
+     * */
+    @Column(name="OPT_TAG")
+    @Length(max = 200, message = "字段长度不能大于{max}")
+    private String optTag;
+
+    /*
      * N ： normal正常 U：update 被修改过
      */
     @Column(name = "SUBJECT_SATE")
