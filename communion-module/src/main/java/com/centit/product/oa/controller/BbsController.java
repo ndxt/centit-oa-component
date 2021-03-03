@@ -219,6 +219,7 @@ public class BbsController extends BaseController {
         String userCode = WebOptUtils.getCurrentUserCode(request);
         Map<String, Object> map = new HashMap<>();
         map.put("userCode", userCode);
+        map.put("subjectId", subjectId);
         List<BbsScore> bbsScores = bbsScoreManager.listObjects(map);
         if (CollectionUtils.isNotEmpty(bbsScores)) {
             throw new ObjectException("用户" + bbsScore.getUserCode() + "已经对：" + bbsScore.getSubjectId() + "评分过！");
