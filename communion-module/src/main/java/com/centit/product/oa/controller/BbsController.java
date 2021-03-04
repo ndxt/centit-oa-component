@@ -137,23 +137,13 @@ public class BbsController extends BaseController {
     }
 
 
-    @PostMapping(value = "/addSubject/{moduleId}")
+    @PostMapping(value = "/addSubject")
     @ApiOperation(value = "新增话题信息")
-    @ApiImplicitParam(name = "moduleId", value = "模块ID", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void createBbsSubject(@RequestBody BbsSubject bbsSubject, @PathVariable String moduleId, HttpServletRequest request) {
+    public void createBbsSubject(@RequestBody BbsSubject bbsSubject, HttpServletRequest request) {
         //新增话题前，先查询该模块是否存在
-        Map<String, Object> params = new HashMap<>();
-        params.put("moduleId", moduleId);
-        params.put("dataValidFlag", "1");
-        BbsModule bbsModule = bbsModuleManager.getObjectByProperties(params);
-        if (null == bbsModule) {
-            throw new ObjectException("模块ID为" + moduleId + "的模块不存在");
-        }
-
         String userCode = WebOptUtils.getCurrentUserCode(request);
         bbsSubject.setUserCode(userCode);
-
         bbsSubjectManager.saveBbsSubject(bbsSubject);
     }
 
