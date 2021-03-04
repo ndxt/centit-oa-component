@@ -104,6 +104,16 @@ public class BbsSubject implements Serializable {
     @Column(name="DATA_VALID_FLAG")
     private String dataValidFlag;
 
+    private Integer userScore;
+
+    public Integer getUserScore() {
+        return userScore;
+    }
+
+    public void setUserScore(Integer userScore) {
+        this.userScore = userScore;
+    }
+
     public BbsSubject(){
         this.subjectState = "N";
     }

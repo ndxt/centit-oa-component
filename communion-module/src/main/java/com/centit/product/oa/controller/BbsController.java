@@ -19,6 +19,7 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -132,7 +133,22 @@ public class BbsController extends BaseController {
         Map<String, Object> params = collectRequestParameters(request);
         params.put("dataValidFlag", "1");
         List<BbsSubject> bbsSubjects = bbsSubjectManager.getModuleSubjectList(params, pageDesc);
+        //查询当前用户评论
+        Map<String, Object> scoreParams = new HashMap<>();
+        scoreParams.put("userCode", "1");
+        //scoreParams.put("userCode", WebOptUtils.getCurrentUserCode(request));
+        List<BbsScore> scoreList = bbsScoreManager.listObjects(scoreParams);
+        for (BbsSubject bbsSubject : bbsSubjects) {
+            for (BbsScore bbsScore : scoreList) {
+                if (bbsSubject.getSubjectId().equals(bbsScore.getSubjectId())) {
+                    bbsSubject.setUserScore(bbsScore.getBbsScore());
+                }
+            }
+            if (bbsSubject.getUserScore() == null) {
+                bbsSubject.setUserScore(-1);
+            }
 
+        }
         return PageQueryResult.createResultMapDict(bbsSubjects, pageDesc);
     }
 
