@@ -135,8 +135,7 @@ public class BbsController extends BaseController {
         List<BbsSubject> bbsSubjects = bbsSubjectManager.getModuleSubjectList(params, pageDesc);
         //查询当前用户评论
         Map<String, Object> scoreParams = new HashMap<>();
-        scoreParams.put("userCode", "1");
-        //scoreParams.put("userCode", WebOptUtils.getCurrentUserCode(request));
+        scoreParams.put("userCode", WebOptUtils.getCurrentUserCode(request));
         List<BbsScore> scoreList = bbsScoreManager.listObjects(scoreParams);
         for (BbsSubject bbsSubject : bbsSubjects) {
             for (BbsScore bbsScore : scoreList) {
