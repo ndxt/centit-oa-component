@@ -13,7 +13,7 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_BBS_SUBJECT")
+@Table(name = "M_BBS_SUBJECT")
 public class BbsSubject implements Serializable {
 
     private static final long serialVersionUID = 1L;
@@ -24,12 +24,12 @@ public class BbsSubject implements Serializable {
     private String subjectId;
 
     //模块id
-    @Column(name="MODULE_ID")
+    @Column(name = "MODULE_ID")
     private String moduleId;
 
     //发送消息的人
-    @Column(name="USER_CODE")
-    @DictionaryMap(fieldName="userName",value="userCode")
+    @Column(name = "USER_CODE")
+    @DictionaryMap(fieldName = "userName", value = "userCode")
     private String userCode;
 
     //消息发送的时间
@@ -47,28 +47,28 @@ public class BbsSubject implements Serializable {
     /*
      * 项目ID 类似与 OSID
      */
-    @Column(name="APPLICATION_ID")
+    @Column(name = "APPLICATION_ID")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String applicationId;
 
     /**
      * 功能模块
      */
-    @Column(name="OPT_ID")
+    @Column(name = "OPT_ID")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optId;
 
     /**
      * 操作方法
      */
-    @Column(name="OPT_METHOD")
+    @Column(name = "OPT_METHOD")
     @Length(max = 64, message = "字段长度不能大于{max}")
     private String optMethod;
 
     /**
      * 操作业务标记
      */
-    @Column(name="OPT_TAG")
+    @Column(name = "OPT_TAG")
     @Length(max = 200, message = "字段长度不能大于{max}")
     private String optTag;
 
@@ -84,24 +84,24 @@ public class BbsSubject implements Serializable {
     private Date lastUpdateTime;
 
     //回复次数
-    @Column(name="REPLY_TIMES")
+    @Column(name = "REPLY_TIMES")
     private int replyTimes;
 
     //评分次数
-    @Column(name="SCORE_TIMES")
+    @Column(name = "SCORE_TIMES")
     private int scoreTimes;
 
     //评分总数
-    @Column(name="SCORE_SUM")
+    @Column(name = "SCORE_SUM")
     private int scoreSum;
 
     //话题内容
-    @Column(name="SUBJECT_CONTENT")
+    @Column(name = "SUBJECT_CONTENT")
     @Length(max = 2000, message = "字段长度不能大于{max}")
     private String subjectContent;
 
     //数据有效性 0无效、1有效
-    @Column(name="DATA_VALID_FLAG")
+    @Column(name = "DATA_VALID_FLAG")
     private String dataValidFlag;
 
     private Integer userScore;
@@ -114,7 +114,9 @@ public class BbsSubject implements Serializable {
         this.userScore = userScore;
     }
 
-    public BbsSubject(){
+
+
+    public BbsSubject() {
         this.subjectState = "N";
     }
 

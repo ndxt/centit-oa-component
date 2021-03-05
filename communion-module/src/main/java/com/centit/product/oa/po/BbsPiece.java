@@ -13,13 +13,13 @@ import java.util.Date;
 
 @Data
 @Entity
-@Table(name="M_BBS_PIECE")
+@Table(name = "M_BBS_PIECE")
 public class BbsPiece implements Serializable {
 
     private static final long serialVersionUID = 1L;
     //信息id
     @Id
-    @Column(name="PIECE_ID")
+    @Column(name = "PIECE_ID")
     @ValueGenerator(strategy = GeneratorType.UUID22)
     private String pieceId;
 
@@ -30,8 +30,8 @@ public class BbsPiece implements Serializable {
     private String subjectId;
 
     //发送消息的人
-    @Column(name="USER_CODE")
-    @DictionaryMap(fieldName="userName",value="userCode")
+    @Column(name = "USER_CODE")
+    @DictionaryMap(fieldName = "userName", value = "userCode")
     private String userCode;
 
     //消息发送的时间
@@ -53,7 +53,7 @@ public class BbsPiece implements Serializable {
     private Date lastUpdateTime;
 
     //消息的内容
-    @Column(name="PIECE_CONTENT")
+    @Column(name = "PIECE_CONTENT")
     @Length(max = 2000, message = "字段长度不能大于{max}")
     private String pieceContent;
 
@@ -63,12 +63,22 @@ public class BbsPiece implements Serializable {
 
     //回复（引用）的消息id对应的发送人
     @Column(name = "REPLY_NAME")
-    @DictionaryMap(fieldName="replayUserName",value="userCode")
+    @DictionaryMap(fieldName = "replayUserName", value = "userCode")
     private String replayName;
 
     //数据有效性 0无效、1有效
-    @Column(name="DATA_VALID_FLAG")
+    @Column(name = "DATA_VALID_FLAG")
     private String dataValidFlag;
+
+    private String publishUserName;
+
+    public String getPublishUserName() {
+        return publishUserName;
+    }
+
+    public void setPublishUserName(String publishUserName) {
+        this.publishUserName = publishUserName;
+    }
 
     /**
      * 构造方法

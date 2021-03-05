@@ -1,5 +1,8 @@
 package com.centit.product.oa.service.impl;
 
+import com.centit.framework.common.WebOptUtils;
+import com.centit.framework.components.CodeRepositoryUtil;
+import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.dao.BbsSubjectDao;
@@ -112,11 +115,15 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         if (CollectionUtils.isNotEmpty(bbsPieces)) {
             Map<String, Object> filterMap = new HashMap<>();
             for (BbsPiece bbsPiece : bbsPieces) {
+                bbsPiece.setPublishUserName(CodeRepositoryUtil.getUserName(bbsPiece.getUserCode()));
                 Map<String, Object> data = new HashMap<>();
                 //获取该评论下的回复信息
                 String pieceId = bbsPiece.getPieceId();
                 filterMap.put("replyId", pieceId);
                 List<BbsPiece> replyInfos = bbsPieceDao.listObjects(filterMap);
+                for (BbsPiece bbsPiece1 : replyInfos) {
+                    bbsPiece1.setPublishUserName(CodeRepositoryUtil.getUserName(bbsPiece1.getUserCode()));
+                }
                 data.put("bbsPiece", bbsPiece);
                 data.put("replyInfos", replyInfos);
                 result.add(data);
