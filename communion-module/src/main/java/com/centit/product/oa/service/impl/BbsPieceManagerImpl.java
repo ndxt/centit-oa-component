@@ -114,6 +114,8 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         List<BbsPiece> bbsPieces = bbsPieceDao.listObjects(params);
         if (CollectionUtils.isNotEmpty(bbsPieces)) {
             Map<String, Object> filterMap = new HashMap<>();
+            filterMap.put("dataValidFlag", "1");
+            filterMap.put("subjectId", subjectId);
             for (BbsPiece bbsPiece : bbsPieces) {
                 bbsPiece.setPublishUserName(CodeRepositoryUtil.getUserName(bbsPiece.getUserCode()));
                 Map<String, Object> data = new HashMap<>();
