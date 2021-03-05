@@ -192,24 +192,21 @@ public class BbsController extends BaseController {
         bbsPieceManager.saveBbsPiece(bbsPiece);
     }
 
-    @PostMapping(value = "/replyPiece/{replyId}")
+    @PostMapping(value = "/replyPiece")
     @ApiOperation(value = "回复评论")
-    @ApiImplicitParam(name = "replyId", value = "回复（引用）的消息id", required = true, dataType = "String")
     @WrapUpResponseBody
-    public void replyPiece(@RequestBody BbsPiece bbsPiece, @PathVariable String replyId, HttpServletRequest request, HttpServletResponse response) {
+    public void replyPiece(@RequestBody BbsPiece bbsPiece, HttpServletRequest request, HttpServletResponse response) {
         //回复评论前，先查询该评论是否存在
         Map<String, Object> params = new HashMap<>();
-        params.put("pieceId", replyId);
+        params.put("pieceId", bbsPiece.getReplyId());
         params.put("dataValidFlag", "1");
         BbsPiece piece = bbsPieceManager.getObjectByProperties(params);
         if (null == piece) {
-            throw new ObjectException("评论ID为" + replyId + "的评论不存在");
+            throw new ObjectException("评论ID为" + bbsPiece.getReplyId() + "的评论不存在");
         }
-
         //回复内容必填
         String userCode = WebOptUtils.getCurrentUserCode(request);
         bbsPiece.setUserCode(userCode);
-
         bbsPieceManager.saveBbsPiece(bbsPiece);
     }
 
