@@ -11,6 +11,7 @@
         <module>opt-task-module</module>
         <module>message-sender-utils</module>
         <module>oa-component-demo</module>
+        <module>favorite-tag-module</module>
     </modules>
 
     <parent>
