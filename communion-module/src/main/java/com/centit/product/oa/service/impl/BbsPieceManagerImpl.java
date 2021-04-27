@@ -104,7 +104,7 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
      * @return 话题下的评论信息
      */
     @Override
-    public List<Map<String, Object>> getSubjectPieces(String subjectId) {
+    public List<Map<String, Object>> getSubjectPieces(String topUnit, String subjectId) {
         List<Map<String, Object>> result = new ArrayList<>();
 
         Map<String, Object> params = new HashMap<>();
@@ -117,14 +117,14 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
             filterMap.put("dataValidFlag", "1");
             filterMap.put("subjectId", subjectId);
             for (BbsPiece bbsPiece : bbsPieces) {
-                bbsPiece.setPublishUserName(CodeRepositoryUtil.getUserName(bbsPiece.getUserCode()));
+                bbsPiece.setPublishUserName(CodeRepositoryUtil.getUserName(topUnit, bbsPiece.getUserCode()));
                 Map<String, Object> data = new HashMap<>();
                 //获取该评论下的回复信息
                 String pieceId = bbsPiece.getPieceId();
                 filterMap.put("replyId", pieceId);
                 List<BbsPiece> replyInfos = bbsPieceDao.listObjects(filterMap);
                 for (BbsPiece bbsPiece1 : replyInfos) {
-                    bbsPiece1.setPublishUserName(CodeRepositoryUtil.getUserName(bbsPiece1.getUserCode()));
+                    bbsPiece1.setPublishUserName(CodeRepositoryUtil.getUserName(topUnit, bbsPiece1.getUserCode()));
                 }
                 data.put("bbsPiece", bbsPiece);
                 data.put("replyInfos", replyInfos);

@@ -4,13 +4,17 @@
 package com.centit.product.oa;
 
 import com.centit.framework.common.ResponseData;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
+import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.NoticeMessage;
 import org.apache.commons.mail.EmailException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.http.HttpServletRequest;
 
 /*
  *
@@ -31,7 +35,10 @@ public class EmailMessageSenderImpl implements MessageSender {
 
     @Override
     public ResponseData sendMessage(String sender, String receiver, NoticeMessage message){
-        IUserInfo userinfo = CodeRepositoryUtil.getUserInfoByCode(sender);
+        HttpServletRequest request = RequestThreadLocal.getLocalThreadWrapperRequest();
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+
+        IUserInfo userinfo = CodeRepositoryUtil.getUserInfoByCode(topUnit, sender);
         String mailFrom;
         if(userinfo==null){
             mailFrom = serverEmail;
@@ -39,7 +46,7 @@ public class EmailMessageSenderImpl implements MessageSender {
         }else {
             mailFrom = userinfo.getRegEmail();
         }
-        userinfo = CodeRepositoryUtil.getUserInfoByCode(receiver);
+        userinfo = CodeRepositoryUtil.getUserInfoByCode(topUnit, receiver);
         if(userinfo==null){
             logger.error("找不到用户："+receiver);
             return ResponseData.makeErrorMessage(

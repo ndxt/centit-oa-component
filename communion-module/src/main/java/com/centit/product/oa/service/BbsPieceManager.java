@@ -25,17 +25,16 @@ public interface BbsPieceManager extends BaseEntityManager<BbsPiece, String> {
 
     /**
      * 修改评论信息
-     *
      * @param bbsPiece 修改评论信息
      */
     void updateBbsPiece(BbsPiece bbsPiece);
 
     /**
      * 获取话题下的评论信息
-     *
+     * @param topUnit 租户信息
      * @param subjectId 话题id
      * @return 话题下的评论信息
      */
-    List<Map<String, Object>> getSubjectPieces(String subjectId);
+    List<Map<String, Object>> getSubjectPieces(String topUnit, String subjectId);
 
 }

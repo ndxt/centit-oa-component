@@ -195,7 +195,7 @@ public class BbsController extends BaseController {
     @PostMapping(value = "/replyPiece")
     @ApiOperation(value = "回复评论")
     @WrapUpResponseBody
-    public void replyPiece(@RequestBody BbsPiece bbsPiece, HttpServletRequest request, HttpServletResponse response) {
+    public void replyPiece(@RequestBody BbsPiece bbsPiece, HttpServletRequest request) {
         //回复评论前，先查询该评论是否存在
         Map<String, Object> params = new HashMap<>();
         params.put("pieceId", bbsPiece.getReplyId());
@@ -214,8 +214,9 @@ public class BbsController extends BaseController {
     @ApiOperation(value = "查询话题下的评论信息列表", notes = "查询话题下的评论信息列表")
     @ApiImplicitParam(name = "subjectId", value = "话题ID", required = true, dataType = "String", paramType = "path")
     @WrapUpResponseBody
-    public List<Map<String, Object>> getSubjectPieces(@PathVariable String subjectId) {
-        return bbsPieceManager.getSubjectPieces(subjectId);
+    public List<Map<String, Object>> getSubjectPieces(@PathVariable String subjectId, HttpServletRequest request) {
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        return bbsPieceManager.getSubjectPieces(topUnit, subjectId);
     }
 
     @DeleteMapping(value = "/delBbsPiece/{pieceId}")
