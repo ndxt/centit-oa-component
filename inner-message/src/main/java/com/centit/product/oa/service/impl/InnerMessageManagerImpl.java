@@ -2,8 +2,10 @@ package com.centit.product.oa.service.impl;
 
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.ResponseData;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.core.dao.DictionaryMapUtils;
+import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.adapter.MessageSender;
 import com.centit.framework.model.basedata.IUnitInfo;
 import com.centit.framework.model.basedata.IUserInfo;
@@ -86,7 +88,8 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             String receive = recipient.getReceive();
             String nextReceiveName = null;
             try {
-                 nextReceiveName = CodeRepositoryUtil.getUserInfoByCode(receive).getUserName();
+                String topUnit = WebOptUtils.getCurrentTopUnit(RequestThreadLocal.getLocalThreadWrapperRequest());
+                nextReceiveName = CodeRepositoryUtil.getUserInfoByCode(topUnit, receive).getUserName();
             }catch (NullPointerException e){
                 logger.error(e.getMessage());
             }
@@ -127,16 +130,16 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Override
     @Transactional
     public void noticeByUnitCode(String unitCode, InnerMsg msg) throws ObjectException {
-
-        List<IUnitInfo> unitList = CodeRepositoryUtil.getSubUnits(unitCode);
+        String topUnit = WebOptUtils.getCurrentTopUnit(RequestThreadLocal.getLocalThreadWrapperRequest());
+        List<IUnitInfo> unitList = CodeRepositoryUtil.getSubUnits(topUnit, unitCode);
         //(ArrayList<UnitInfo>) unitDao.listAllSubUnits(unitCode);
-        Set<IUserInfo> userList = CodeRepositoryUtil.getUnitUsers(unitCode);
+        Set<IUserInfo> userList = CodeRepositoryUtil.getUnitUsers(topUnit, unitCode);
         for (IUnitInfo ui : unitList) {
-            userList.addAll(CodeRepositoryUtil.getUnitUsers(ui.getUnitCode()));
+            userList.addAll(CodeRepositoryUtil.getUnitUsers(topUnit, ui.getUnitCode()));
         }
 
         if (userList.size() > 0) {
-            String receiveName = CodeRepositoryUtil.getUnitName(unitCode);
+            String receiveName = CodeRepositoryUtil.getUnitName(topUnit, unitCode);
             msg.setReceiveName(receiveName);
             msg.setMsgType("A");
             msg.setMailType("O");
