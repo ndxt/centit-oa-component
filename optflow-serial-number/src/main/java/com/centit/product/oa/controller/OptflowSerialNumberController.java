@@ -54,6 +54,36 @@ public class OptflowSerialNumberController extends BaseController {
                 lsh = optFlowNoInfoManager.newNextLshBaseYear(ownCode, codeCode, new Date());
                 break;
         }
+        return getLsh(sTemplate, jsonObject, lsh);
+    }
+    @ApiOperation("通过模板预览流水号")
+    @ApiImplicitParams(value = {
+        @ApiImplicitParam(name = "codeCode", value = "流水号代码", required = true),
+        @ApiImplicitParam(name = "baseDateType", value = "基于日期类型：Y年，M月，D日", required = true),
+        @ApiImplicitParam(name = "ownCode", value = "所属代码"),
+        @ApiImplicitParam(name = "sTemplate", value = "流水号模板"),
+        @ApiImplicitParam(name = "jsonObject", value = "业务对象,requestbody")
+    })
+    @WrapUpResponseBody
+    @RequestMapping(value = "/view/{codeCode}/{baseDateType}", method = RequestMethod.POST)
+    public Object viewOptFlow(@PathVariable String codeCode, @PathVariable String baseDateType, String ownCode,
+                             String sTemplate, @RequestBody String jsonObject) {
+        Long lsh;
+        switch (baseDateType) {
+            case "M":
+                lsh = optFlowNoInfoManager.viewNextLshBaseMonth(ownCode, codeCode, new Date());
+                break;
+            case "D":
+                lsh = optFlowNoInfoManager.viewNextLshBaseDay(ownCode, codeCode, new Date());
+                break;
+            default:
+                lsh = optFlowNoInfoManager.viewNextLshBaseYear(ownCode, codeCode, new Date());
+                break;
+        }
+        return getLsh(sTemplate, jsonObject, lsh);
+    }
+
+    private Object getLsh(String sTemplate, @RequestBody String jsonObject, Long lsh) {
         if (StringBaseOpt.isNvl(sTemplate)) {
             return lsh;
         } else {
