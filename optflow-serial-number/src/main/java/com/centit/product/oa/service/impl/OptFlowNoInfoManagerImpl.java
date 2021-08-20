@@ -9,6 +9,7 @@ import com.centit.support.database.utils.PageDesc;
 import com.centit.product.oa.po.OptFlowNoInfoId;
 import com.centit.product.oa.po.OptFlowNoPool;
 import com.centit.product.oa.po.OptFlowNoPoolId;
+import com.centit.support.database.utils.PersistenceException;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,13 +48,13 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
     @Override
     @Transactional
     public synchronized long newNextLsh(String ownerCode, String codeCode, Date codeBaseDate) {
-        if(StringUtils.isBlank(ownerCode)){
+        if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         java.sql.Date codeDate = DatetimeOpt.convertToSqlDate(codeBaseDate); // DatetimeOpt.convertSqlDate(codeBaseDate);
         OptFlowNoInfoId noId = new OptFlowNoInfoId(ownerCode, codeDate, codeCode);
         OptFlowNoInfo noInfo = optFlowNoInfoDao.getObjectById(noId);
-        long nextCode = noInfo == null ? 1L : noInfo.getCurNo()+1;
+        long nextCode = noInfo == null ? 1L : noInfo.getCurNo() + 1;
         //检查新生产的号是否已经被预留
         while (true) {
             OptFlowNoPoolId poolId = new OptFlowNoPoolId(ownerCode, codeDate, codeCode, nextCode);
@@ -61,7 +62,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
             //没有被预留
             if (poolNo == null) {
                 break;
-              }
+            }
             nextCode++;
         }
         if (noInfo == null) {
@@ -77,18 +78,18 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
 
     @Override
     @Transactional
-    public boolean reserveLsh(String ownerCode, String codeCode, Date codeBaseDate, Long lsh){
-        if(StringUtils.isBlank(ownerCode)){
+    public boolean reserveLsh(String ownerCode, String codeCode, Date codeBaseDate, Long lsh) {
+        if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         java.sql.Date codeDate = DatetimeOpt.convertToSqlDate(codeBaseDate);
         OptFlowNoInfoId noId = new OptFlowNoInfoId(ownerCode, codeDate, codeCode);
         OptFlowNoInfo noInfo = optFlowNoInfoDao.getObjectById(noId);
         Long cur = noInfo == null ? 0 : noInfo.getCurNo();
-        if(lsh > cur) {
+        if (lsh > cur) {
             OptFlowNoPoolId poolId = new OptFlowNoPoolId(ownerCode, codeDate, codeCode, lsh);
             OptFlowNoPool dbPool = optFlowNoPoolDao.getObjectById(poolId);
-            if(dbPool != null){
+            if (dbPool != null) {
                 return false;
             }
             OptFlowNoPool pool = new OptFlowNoPool(poolId, DatetimeOpt.currentUtilDate());
@@ -152,12 +153,17 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
     @Transactional
     public synchronized long viewNextLsh(String ownerCode, String codeCode, Date codeBaseDate) {
         java.sql.Date codeDate = DatetimeOpt.convertToSqlDate(codeBaseDate);
+        if (StringUtils.isBlank(ownerCode)) {
+            ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
+        }
         OptFlowNoInfoId noId = new OptFlowNoInfoId(ownerCode, codeDate, codeCode);
-        OptFlowNoInfo noInfo = optFlowNoInfoDao.getObjectById(noId);
-        long nextCode = 1L;
-        if (noInfo != null)
-            nextCode = noInfo.getCurNo() + 1;
-        return nextCode;
+        OptFlowNoInfo noInfo;
+        noInfo = optFlowNoInfoDao.getObjectById(noId);
+        if (noInfo == null) {
+            noInfo = new OptFlowNoInfo(noId, 0L, DatetimeOpt.currentUtilDate());
+            optFlowNoInfoDao.saveNewOptFlowNoInfo(noInfo);
+        }
+        return noInfo.getCurNo() + 1;
     }
 
     @Override
@@ -199,7 +205,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
     @Transactional
     public synchronized void recordNextLsh(String ownerCode, String codeCode,
                                            Date codeBaseDate, long currCode) {
-        if(StringUtils.isBlank(ownerCode)){
+        if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         java.sql.Date codeDate = DatetimeOpt.convertToSqlDate(codeBaseDate);
@@ -220,9 +226,9 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         } else {
             if (noInfo.getCurNo() < currCode) {
                 //存在跨号，将中间的号码保存至OptFlowNoPool中
-                if(currCode-noInfo.getCurNo()>1){
-                    long startIdx = noInfo.getCurNo()+1;
-                    for(long i = startIdx ;i<currCode;i++){
+                if (currCode - noInfo.getCurNo() > 1) {
+                    long startIdx = noInfo.getCurNo() + 1;
+                    for (long i = startIdx; i < currCode; i++) {
                         OptFlowNoPoolId cid = new OptFlowNoPoolId(ownerCode, codeDate, codeCode, i);
                         OptFlowNoPool pool = new OptFlowNoPool();
                         pool.setCid(cid);
@@ -279,7 +285,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
         map.put("ownerCode", ownerCode);
         map.put("codeCode", codeCode);
         map.put("codeBaseDate", String.valueOf(codeBaseDate));*/
-        if(StringUtils.isBlank(ownerCode)){
+        if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         long minPoolNo = optFlowNoPoolDao.fetchFirstLsh(ownerCode, codeCode, codeBaseDate);
@@ -291,8 +297,9 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
             obj.setCurNo(minPoolNo);
             optFlowNoPoolDao.deleteObjectById(obj);
             return minPoolNo;
-        } else
+        } else {
             return newNextLsh(ownerCode, codeCode, codeBaseDate);
+        }
     }
 
     @Override
@@ -333,7 +340,7 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
     @Override
     @Transactional
     public void releaseLsh(String ownerCode, String codeCode, Date codeBaseDate, long currCode) {
-        if(StringUtils.isBlank(ownerCode)){
+        if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         OptFlowNoPool obj = new OptFlowNoPool();
@@ -385,14 +392,14 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
     public List<OptFlowNoPool> listLshInPool(String ownerCode, String codeCode,
                                              Date codeBaseDate, PageDesc pageDesc) {
         Map<String, Object> filterMap = new HashMap<>();
-        if(StringUtils.isBlank(ownerCode)){
+        if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         filterMap.put("ownerCode", ownerCode);
         filterMap.put("codeDate", codeBaseDate);
         filterMap.put("codeCode", codeCode);
 
-        return optFlowNoPoolDao.listLshInPool(filterMap,pageDesc);
+        return optFlowNoPoolDao.listLshInPool(filterMap, pageDesc);
     }
 
     @Override
