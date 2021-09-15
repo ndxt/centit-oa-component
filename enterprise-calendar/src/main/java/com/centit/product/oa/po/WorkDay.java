@@ -32,15 +32,15 @@ public class WorkDay implements Serializable {
 
     public static String toWorkDayId(String sDate){
         return DatetimeOpt.convertDateToString(
-            DatetimeOpt.smartPraseDate(sDate), "yyyyMMDD");
+            DatetimeOpt.smartPraseDate(sDate), "yyyyMMdd");
     }
 
     public static String toWorkDayId(Date date){
-        return DatetimeOpt.convertDateToString(date, "yyyyMMDD");
+        return DatetimeOpt.convertDateToString(date, "yyyyMMdd");
     }
 
     public static Date toWorkDayDate(String date){
-        return DatetimeOpt.convertStringToDate(date, "yyyyMMDD");
+        return DatetimeOpt.convertStringToDate(date, "yyyyMMdd");
     }
     /*
      * 0: 未做标记（永远不会有，作为删除标记）
