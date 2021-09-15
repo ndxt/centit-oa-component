@@ -13,6 +13,20 @@
     <packaging>war</packaging>
 
     <dependencies>
+
+        <dependency>
+            <groupId>com.centit.product</groupId>
+            <artifactId>unified-question-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>com.centit.product</groupId>
+            <artifactId>work-group-web</artifactId>
+            <version>${project.version}</version>
+        </dependency>
+
+
         <dependency>
             <groupId>mysql</groupId>
             <artifactId>mysql-connector-java</artifactId>
