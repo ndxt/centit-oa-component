@@ -1,11 +1,8 @@
 package com.centit.product.controller;
 
-import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
-import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
-import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.core.dao.PageQueryResult;
 import com.centit.product.po.WorkGroup;
 import com.centit.product.service.WorkGroupManager;
@@ -22,7 +19,6 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
-import java.util.Map;
 
 /**
  * FileLibraryAccess  Controller.
@@ -34,7 +30,7 @@ import java.util.Map;
 
 
 @Controller
-@RequestMapping("/teamUser")
+@RequestMapping("/workGroup")
 @Api(value = "APPLICATION_TEAM_USER", tags = "工作组管理接口")
 public class WorkGroupController extends BaseController {
 
@@ -54,6 +50,16 @@ public class WorkGroupController extends BaseController {
         List<WorkGroup> list = workGroupManager.listWorkGroup(BaseController.collectRequestParameters(request), pageDesc);
         return PageQueryResult.createResult(list, pageDesc);
     }
+
+
+    @RequestMapping(value = "/{groupId}/{userCode}/{roleCode}", method = {RequestMethod.GET})
+    @ApiOperation(value = "查询单个工作组成员")
+    @WrapUpResponseBody
+    public WorkGroup getWorkGroup(@PathVariable String groupId, @PathVariable String userCode,@PathVariable String roleCode) {
+        return workGroupManager.getWorkGroup(groupId, userCode,roleCode);
+    }
+
+
 
 
     /**
