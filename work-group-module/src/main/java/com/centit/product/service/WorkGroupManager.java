@@ -25,5 +25,7 @@ public interface WorkGroupManager{
 
     void createWorkGroup(WorkGroup workGroup);
 
+    void batchWorkGroup(List<WorkGroup> workGroups);
+
     List<WorkGroup> listWorkGroup(Map<String, Object> param, PageDesc pageDesc);
 }

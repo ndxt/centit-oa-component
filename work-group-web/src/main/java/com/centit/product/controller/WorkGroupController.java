@@ -1,6 +1,7 @@
 package com.centit.product.controller;
 
 import com.centit.framework.common.JsonResultUtils;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
@@ -9,6 +10,7 @@ import com.centit.product.service.WorkGroupManager;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -60,19 +62,39 @@ public class WorkGroupController extends BaseController {
     }
 
 
-
-
     /**
      * 新增 项目组成员
      *
      * @param workGroup {@link WorkGroup}
      */
     @RequestMapping(method = {RequestMethod.POST})
-    @ApiOperation(value = "新增工作组成员")
+    @ApiOperation(value = "新增单个工作组成员")
     @WrapUpResponseBody
     public void createTeamUser(@RequestBody WorkGroup workGroup, HttpServletRequest request, HttpServletResponse response) {
+        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
+        if (StringUtils.isNotBlank(currentUserCode)){
+            workGroup.setCreator(currentUserCode);//创建人  当前登录人
+        }
         workGroupManager.createWorkGroup(workGroup);
         JsonResultUtils.writeSingleDataJson(workGroup, response);
+    }
+
+
+    /**
+     * 新增 项目组成员
+     *
+     * @param workGroups {@link WorkGroup}
+     */
+    @RequestMapping(method = {RequestMethod.POST},value = "/batchAdd")
+    @ApiOperation(value = "批量新增工作组成员")
+    @WrapUpResponseBody
+    public void batchCreateTeamUser(@RequestBody List<WorkGroup> workGroups, HttpServletRequest request, HttpServletResponse response) {
+        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
+        for (WorkGroup workGroup : workGroups) {
+            workGroup.setCreator(currentUserCode);//创建人  当前登录人
+        }
+        workGroupManager.batchWorkGroup(workGroups);
+        JsonResultUtils.writeSingleDataJson(workGroups, response);
     }
 
     /**
@@ -92,9 +114,15 @@ public class WorkGroupController extends BaseController {
      * @param workGroup {@link WorkGroup}
      */
     @RequestMapping(method = {RequestMethod.PUT})
-    @ApiOperation(value = "更新工作组成员")
+    @ApiOperation(value = "更新单个工作组成员")
     @WrapUpResponseBody
-    public void updateTeamUser(@RequestBody WorkGroup workGroup) {
+    public void updateTeamUser(@RequestBody WorkGroup workGroup,HttpServletRequest request) {
+        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
+        if (StringUtils.isNotBlank(currentUserCode)){
+            workGroup.setUpdator(currentUserCode);//更新人  当前登录人
+        }
         workGroupManager.updateWorkGroup(workGroup);
     }
+
+
 }

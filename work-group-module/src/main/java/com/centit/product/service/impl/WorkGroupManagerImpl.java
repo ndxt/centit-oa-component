@@ -47,6 +47,13 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
     }
 
     @Override
+    public void batchWorkGroup(List<WorkGroup> workGroups) {
+        for (WorkGroup workGroup : workGroups) {
+            workGroupDao.saveNewObject(workGroup);
+        }
+    }
+
+    @Override
     public List<WorkGroup> listWorkGroup(Map<String, Object> param, PageDesc pageDesc) {
         return workGroupDao.listObjects(param,pageDesc);
     }
