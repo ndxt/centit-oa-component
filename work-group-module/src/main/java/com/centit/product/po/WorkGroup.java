@@ -11,6 +11,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -66,4 +67,9 @@ public class WorkGroup implements java.io.Serializable {
     @ApiModelProperty(value = "授权说明")
     @Column(name = "AUTH_DESC")
     private  String authDesc;
+
+    @ApiModelProperty(value = "角色代码")
+    @NotBlank(message = "角色代码不能为空")
+    @Column(name = "role_code")
+    private  String  roleCode;
 }

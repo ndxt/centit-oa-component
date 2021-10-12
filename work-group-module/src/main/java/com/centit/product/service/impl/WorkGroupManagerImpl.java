@@ -5,6 +5,7 @@ import com.centit.product.po.WorkGroup;
 import com.centit.product.po.WorkGroupParameter;
 import com.centit.product.service.WorkGroupManager;
 import com.centit.support.database.utils.PageDesc;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +29,16 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public void updateWorkGroup(WorkGroup workGroup) {
+        if (StringUtils.isNotBlank(workGroup.getRoleCode())){
+            WorkGroup work = getWorkGroup(workGroup.getWorkGroupParameter().getGroupId(),
+                workGroup.getWorkGroupParameter().getUserCode(),
+                workGroup.getWorkGroupParameter().getRoleCode());
+            if (work!=null){
+                workGroupDao.deleteObject(work);
+            }
+            workGroup.getWorkGroupParameter().setRoleCode(workGroup.getRoleCode());
+            workGroupDao.saveNewObject(workGroup);
+        }
         workGroupDao.updateObject(workGroup);
     }
 
