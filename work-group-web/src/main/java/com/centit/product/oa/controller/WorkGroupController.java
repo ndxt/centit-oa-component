@@ -1,4 +1,4 @@
-package com.centit.product.controller;
+package com.centit.product.oa.controller;
 
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.WebOptUtils;
