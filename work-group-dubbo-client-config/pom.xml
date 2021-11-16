@@ -9,26 +9,24 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>work-group-module</artifactId>
+    <artifactId>work-group-dubbo-client-config</artifactId>
 
     <properties>
         <maven.compiler.source>8</maven.compiler.source>
         <maven.compiler.target>8</maven.compiler.target>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>com.centit.framework</groupId>
-            <artifactId>framework-core</artifactId>
+            <artifactId>framework-dubbo-client-config</artifactId>
+            <version>${centit.framework.version}</version>
         </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-annotations</artifactId>
-        </dependency>
-
         <dependency>
             <groupId>com.centit.product</groupId>
             <artifactId>work-group-adapter</artifactId>
             <version>${parent.version}</version>
         </dependency>
     </dependencies>
+
 </project>

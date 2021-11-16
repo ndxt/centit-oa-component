@@ -1,8 +1,6 @@
-package com.centit.product.service;
+package com.centit.product.adapter.api;
 
-import com.centit.framework.jdbc.service.BaseEntityManager;
-import com.centit.product.po.WorkGroup;
-import com.centit.product.po.WorkGroupParameter;
+import com.centit.product.adapter.po.WorkGroup;
 import com.centit.support.database.utils.PageDesc;
 
 import java.util.List;

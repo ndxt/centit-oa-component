@@ -22,7 +22,7 @@
 
         <dependency>
             <groupId>com.centit.product</groupId>
-            <artifactId>work-group-web</artifactId>
+            <artifactId>work-group-dubbo-server-config</artifactId>
             <version>${project.version}</version>
         </dependency>
 

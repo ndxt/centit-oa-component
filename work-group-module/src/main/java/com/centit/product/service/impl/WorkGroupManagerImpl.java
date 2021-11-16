@@ -1,9 +1,9 @@
 package com.centit.product.service.impl;
 
+import com.centit.product.adapter.api.WorkGroupManager;
+import com.centit.product.adapter.po.WorkGroup;
+import com.centit.product.adapter.po.WorkGroupParameter;
 import com.centit.product.dao.WorkGroupDao;
-import com.centit.product.po.WorkGroup;
-import com.centit.product.po.WorkGroupParameter;
-import com.centit.product.service.WorkGroupManager;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;

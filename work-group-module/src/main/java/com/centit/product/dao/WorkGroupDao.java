@@ -1,8 +1,8 @@
 package com.centit.product.dao;
 
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
-import com.centit.product.po.WorkGroup;
-import com.centit.product.po.WorkGroupParameter;
+import com.centit.product.adapter.po.WorkGroup;
+import com.centit.product.adapter.po.WorkGroupParameter;
 import org.springframework.stereotype.Repository;
 
 

@@ -15,6 +15,9 @@
         <module>work-group-web</module>
         <module>unified-question-web</module>
         <module>unified-question-module</module>
+        <module>work-group-adapter</module>
+        <module>work-group-dubbo-client-config</module>
+        <module>work-group-dubbo-server-config</module>
     </modules>
 
     <parent>

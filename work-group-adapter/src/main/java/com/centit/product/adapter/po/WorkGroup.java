@@ -1,4 +1,4 @@
-package com.centit.product.po;
+package com.centit.product.adapter.po;
 
 import com.centit.support.database.orm.GeneratorCondition;
 import com.centit.support.database.orm.GeneratorTime;

@@ -1,16 +1,10 @@
-package com.centit.product.po;
+package com.centit.product.adapter.po;
 
-import com.centit.framework.core.dao.DictionaryMap;
 import io.swagger.annotations.ApiModelProperty;
-import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import javax.persistence.Entity;
-import javax.persistence.Table;
 import javax.validation.constraints.NotBlank;
-import java.math.BigDecimal;
-import java.util.Date;
 
 /**
  * create by scaffold 2020-08-18 13:38:15
