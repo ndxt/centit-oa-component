@@ -70,6 +70,6 @@ public class WorkGroup implements java.io.Serializable {
 
     @ApiModelProperty(value = "角色代码")
     @NotBlank(message = "角色代码不能为空")
-    @Column(name = "role_code")
+    //@Column(name = "role_code")
     private  String  roleCode;
 }

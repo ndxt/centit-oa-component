@@ -1,15 +1,22 @@
 package com.centit.product.oa.controller;
 
+import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.WebOptUtils;
+import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
+import com.centit.framework.model.basedata.IUserInfo;
+import com.centit.framework.system.po.UserInfo;
 import com.centit.product.adapter.api.WorkGroupManager;
 import com.centit.product.adapter.po.WorkGroup;
+import com.centit.support.algorithm.GeneralAlgorithm;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
+import org.apache.commons.collections4.CollectionUtils;
+import org.apache.commons.collections4.MapUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -20,7 +27,10 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * FileLibraryAccess  Controller.
@@ -48,9 +58,33 @@ public class WorkGroupController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     @ApiOperation(value = "查询全部工作组")
     @WrapUpResponseBody
-    public PageQueryResult<WorkGroup> list(HttpServletRequest request, PageDesc pageDesc) {
+    public PageQueryResult list(HttpServletRequest request, PageDesc pageDesc) {
         List<WorkGroup> list = workGroupManager.listWorkGroup(BaseController.collectRequestParameters(request), pageDesc);
-        return PageQueryResult.createResult(list, pageDesc);
+        if (CollectionUtils.sizeIsEmpty(list)){
+            return PageQueryResult.createResult(list, pageDesc);
+        }
+        List<String> userCodes = list.stream().map(workGroup -> workGroup.getWorkGroupParameter().getUserCode()).collect(Collectors.toList());
+        String topUnit = list.get(0).getWorkGroupParameter().getGroupId();
+        List<IUserInfo> userInfos = CodeRepositoryUtil.getUserInfosByCodes(topUnit,userCodes);
+        JSONArray jsonArray = new JSONArray();
+        for (WorkGroup workGroup : list) {
+            //补充用户信息
+            IUserInfo iUserInfo = userInfos.stream().filter(userInfo -> userInfo.getUserCode().equals(workGroup.getWorkGroupParameter().getUserCode())).findAny().orElseGet(UserInfo::new);
+            Map userInfoMap = (Map) GeneralAlgorithm.castObjectToType(iUserInfo, Map.class);
+            Map workGroupMap = (Map) GeneralAlgorithm.castObjectToType(workGroup, Map.class);
+            Map workGroupParameterMap = (Map) GeneralAlgorithm.castObjectToType(workGroup.getWorkGroupParameter(), Map.class);
+            HashMap<String, Object> map = new HashMap<>();
+            map.putAll(userInfoMap);
+            map.putAll(workGroupMap);
+            map.putAll(workGroupParameterMap);
+            if ("ZHGLY".equals(MapUtils.getString(workGroupParameterMap,"roleCode"))){
+                map.put("roleName","管理员");
+            }else {
+                map.put("roleName","组员");
+            }
+            jsonArray.add(map);
+        }
+        return PageQueryResult.createResult(jsonArray, pageDesc);
     }
 
 

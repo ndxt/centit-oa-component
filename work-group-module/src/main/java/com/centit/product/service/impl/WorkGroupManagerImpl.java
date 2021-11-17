@@ -29,17 +29,17 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public void updateWorkGroup(WorkGroup workGroup) {
-        if (StringUtils.isNotBlank(workGroup.getRoleCode())){
+        if (StringUtils.isNotBlank(workGroup.getRoleCode())) {
             //修改复合主键值的情况
             WorkGroup work = getWorkGroup(workGroup.getWorkGroupParameter().getGroupId(),
                 workGroup.getWorkGroupParameter().getUserCode(),
                 workGroup.getWorkGroupParameter().getRoleCode());
-            if (work!=null){
+            if (work != null) {
                 workGroupDao.deleteObject(work);
                 workGroup.getWorkGroupParameter().setRoleCode(workGroup.getRoleCode());
                 workGroupDao.saveNewObject(workGroup);
             }
-        }else {
+        } else {
             //正常修改，不修改复合主键的情况下
             workGroupDao.updateObject(workGroup);
         }
@@ -47,12 +47,12 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public void deleteWorkGroup(String groupId, String userCode, String roleCode) {
-        workGroupDao.deleteObjectById(new WorkGroupParameter(groupId,userCode,roleCode));
+        workGroupDao.deleteObjectById(new WorkGroupParameter(groupId, userCode, roleCode));
     }
 
     @Override
     public WorkGroup getWorkGroup(String groupId, String userCode, String roleCode) {
-        return workGroupDao.getObjectById(new WorkGroupParameter(groupId,userCode,roleCode));
+        return workGroupDao.getObjectById(new WorkGroupParameter(groupId, userCode, roleCode));
     }
 
     @Override
@@ -69,7 +69,7 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public List<WorkGroup> listWorkGroup(Map<String, Object> param, PageDesc pageDesc) {
-        return workGroupDao.listObjects(param,pageDesc);
+        return workGroupDao.listObjects(param, pageDesc);
     }
 }
 
