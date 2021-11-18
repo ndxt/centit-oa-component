@@ -78,6 +78,9 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public boolean loginUserIsExistWorkGroup(String osId) {
+        if (StringUtils.isBlank(osId)){
+            return false;
+        }
         Map<String, Object> param = new HashMap<>();
         param.put("groupId",osId);
         List<WorkGroup> workGroups = workGroupDao.listObjects(param, null);
