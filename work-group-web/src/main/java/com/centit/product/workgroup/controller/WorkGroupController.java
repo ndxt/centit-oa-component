@@ -1,4 +1,4 @@
-package com.centit.product.oa.controller;
+package com.centit.product.workgroup.controller;
 
 import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
