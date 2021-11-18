@@ -78,7 +78,7 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public boolean loginUserIsExistWorkGroup(String osId,String userCode) {
-        if (StringUtils.isBlank(osId)){
+        if (StringUtils.isBlank(osId) || StringUtils.isBlank(userCode)){
             return false;
         }
         Map<String, Object> param = new HashMap<>();
