@@ -1,9 +1,12 @@
 package com.centit.product.service.impl;
 
+import com.centit.framework.filter.RequestThreadLocal;
+import com.centit.framework.common.WebOptUtils;
 import com.centit.product.adapter.api.WorkGroupManager;
 import com.centit.product.adapter.po.WorkGroup;
 import com.centit.product.adapter.po.WorkGroupParameter;
 import com.centit.product.dao.WorkGroupDao;
+import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,6 +14,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.validation.constraints.NotNull;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -70,6 +74,26 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
     @Override
     public List<WorkGroup> listWorkGroup(Map<String, Object> param, PageDesc pageDesc) {
         return workGroupDao.listObjects(param, pageDesc);
+    }
+
+    @Override
+    public boolean loginUserIsExistWorkGroup(String osId) {
+        Map<String, Object> param = new HashMap<>();
+        param.put("groupId",osId);
+        List<WorkGroup> workGroups = workGroupDao.listObjects(param, null);
+        String loginUser = WebOptUtils.getCurrentUserCode(RequestThreadLocal.getLocalThreadWrapperRequest());
+        if (StringBaseOpt.isNvl(loginUser)) {
+            loginUser = WebOptUtils.getRequestFirstOneParameter(RequestThreadLocal.getLocalThreadWrapperRequest(), "userCode");
+        }
+        if (StringBaseOpt.isNvl(loginUser)) {
+            return false;
+        }
+        for (WorkGroup workGroup : workGroups) {
+            if (workGroup.getWorkGroupParameter().getUserCode().equals(loginUser)) {
+                return true;
+            }
+        }
+        return false;
     }
 }
 

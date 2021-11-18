@@ -26,4 +26,11 @@ public interface WorkGroupManager{
     void batchWorkGroup(List<WorkGroup> workGroups);
 
     List<WorkGroup> listWorkGroup(Map<String, Object> param, PageDesc pageDesc);
+
+    /**
+     * 通过osid 判断当前登录用户是否属于当前工作组成员
+     * @param osId
+     * @return
+     */
+    boolean  loginUserIsExistWorkGroup(String osId);
 }
