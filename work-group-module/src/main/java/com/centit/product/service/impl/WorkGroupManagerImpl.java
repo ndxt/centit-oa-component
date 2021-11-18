@@ -77,22 +77,15 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
     }
 
     @Override
-    public boolean loginUserIsExistWorkGroup(String osId) {
+    public boolean loginUserIsExistWorkGroup(String osId,String userCode) {
         if (StringUtils.isBlank(osId)){
             return false;
         }
         Map<String, Object> param = new HashMap<>();
         param.put("groupId",osId);
         List<WorkGroup> workGroups = workGroupDao.listObjects(param, null);
-        String loginUser = WebOptUtils.getCurrentUserCode(RequestThreadLocal.getLocalThreadWrapperRequest());
-        if (StringBaseOpt.isNvl(loginUser)) {
-            loginUser = WebOptUtils.getRequestFirstOneParameter(RequestThreadLocal.getLocalThreadWrapperRequest(), "userCode");
-        }
-        if (StringBaseOpt.isNvl(loginUser)) {
-            return false;
-        }
         for (WorkGroup workGroup : workGroups) {
-            if (workGroup.getWorkGroupParameter().getUserCode().equals(loginUser)) {
+            if (workGroup.getWorkGroupParameter().getUserCode().equals(userCode)) {
                 return true;
             }
         }
