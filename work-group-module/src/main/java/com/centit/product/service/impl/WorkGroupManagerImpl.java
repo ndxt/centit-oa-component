@@ -81,8 +81,9 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
         if (StringUtils.isBlank(osId) || StringUtils.isBlank(userCode)){
             return false;
         }
+        String[] osids = osId.split(",");
         Map<String, Object> param = new HashMap<>();
-        param.put("groupId",osId);
+        param.put("groupId_in",osids);
         List<WorkGroup> workGroups = workGroupDao.listObjects(param, null);
         for (WorkGroup workGroup : workGroups) {
             if (workGroup.getWorkGroupParameter().getUserCode().equals(userCode)) {
