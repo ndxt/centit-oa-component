@@ -10,6 +10,8 @@ import org.hibernate.validator.constraints.Length;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Map;
 
 @Data
 @Entity
@@ -106,145 +108,10 @@ public class BbsSubject implements Serializable {
 
     private Integer userScore;
 
-    public Integer getUserScore() {
-        return userScore;
-    }
-
-    public void setUserScore(Integer userScore) {
-        this.userScore = userScore;
-    }
-
-
+    private List<Map<String,Object>> piece;
 
     public BbsSubject() {
         this.subjectState = "N";
     }
 
-    public String getSubjectId() {
-        return subjectId;
-    }
-
-    public void setSubjectId(String subjectId) {
-        this.subjectId = subjectId;
-    }
-
-    public String getModuleId() {
-        return moduleId;
-    }
-
-    public void setModuleId(String moduleId) {
-        this.moduleId = moduleId;
-    }
-
-    public String getUserCode() {
-        return userCode;
-    }
-
-    public void setUserCode(String userCode) {
-        this.userCode = userCode;
-    }
-
-    public Date getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(Date createTime) {
-        this.createTime = createTime;
-    }
-
-    public String getSubjectType() {
-        return subjectType;
-    }
-
-    public void setSubjectType(String subjectType) {
-        this.subjectType = subjectType;
-    }
-
-    public String getApplicationId() {
-        return applicationId;
-    }
-
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-
-    public String getOptId() {
-        return optId;
-    }
-
-    public void setOptId(String optId) {
-        this.optId = optId;
-    }
-
-    public String getOptMethod() {
-        return optMethod;
-    }
-
-    public void setOptMethod(String optMethod) {
-        this.optMethod = optMethod;
-    }
-
-    public String getOptTag() {
-        return optTag;
-    }
-
-    public void setOptTag(String optTag) {
-        this.optTag = optTag;
-    }
-
-    public String getSubjectState() {
-        return subjectState;
-    }
-
-    public void setSubjectState(String subjectState) {
-        this.subjectState = subjectState;
-    }
-
-    public Date getLastUpdateTime() {
-        return lastUpdateTime;
-    }
-
-    public void setLastUpdateTime(Date lastUpdateTime) {
-        this.lastUpdateTime = lastUpdateTime;
-    }
-
-    public int getReplyTimes() {
-        return replyTimes;
-    }
-
-    public void setReplyTimes(int replyTimes) {
-        this.replyTimes = replyTimes;
-    }
-
-    public int getScoreTimes() {
-        return scoreTimes;
-    }
-
-    public void setScoreTimes(int scoreTimes) {
-        this.scoreTimes = scoreTimes;
-    }
-
-    public int getScoreSum() {
-        return scoreSum;
-    }
-
-    public void setScoreSum(int scoreSum) {
-        this.scoreSum = scoreSum;
-    }
-
-    public String getSubjectContent() {
-        return subjectContent;
-    }
-
-    public void setSubjectContent(String subjectContent) {
-        this.subjectContent = subjectContent;
-    }
-
-    public String getDataValidFlag() {
-        return dataValidFlag;
-    }
-
-    public void setDataValidFlag(String dataValidFlag) {
-        this.dataValidFlag = dataValidFlag;
-    }
 }

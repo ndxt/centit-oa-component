@@ -146,7 +146,7 @@ public class BbsController extends BaseController {
             if (bbsSubject.getUserScore() == null) {
                 bbsSubject.setUserScore(-1);
             }
-
+            bbsSubject.setPiece(bbsPieceManager.getSubjectPieces(WebOptUtils.getCurrentTopUnit(request), bbsSubject.getSubjectId()));
         }
         return PageQueryResult.createResultMapDict(bbsSubjects, pageDesc);
     }
