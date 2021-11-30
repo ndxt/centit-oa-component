@@ -4,6 +4,7 @@ import com.alibaba.fastjson.JSONArray;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.WebOptUtils;
+import com.centit.framework.components.CodeRepositoryCache;
 import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
@@ -92,6 +93,11 @@ public class WorkGroupController extends BaseController {
             HashMap<String, Object> map = new HashMap<>(32);
             WorkGroupParameter workGroupParameter = workGroup.getWorkGroupParameter();
             IUserInfo iUserInfo = CodeRepositoryUtil.getUserInfoByCode(topUnit, workGroupParameter.getUserCode());
+            //如果缓存中不存在,重新刷新缓存
+            if (null == iUserInfo){
+                CodeRepositoryCache.evictCache("UserInfo");
+                iUserInfo= CodeRepositoryUtil.getUserInfoByCode(topUnit, workGroupParameter.getUserCode());
+            }
             if (null != iUserInfo){
                 Map userInfoMap = (Map) GeneralAlgorithm.castObjectToType(iUserInfo, Map.class);
                 map.putAll(userInfoMap);
