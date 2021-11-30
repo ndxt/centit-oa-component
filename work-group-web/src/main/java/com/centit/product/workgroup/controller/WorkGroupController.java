@@ -1,6 +1,8 @@
 package com.centit.product.workgroup.controller;
 
+import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.common.JsonResultUtils;
 import com.centit.framework.common.ResponseData;
 import com.centit.framework.common.WebOptUtils;
@@ -59,9 +61,17 @@ public class WorkGroupController extends BaseController {
     @RequestMapping(method = RequestMethod.GET)
     @ApiOperation(value = "查询全部工作组")
     @WrapUpResponseBody
-    public PageQueryResult<WorkGroup> list(HttpServletRequest request, PageDesc pageDesc) {
+    public PageQueryResult<Object> list(HttpServletRequest request, PageDesc pageDesc) {
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         List<WorkGroup> list = workGroupManager.listWorkGroup(BaseController.collectRequestParameters(request), pageDesc);
-        return PageQueryResult.createResult(list, pageDesc);
+        JSONArray jsonArray = new JSONArray();
+        for (WorkGroup workGroup : list) {
+            JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(workGroup));
+            String userName = CodeRepositoryUtil.getUserName(topUnit, workGroup.getWorkGroupParameter().getUserCode());
+            jsonObject.put("userName",userName);
+            jsonArray.add(jsonObject);
+        }
+        return   PageQueryResult.createResult(jsonArray, pageDesc);
     }
 
     /**
@@ -137,6 +147,7 @@ public class WorkGroupController extends BaseController {
         if (StringUtils.isNotBlank(currentUserCode)){
             workGroup.setCreator(currentUserCode);//创建人  当前登录人
         }
+        workGroup.getWorkGroupParameter().setRoleCode("组员");
         workGroupManager.createWorkGroup(workGroup);
         JsonResultUtils.writeSingleDataJson(workGroup, response);
     }
@@ -153,6 +164,7 @@ public class WorkGroupController extends BaseController {
     public void batchCreateTeamUser(@RequestBody List<WorkGroup> workGroups, HttpServletRequest request, HttpServletResponse response) {
         String currentUserCode = WebOptUtils.getCurrentUserCode(request);
         for (WorkGroup workGroup : workGroups) {
+            workGroup.getWorkGroupParameter().setRoleCode("组员");
             workGroup.setCreator(currentUserCode);//创建人  当前登录人
         }
         workGroupManager.batchWorkGroup(workGroups);
@@ -183,6 +195,7 @@ public class WorkGroupController extends BaseController {
         if (StringUtils.isNotBlank(currentUserCode)){
             workGroup.setUpdator(currentUserCode);//更新人  当前登录人
         }
+        workGroup.getWorkGroupParameter().setRoleCode("组员");
         workGroupManager.updateWorkGroup(workGroup);
     }
 

@@ -41,10 +41,6 @@ public class WorkGroupParameter implements java.io.Serializable {
         this.roleCode = roleCode;
     }
 
-    public static long getSerialVersionUID() {
-        return serialVersionUID;
-    }
-
     public String getGroupId() {
         return groupId;
     }

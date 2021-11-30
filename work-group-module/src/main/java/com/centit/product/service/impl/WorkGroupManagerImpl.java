@@ -1,12 +1,9 @@
 package com.centit.product.service.impl;
 
-import com.centit.framework.filter.RequestThreadLocal;
-import com.centit.framework.common.WebOptUtils;
 import com.centit.product.adapter.api.WorkGroupManager;
 import com.centit.product.adapter.po.WorkGroup;
 import com.centit.product.adapter.po.WorkGroupParameter;
 import com.centit.product.dao.WorkGroupDao;
-import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,14 +30,14 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public void updateWorkGroup(WorkGroup workGroup) {
-        if (StringUtils.isNotBlank(workGroup.getRoleCode())) {
+        if (StringUtils.isNotBlank(workGroup.getWorkGroupParameter().getRoleCode())) {
             //修改复合主键值的情况
             WorkGroup work = getWorkGroup(workGroup.getWorkGroupParameter().getGroupId(),
                 workGroup.getWorkGroupParameter().getUserCode(),
                 workGroup.getWorkGroupParameter().getRoleCode());
             if (work != null) {
                 workGroupDao.deleteObject(work);
-                workGroup.getWorkGroupParameter().setRoleCode(workGroup.getRoleCode());
+                workGroup.getWorkGroupParameter().setRoleCode(workGroup.getWorkGroupParameter().getRoleCode());
                 workGroupDao.saveNewObject(workGroup);
             }
         } else {
