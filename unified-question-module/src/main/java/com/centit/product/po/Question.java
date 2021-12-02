@@ -50,9 +50,9 @@ public class Question implements Serializable {
     private  String memo;
 
     @ApiModelProperty(value = "问题类型")
-    @Column(name = "lable")
+    @Column(name = "label")
     @Length(max = 100, message = "字段长度不能大于{max}")
-    private  String    lable;
+    private  String  label;
 
     @ApiModelProperty(value = "问题状态")
     @Column(name = "state")
