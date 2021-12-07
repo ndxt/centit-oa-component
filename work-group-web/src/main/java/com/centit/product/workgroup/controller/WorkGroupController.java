@@ -226,7 +226,7 @@ public class WorkGroupController extends BaseController {
         WorkGroup workGroup = new WorkGroup();
         WorkGroupParameter workGroupParameter = new WorkGroupParameter();
         workGroupParameter.setGroupId(workGroupParames.getGroupId());
-        workGroupParameter.setRoleCode(workGroupParames.getRoleCode());
+        workGroupParameter.setRoleCode("组长");
         workGroupParameter.setUserCode(workGroupParames.getUserCode());
         workGroup.setWorkGroupParameter(workGroupParameter);
         workGroup.setRoleCode("组员");

@@ -10,8 +10,6 @@ public class WorkGroupParames {
     //这3个字段为主键
     private String groupId;
 
-    private String roleCode;
-
     private String userCode;
 
     //新组长code
