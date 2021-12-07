@@ -11,11 +11,14 @@ import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.core.controller.BaseController;
 import com.centit.framework.core.controller.WrapUpResponseBody;
 import com.centit.framework.core.dao.PageQueryResult;
+import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.product.adapter.api.WorkGroupManager;
 import com.centit.product.adapter.po.WorkGroup;
+import com.centit.product.adapter.po.WorkGroupParames;
 import com.centit.product.adapter.po.WorkGroupParameter;
 import com.centit.support.algorithm.GeneralAlgorithm;
+import com.centit.support.algorithm.StringBaseOpt;
 import com.centit.support.common.ObjectException;
 import com.centit.support.database.utils.PageDesc;
 import io.swagger.annotations.Api;
@@ -24,6 +27,7 @@ import org.apache.commons.collections4.CollectionUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -62,8 +66,8 @@ public class WorkGroupController extends BaseController {
     @ApiOperation(value = "查询全部工作组")
     @WrapUpResponseBody
     public PageQueryResult<Object> list(HttpServletRequest request, PageDesc pageDesc) {
-        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         List<WorkGroup> list = workGroupManager.listWorkGroup(BaseController.collectRequestParameters(request), pageDesc);
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
         JSONArray jsonArray = new JSONArray();
         for (WorkGroup workGroup : list) {
             JSONObject jsonObject = JSON.parseObject(JSON.toJSONString(workGroup));
@@ -143,6 +147,7 @@ public class WorkGroupController extends BaseController {
     @ApiOperation(value = "新增单个工作组成员")
     @WrapUpResponseBody
     public void createTeamUser(@RequestBody WorkGroup workGroup, HttpServletRequest request, HttpServletResponse response) {
+        loginUserPermissionCheck(workGroup.getWorkGroupParameter().getGroupId());
         String currentUserCode = WebOptUtils.getCurrentUserCode(request);
         if (StringUtils.isNotBlank(currentUserCode)){
             workGroup.setCreator(currentUserCode);//创建人  当前登录人
@@ -162,6 +167,12 @@ public class WorkGroupController extends BaseController {
     @ApiOperation(value = "批量新增工作组成员")
     @WrapUpResponseBody
     public void batchCreateTeamUser(@RequestBody List<WorkGroup> workGroups, HttpServletRequest request, HttpServletResponse response) {
+        if (workGroups==null || workGroups.size()==0){
+            throw new ObjectException(ResponseData.ERROR_INTERNAL_SERVER_ERROR, "workGroup参数必传！");
+        }
+        for (WorkGroup workGroup : workGroups) {
+            loginUserPermissionCheck(workGroup.getWorkGroupParameter().getGroupId());
+        }
         String currentUserCode = WebOptUtils.getCurrentUserCode(request);
         for (WorkGroup workGroup : workGroups) {
             workGroup.getWorkGroupParameter().setRoleCode("组员");
@@ -179,6 +190,7 @@ public class WorkGroupController extends BaseController {
     @ApiOperation(value = "删除单个工作组成员")
     @WrapUpResponseBody
     public void deleteTeamUser(@PathVariable String groupId, @PathVariable String userCode,@PathVariable String roleCode) {
+        loginUserPermissionCheck(groupId);
         workGroupManager.deleteWorkGroup(groupId,userCode,roleCode);
     }
 
@@ -191,6 +203,7 @@ public class WorkGroupController extends BaseController {
     @ApiOperation(value = "更新单个工作组成员")
     @WrapUpResponseBody
     public void updateTeamUser(@RequestBody WorkGroup workGroup,HttpServletRequest request) {
+        loginUserPermissionCheck(workGroup.getWorkGroupParameter().getGroupId());
         String currentUserCode = WebOptUtils.getCurrentUserCode(request);
         if (StringUtils.isNotBlank(currentUserCode)){
             workGroup.setUpdator(currentUserCode);//更新人  当前登录人
@@ -200,4 +213,46 @@ public class WorkGroupController extends BaseController {
     }
 
 
+    /**
+     *组长移交
+     */
+    @RequestMapping(value = "hand-over",method = {RequestMethod.PUT})
+    @ApiOperation(value = "移交组长")
+    @WrapUpResponseBody
+    @Transactional(rollbackFor = Exception.class)
+    public void leaderHandOver(@RequestBody WorkGroupParames workGroupParames, HttpServletRequest request) {
+        loginUserPermissionCheck(workGroupParames.getGroupId());
+        //将旧组长更新为组员
+        WorkGroup workGroup = new WorkGroup();
+        WorkGroupParameter workGroupParameter = new WorkGroupParameter();
+        workGroupParameter.setGroupId(workGroupParames.getGroupId());
+        workGroupParameter.setRoleCode(workGroupParames.getRoleCode());
+        workGroupParameter.setUserCode(workGroupParames.getUserCode());
+        workGroup.setWorkGroupParameter(workGroupParameter);
+        workGroup.setRoleCode("组员");
+        workGroupManager.updateWorkGroup(workGroup);
+        //新增新的组长
+       workGroupManager.deleteWorkGroup(workGroupParames.getGroupId(), workGroupParames.getNewUserCode(), "组员");
+        WorkGroup newWorkGroup = new WorkGroup();
+        WorkGroupParameter newWorkGroupParameter = new WorkGroupParameter();
+        newWorkGroupParameter.setGroupId(workGroupParames.getGroupId());
+        newWorkGroupParameter.setRoleCode("组长");
+        newWorkGroupParameter.setUserCode(workGroupParames.getNewUserCode());
+        newWorkGroup.setWorkGroupParameter(newWorkGroupParameter);
+        newWorkGroup.setCreator(WebOptUtils.getCurrentUserCode(request));
+        workGroupManager.createWorkGroup(newWorkGroup);
+    }
+
+    private void loginUserPermissionCheck(String osId){
+        String loginUser = WebOptUtils.getCurrentUserCode(RequestThreadLocal.getLocalThreadWrapperRequest());
+        if (StringBaseOpt.isNvl(loginUser)) {
+            loginUser = WebOptUtils.getRequestFirstOneParameter(RequestThreadLocal.getLocalThreadWrapperRequest(), "userCode");
+        }
+        if (StringUtils.isBlank(loginUser)){
+            throw new ObjectException(ResponseData.HTTP_MOVE_TEMPORARILY, "您未登录，请先登录！");
+        }
+        if (!workGroupManager.loginUserIsExistWorkGroup(osId,loginUser)){
+            throw new ObjectException(ResponseData.HTTP_NON_AUTHORITATIVE_INFORMATION, "您没有权限，请联系管理员！");
+        }
+    }
 }

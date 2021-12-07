@@ -67,4 +67,10 @@ public class WorkGroup implements java.io.Serializable {
     @Column(name = "AUTH_DESC")
     private  String authDesc;
 
+    /**
+     * 这个roleCode是用作更新主键中的roleCode使用
+     */
+    @ApiModelProperty(value = "角色代码")
+    private  String  roleCode;
+
 }
