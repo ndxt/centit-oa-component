@@ -190,7 +190,20 @@ public class WorkGroupController extends BaseController {
     @ApiOperation(value = "删除单个工作组成员")
     @WrapUpResponseBody
     public void deleteTeamUser(@PathVariable String groupId, @PathVariable String userCode,@PathVariable String roleCode) {
-        loginUserPermissionCheck(groupId);
+        String loginUser = WebOptUtils.getCurrentUserCode(RequestThreadLocal.getLocalThreadWrapperRequest());
+        if (StringBaseOpt.isNvl(loginUser)) {
+            loginUser = WebOptUtils.getRequestFirstOneParameter(RequestThreadLocal.getLocalThreadWrapperRequest(), "userCode");
+        }
+        if (StringUtils.isBlank(loginUser)){
+            throw new ObjectException(ResponseData.HTTP_MOVE_TEMPORARILY, "您未登录，请先登录！");
+        }
+        WorkGroup workGroup = workGroupManager.getWorkGroup(groupId, loginUser, "组长");
+        if (workGroup==null || !"组长".equals(workGroup.getWorkGroupParameter().getRoleCode())){
+            throw new ObjectException(ResponseData.ERROR_INTERNAL_SERVER_ERROR, "你非组长不能删除成员！");
+        }
+        if (loginUser.equals(userCode)){
+            throw new ObjectException(ResponseData.ERROR_INTERNAL_SERVER_ERROR, "组长不能删除组长！");
+        }
         workGroupManager.deleteWorkGroup(groupId,userCode,roleCode);
     }
 
@@ -232,7 +245,7 @@ public class WorkGroupController extends BaseController {
         workGroup.setRoleCode("组员");
         workGroupManager.updateWorkGroup(workGroup);
         //新增新的组长
-       workGroupManager.deleteWorkGroup(workGroupParames.getGroupId(), workGroupParames.getNewUserCode(), "组员");
+        workGroupManager.deleteWorkGroup(workGroupParames.getGroupId(), workGroupParames.getNewUserCode(), "组员");
         WorkGroup newWorkGroup = new WorkGroup();
         WorkGroupParameter newWorkGroupParameter = new WorkGroupParameter();
         newWorkGroupParameter.setGroupId(workGroupParames.getGroupId());
