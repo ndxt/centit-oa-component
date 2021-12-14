@@ -186,10 +186,10 @@ public class WorkGroupController extends BaseController {
      * 删除单个  项目库授权信息
      *
      */
-    @RequestMapping(value = "/{groupId}/{userCode}/{roleCode}", method = {RequestMethod.DELETE})
+    @RequestMapping(value = "/{groupId}/{userCode}", method = {RequestMethod.DELETE})
     @ApiOperation(value = "删除单个工作组成员")
     @WrapUpResponseBody
-    public void deleteTeamUser(@PathVariable String groupId, @PathVariable String userCode,@PathVariable String roleCode) {
+    public void deleteTeamUser(@PathVariable String groupId, @PathVariable String userCode) {
         String loginUser = WebOptUtils.getCurrentUserCode(RequestThreadLocal.getLocalThreadWrapperRequest());
         if (StringBaseOpt.isNvl(loginUser)) {
             loginUser = WebOptUtils.getRequestFirstOneParameter(RequestThreadLocal.getLocalThreadWrapperRequest(), "userCode");
@@ -204,7 +204,7 @@ public class WorkGroupController extends BaseController {
         if (loginUser.equals(userCode)){
             throw new ObjectException(ResponseData.ERROR_INTERNAL_SERVER_ERROR, "组长不能删除组长！");
         }
-        workGroupManager.deleteWorkGroup(groupId,userCode,roleCode);
+        workGroupManager.deleteWorkGroup(groupId,userCode,"组员");
     }
 
     /**
