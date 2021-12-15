@@ -48,7 +48,7 @@ public class WorkGroupManagerImpl implements WorkGroupManager {
 
     @Override
     public void deleteWorkGroup(String groupId, String userCode, String roleCode) {
-        workGroupDao.deleteObjectById(new WorkGroupParameter(groupId, userCode, roleCode));
+        workGroupDao.deleteObjectForceById(new WorkGroupParameter(groupId, userCode, roleCode));
     }
 
     @Override
