@@ -1,5 +1,6 @@
 package com.centit.product.po;
 
+import com.alibaba.fastjson.JSONObject;
 import com.centit.support.database.orm.GeneratorType;
 import com.centit.support.database.orm.ValueGenerator;
 import io.swagger.annotations.ApiModel;
@@ -68,4 +69,10 @@ public class Question implements Serializable {
     @Column(name = "check_user")
     @Length(max = 32, message = "字段长度不能大于{max}")
     private  String checkUser;
+
+    @ApiModelProperty(value = "问题内容")
+    @Column(name = "content")
+    private  JSONObject content;
+
+
 }
