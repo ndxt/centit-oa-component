@@ -17,11 +17,11 @@
     </properties>
 
     <dependencies>
-        <dependency>
+    <!--    <dependency>
             <groupId>com.centit.product</groupId>
             <artifactId>work-group-module</artifactId>
             <version>${project.version}</version>
-        </dependency>
+        </dependency>-->
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-extend</artifactId>
@@ -31,6 +31,14 @@
             <groupId>javax.servlet</groupId>
             <artifactId>javax.servlet-api</artifactId>
             <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-adapter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.centit.framework</groupId>
+            <artifactId>framework-core</artifactId>
         </dependency>
     </dependencies>
 

@@ -11,13 +11,13 @@
         <module>message-sender-utils</module>
         <module>oa-component-demo</module>
         <module>favorite-tag-module</module>
-        <module>work-group-module</module>
-        <module>work-group-web</module>
+        <!--<module>work-group-module</module>-->
+        <!--<module>work-group-web</module>-->
         <module>unified-question-web</module>
         <module>unified-question-module</module>
-        <module>work-group-adapter</module>
-        <module>work-group-dubbo-client-config</module>
-        <module>work-group-dubbo-server-config</module>
+        <!--<module>work-group-adapter</module>-->
+        <!--<module>work-group-dubbo-client-config</module>-->
+        <!--<module>work-group-dubbo-server-config</module>-->
     </modules>
 
     <parent>
