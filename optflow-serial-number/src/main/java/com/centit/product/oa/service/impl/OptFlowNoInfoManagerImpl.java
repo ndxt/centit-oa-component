@@ -3,13 +3,12 @@ package com.centit.product.oa.service.impl;
 import com.centit.product.oa.dao.OptFlowNoInfoDao;
 import com.centit.product.oa.dao.OptFlowNoPoolDao;
 import com.centit.product.oa.po.OptFlowNoInfo;
-import com.centit.product.oa.service.OptFlowNoInfoManager;
-import com.centit.support.algorithm.DatetimeOpt;
-import com.centit.support.database.utils.PageDesc;
 import com.centit.product.oa.po.OptFlowNoInfoId;
 import com.centit.product.oa.po.OptFlowNoPool;
 import com.centit.product.oa.po.OptFlowNoPoolId;
-import com.centit.support.database.utils.PersistenceException;
+import com.centit.product.oa.service.OptFlowNoInfoManager;
+import com.centit.support.algorithm.DatetimeOpt;
+import com.centit.support.database.utils.PageDesc;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,22 +36,23 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
     @NotNull
     private OptFlowNoPoolDao optFlowNoPoolDao;
 
-
-    public synchronized void setOptFlowNoPoolDao(OptFlowNoPoolDao baseDao) {
-        this.optFlowNoPoolDao = baseDao;
-    }
-
     /*
      * 获取最新的流水号，并标记+1
      */
     @Override
-    @Transactional
+    @Transactional //(propagation = Propagation.REQUIRES_NEW)
     public synchronized long newNextLsh(String ownerCode, String codeCode, Date codeBaseDate) {
         if (StringUtils.isBlank(ownerCode)) {
             ownerCode = OptFlowNoInfoManager.DefaultOwnerCode;
         }
         java.sql.Date codeDate = DatetimeOpt.convertToSqlDate(codeBaseDate); // DatetimeOpt.convertSqlDate(codeBaseDate);
+
         OptFlowNoInfoId noId = new OptFlowNoInfoId(ownerCode, codeDate, codeCode);
+
+        /*DatabaseOptUtils.doExecuteSql(optFlowNoInfoDao,
+            "update F_OPTFLOWNOINFO set CUR_NO = CUR_NO+1 where OWNER_CODE=? and CODE_DATE=? and CODE_CODE=?",
+            new Object[]{ownerCode, codeDate, codeCode});*/
+
         OptFlowNoInfo noInfo = optFlowNoInfoDao.getObjectById(noId);
         long nextCode = noInfo == null ? 1L : noInfo.getCurNo() + 1;
         //检查新生产的号是否已经被预留
