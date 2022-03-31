@@ -1,5 +1,6 @@
 package com.centit.product.oa.service.impl;
 
+import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.dao.OptFlowNoInfoDao;
 import com.centit.product.oa.dao.OptFlowNoPoolDao;
 import com.centit.product.oa.po.OptFlowNoInfo;
@@ -49,14 +50,21 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
 
         OptFlowNoInfoId noId = new OptFlowNoInfoId(ownerCode, codeDate, codeCode);
 
-        /*DatabaseOptUtils.doExecuteSql(optFlowNoInfoDao,
+        DatabaseOptUtils.doExecuteSql(optFlowNoInfoDao,
             "update F_OPTFLOWNOINFO set CUR_NO = CUR_NO+1 where OWNER_CODE=? and CODE_DATE=? and CODE_CODE=?",
-            new Object[]{ownerCode, codeDate, codeCode});*/
+            new Object[]{ownerCode, codeDate, codeCode});
 
         OptFlowNoInfo noInfo = optFlowNoInfoDao.getObjectById(noId);
-        long nextCode = noInfo == null ? 1L : noInfo.getCurNo() + 1;
+        long nextCode = 1l;
+        if(noInfo == null){
+            noInfo = new OptFlowNoInfo(noId, nextCode, DatetimeOpt.currentUtilDate());
+            optFlowNoInfoDao.saveNewOptFlowNoInfo(noInfo);
+        } else {
+            nextCode = noInfo.getCurNo();
+        }
+        long savedCurCode = nextCode;
         //检查新生产的号是否已经被预留
-        while (true) {
+        while(true) {
             OptFlowNoPoolId poolId = new OptFlowNoPoolId(ownerCode, codeDate, codeCode, nextCode);
             OptFlowNoPool poolNo = optFlowNoPoolDao.getObjectById(poolId);
             //没有被预留
@@ -64,11 +72,9 @@ public class OptFlowNoInfoManagerImpl implements OptFlowNoInfoManager {
                 break;
             }
             nextCode++;
-        }
-        if (noInfo == null) {
-            noInfo = new OptFlowNoInfo(noId, nextCode, DatetimeOpt.currentUtilDate());
-            optFlowNoInfoDao.saveNewOptFlowNoInfo(noInfo);
-        } else {
+        };
+        //有预留的编码
+        if(nextCode >  savedCurCode){
             noInfo.setCurNo(nextCode);
             noInfo.setLastCodeDate(DatetimeOpt.currentUtilDate());
             optFlowNoInfoDao.updateOptFlowNoInfo(noInfo);

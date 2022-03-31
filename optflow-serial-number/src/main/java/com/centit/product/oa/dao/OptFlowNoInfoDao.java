@@ -1,38 +1,53 @@
 package com.centit.product.oa.dao;
 
+import com.centit.framework.core.dao.CodeBook;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.product.oa.po.OptFlowNoInfo;
 import com.centit.product.oa.po.OptFlowNoInfoId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
-public interface OptFlowNoInfoDao {
+import java.util.HashMap;
+import java.util.Map;
 
-  /*
-   * 根据ID查询
-   * @param cid 复合主键
-   * @return 操作流水号
-   */
-    OptFlowNoInfo getObjectById(OptFlowNoInfoId cid);
+@Repository("optFlowNoInfoDao")
+public class OptFlowNoInfoDao extends BaseDaoImpl<OptFlowNoInfo, OptFlowNoInfoId> {
 
-  /*
-   * 删除
-   * @param cid 复合主键
-   */
-    void deleteObjectById(OptFlowNoInfoId cid);
+    public static final Logger logger = LoggerFactory.getLogger(OptFlowNoInfoDao.class);
 
-  /*
-   *
-   * @param optFlowNoINfo 操作流水号
-   */
-  void saveObject(OptFlowNoInfo optFlowNoINfo);
+    public Map<String, String> getFilterField() {
+        Map<String, String> filterField = new HashMap<>();
+        filterField.put("ownerCode", "OWNER_CODE = :ownerCode");
+        filterField.put("codeDate", CodeBook.EQUAL_HQL_ID);
+        filterField.put("codeCode", "CODE_CODE = :codeCode");
+        filterField.put("curNo", CodeBook.LIKE_HQL_ID);
+        return filterField;
+    }
 
-  /*
-   * 新增
-   * @param optFlowNoInfo 操作流水号
-   */
-  void saveNewOptFlowNoInfo(OptFlowNoInfo optFlowNoInfo);
 
-  /*
-   *  更新
-   * @param optFlowNoInfo 操作流水号
-   */
-  void updateOptFlowNoInfo(OptFlowNoInfo optFlowNoInfo);
+    public OptFlowNoInfo getObjectById(OptFlowNoInfoId cid) {
+        return super.getObjectById(cid);
+    }
+
+
+    public void deleteObjectById(OptFlowNoInfoId cid) {
+        super.deleteObjectById(cid);
+    }
+
+
+    public void saveObject(OptFlowNoInfo optFlowNoInfo) {
+        super.saveNewObject(optFlowNoInfo);
+    }
+
+
+    public void saveNewOptFlowNoInfo(OptFlowNoInfo optFlowNoInfo){
+        super.saveNewObject(optFlowNoInfo);
+    }
+
+
+    public void updateOptFlowNoInfo(OptFlowNoInfo optFlowNoInfo){
+        super.updateObject(optFlowNoInfo);
+    }
+
 }

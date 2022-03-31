@@ -1,54 +1,73 @@
 package com.centit.product.oa.dao;
 
+import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson.JSONObject;
+import com.centit.framework.jdbc.dao.BaseDaoImpl;
+import com.centit.framework.jdbc.dao.DatabaseOptUtils;
+import com.centit.support.algorithm.NumberBaseOpt;
 import com.centit.support.database.utils.PageDesc;
 import com.centit.product.oa.po.OptFlowNoPool;
 import com.centit.product.oa.po.OptFlowNoPoolId;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Repository;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-public interface OptFlowNoPoolDao {
+@Repository("optFlowNoPoolDao")
+public class OptFlowNoPoolDao extends BaseDaoImpl<OptFlowNoPool, OptFlowNoPoolId> {
 
-    /*
-     * 根据Id查询
-     * @return 流水号池中的流水号
-     * @param cid 复合主键
-     */
-    OptFlowNoPool getObjectById(OptFlowNoPoolId cid);
 
-    /*
-     * 删除
-     * @param optFlowNoPool  流水号池中的流水号
-     */
-    void deleteObject(OptFlowNoPool optFlowNoPool);
+    public static final Logger logger = LoggerFactory.getLogger(OptFlowNoPoolDao.class);
 
-    /*
-     * 根据Id删除
-     * @param cid 复合主键
-     */
-    void deleteObjectById(OptFlowNoPoolId cid);
+    public Map<String, String> getFilterField() {
+        Map<String, String> filterField = new HashMap<>();
+        filterField.put("ownerCode", "OWNER_CODE = :ownerCode");
+        filterField.put("(date)codeDate", "CODE_DATE = :codeDate");
+        filterField.put("codeCode", "CODE_CODE = :codeCode");
+        filterField.put("curNo", "OWNER_CODE = :curNo");
+        return filterField;
+    }
 
-    /*
-     * 新增
-     * @param optFlowNoPool  流水号池中的流水号
-     */
-    void saveNewOptFlowNoPool(OptFlowNoPool optFlowNoPool);
 
-    /*
-     *  "select min(CurNo) as MinNo from F_OptFlowNoPool" +
-                " where OwnerCode = " + QueryUtils.buildStringForQuery(ownerCode) +
-                " and CodeCode = " + QueryUtils.buildStringForQuery(ownerCode) +
-                " and CodeDate = to_date(" + QueryUtils.buildStringForQuery(
-                DatetimeOpt.convertDatetimeToString(codeBaseDate))
-                + ",'YYYY-MM-DD HH:MI:SS')");
-     * @param codeBaseDate 编码基准日期
-     * @param codeCode 编码类别
-     * @param ownerCode 归属人员
-     * @return long
-     */
-    long fetchFirstLsh(String ownerCode, String codeCode, Date codeBaseDate);
+    public OptFlowNoPool getObjectById(OptFlowNoPoolId cid) {
+        return super.getObjectById(cid);
+    }
 
-    List<OptFlowNoPool> listLshInPool(Map<String, Object> filterMap, PageDesc pageDesc);
 
+    public void deleteObjectById(OptFlowNoPoolId cid) {
+        super.deleteObjectById(cid);
+    }
+
+    public long fetchFirstLsh(String ownerCode, String codeCode,
+                              Date codeBaseDate) {
+
+        Long lsh = NumberBaseOpt.castObjectToLong(DatabaseOptUtils.getScalarObjectQuery(this,
+                "select min(CUR_NO) as MinNo from F_OPTFLOWNOPOOL" +
+                " where OWNER_CODE = ? and CODE_CODE = ? and CODE_DATE = ?",
+                new Object[]{ownerCode,ownerCode,codeBaseDate }));
+        return lsh == null ? 0L: lsh;
+    }
+
+
+    public void saveNewOptFlowNoPool(OptFlowNoPool optFlowNoPool){
+        super.saveNewObject(optFlowNoPool);
+    }
+
+    /*@Override
+    public void updateOptFlowNoPool(OptFlowNoPool optFlowNoPool){
+        super.updateObject(optFlowNoPool);
+    }*/
+
+    public List<OptFlowNoPool> listLshInPool(Map<String, Object> filterMap, PageDesc pageDesc){
+        JSONArray jsonArray = listObjectsAsJson(filterMap,pageDesc);
+        List<OptFlowNoPool> list = JSONObject.parseArray(jsonArray.toJSONString(),OptFlowNoPool.class);
+        if(list!=null && list.size()>0){
+            return  list;
+        }
+        return null;
+    }
 }
