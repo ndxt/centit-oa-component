@@ -26,24 +26,17 @@ public class WorkDayManagerImpl implements WorkDayManager {
 
     @Override
     public boolean isWorkDay(String sWorkDay) {
-        boolean result = false;
-
         Date workDay = DatetimeOpt.smartPraseDate(sWorkDay);
 
         WorkDay day = this.workDayDao.getObjectById(WorkDay.toWorkDayId(workDay));
-        if (day == null) {
-            if (DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6) {
-                result = true;
-            }
-        } else /*if (day != null)*/ {
+        if (day != null) {
             if (WorkDay.WORK_DAY_TYPE_SHIFT.equals(day.getDayType())) {//B:周末调休成工作时间
-                result = true;
-            } else if (WorkDay.WORK_DAY_TYPE_WORKDAY.equals(day.getDayType())
-                && DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6) {//C: 正常上班
-                result = true;
+                return true;
+            } else if (WorkDay.WORK_DAY_TYPE_HOLIDAY.equals(day.getDayType())) {//A: 调休
+                return false;
             }
         }
-        return result;
+        return DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6;
     }
 
     @Override
