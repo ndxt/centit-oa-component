@@ -9,7 +9,6 @@
         <module>optflow-serial-number</module>
         <module>inner-message</module>
         <module>message-sender-utils</module>
-        <module>oa-component-demo</module>
         <module>favorite-tag-module</module>
         <module>unified-question-web</module>
         <module>unified-question-module</module>
@@ -18,7 +17,7 @@
     <parent>
         <artifactId>framework-snapshot-dependencies</artifactId>
         <groupId>com.centit.framework</groupId>
-        <version>5.2-SNAPSHOT</version>
+        <version>5.3-SNAPSHOT</version>
     </parent>
 
     <properties>
@@ -28,7 +27,7 @@
 
     <groupId>com.centit.product</groupId>
     <artifactId>centit-oa-component</artifactId>
-    <version>5.2-SNAPSHOT</version>
+    <version>5.3-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>com.centit.product:centit-oa-component</name>

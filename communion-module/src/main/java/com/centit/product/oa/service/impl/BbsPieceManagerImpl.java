@@ -1,8 +1,6 @@
 package com.centit.product.oa.service.impl;
 
-import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
-import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.jdbc.service.BaseEntityManagerImpl;
 import com.centit.product.oa.dao.BbsPieceDao;
 import com.centit.product.oa.dao.BbsSubjectDao;
@@ -111,7 +109,7 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
         params.put("dataValidFlag", "1");
         params.put("subjectId", subjectId);
         params.put("replyId", "0");
-        List<BbsPiece> bbsPieces = bbsPieceDao.listObjects(params);
+        List<BbsPiece> bbsPieces = bbsPieceDao.listObjectsByProperties(params);
         if (CollectionUtils.isNotEmpty(bbsPieces)) {
             Map<String, Object> filterMap = new HashMap<>();
             filterMap.put("dataValidFlag", "1");
@@ -122,7 +120,7 @@ public class BbsPieceManagerImpl extends BaseEntityManagerImpl<BbsPiece, String,
                 //获取该评论下的回复信息
                 String pieceId = bbsPiece.getPieceId();
                 filterMap.put("replyId", pieceId);
-                List<BbsPiece> replyInfos = bbsPieceDao.listObjects(filterMap);
+                List<BbsPiece> replyInfos = bbsPieceDao.listObjectsByProperties(filterMap);
                 for (BbsPiece bbsPiece1 : replyInfos) {
                     bbsPiece1.setPublishUserName(CodeRepositoryUtil.getUserName(topUnit, bbsPiece1.getUserCode()));
                 }

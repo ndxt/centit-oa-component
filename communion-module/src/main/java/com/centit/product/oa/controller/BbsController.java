@@ -19,13 +19,11 @@ import io.swagger.annotations.ApiImplicitParam;
 import io.swagger.annotations.ApiImplicitParams;
 import io.swagger.annotations.ApiOperation;
 import org.apache.commons.collections4.CollectionUtils;
-import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -136,7 +134,7 @@ public class BbsController extends BaseController {
         //查询当前用户评论
         Map<String, Object> scoreParams = new HashMap<>();
         scoreParams.put("userCode", WebOptUtils.getCurrentUserCode(request));
-        List<BbsScore> scoreList = bbsScoreManager.listObjects(scoreParams);
+        List<BbsScore> scoreList = bbsScoreManager.listObjectsByProperties(scoreParams);
         for (BbsSubject bbsSubject : bbsSubjects) {
             for (BbsScore bbsScore : scoreList) {
                 if (bbsSubject.getSubjectId().equals(bbsScore.getSubjectId())) {
@@ -246,7 +244,7 @@ public class BbsController extends BaseController {
         Map<String, Object> map = new HashMap<>();
         map.put("userCode", userCode);
         map.put("subjectId", subjectId);
-        List<BbsScore> bbsScores = bbsScoreManager.listObjects(map);
+        List<BbsScore> bbsScores = bbsScoreManager.listObjectsByProperties(map);
         if (CollectionUtils.isNotEmpty(bbsScores)) {
             throw new ObjectException("用户" + bbsScore.getUserCode() + "已经对：" + bbsScore.getSubjectId() + "评分过！");
         }
@@ -286,7 +284,7 @@ public class BbsController extends BaseController {
         params.put("userCode", userCode);
         params.put("subjectId", subjectId);
 
-        List<BbsScore> bbsScores = bbsScoreManager.listObjects(params);
+        List<BbsScore> bbsScores = bbsScoreManager.listObjectsByProperties(params);
         if (CollectionUtils.isNotEmpty(bbsScores)) {//用户已评分
             result = true;
         }

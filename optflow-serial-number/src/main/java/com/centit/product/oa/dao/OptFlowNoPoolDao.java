@@ -4,10 +4,10 @@ import com.alibaba.fastjson.JSONArray;
 import com.alibaba.fastjson.JSONObject;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.framework.jdbc.dao.DatabaseOptUtils;
-import com.centit.support.algorithm.NumberBaseOpt;
-import com.centit.support.database.utils.PageDesc;
 import com.centit.product.oa.po.OptFlowNoPool;
 import com.centit.product.oa.po.OptFlowNoPoolId;
+import com.centit.support.algorithm.NumberBaseOpt;
+import com.centit.support.database.utils.PageDesc;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Repository;
@@ -63,7 +63,7 @@ public class OptFlowNoPoolDao extends BaseDaoImpl<OptFlowNoPool, OptFlowNoPoolId
     }*/
 
     public List<OptFlowNoPool> listLshInPool(Map<String, Object> filterMap, PageDesc pageDesc){
-        JSONArray jsonArray = listObjectsAsJson(filterMap,pageDesc);
+        JSONArray jsonArray = listObjectsByPropertiesAsJson(filterMap, pageDesc);
         List<OptFlowNoPool> list = JSONObject.parseArray(jsonArray.toJSONString(),OptFlowNoPool.class);
         if(list!=null && list.size()>0){
             return  list;
