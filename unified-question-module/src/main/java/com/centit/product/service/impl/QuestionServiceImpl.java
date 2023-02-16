@@ -35,7 +35,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<Question> listQuestion(Map<String, Object> params, PageDesc pageDesc) {
-        return questionDao.listObjects(params,pageDesc);
+        return questionDao.listObjectsByProperties(params,pageDesc);
     }
 
     @Override

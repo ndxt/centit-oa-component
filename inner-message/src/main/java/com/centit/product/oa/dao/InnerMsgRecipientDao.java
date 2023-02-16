@@ -35,7 +35,7 @@ public class InnerMsgRecipientDao extends BaseDaoImpl<InnerMsgRecipient, String>
     }
 
     @Override
-    public List<InnerMsgRecipient> listObjects(Map<String, Object> filterMap) {
+    public List<InnerMsgRecipient> listObjectsByProperties(Map<String, Object> filterMap) {
         return super.listObjectsByProperties(filterMap);
     }
 

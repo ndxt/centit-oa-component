@@ -66,7 +66,7 @@ public class WorkDayManagerImpl implements WorkDayManager {
         Map<String, Object> paramsMap = new HashMap<>();
         paramsMap.put("startDate", WorkDay.toWorkDayId(sStartDate));
         paramsMap.put("endDate", WorkDay.toWorkDayId(sEndDate));
-        return workDayDao.listObjects(paramsMap);
+        return workDayDao.listObjectsByProperties(paramsMap);
     }
 
     @Override

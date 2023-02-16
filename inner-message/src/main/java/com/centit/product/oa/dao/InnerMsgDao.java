@@ -22,7 +22,7 @@ public class InnerMsgDao extends BaseDaoImpl<InnerMsg, String>{
     }
 
     @Override
-    public List<InnerMsg> listObjects(Map<String, Object> filterMap) {
+    public List<InnerMsg> listObjectsByProperties(Map<String, Object> filterMap) {
         return super.listObjectsByProperties(filterMap);
     }
 

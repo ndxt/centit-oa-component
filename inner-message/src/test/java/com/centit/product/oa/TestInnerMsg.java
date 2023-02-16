@@ -125,7 +125,7 @@ public class TestInnerMsg {
         hashMap.put("sort","msgCode");
         hashMap.put("order","desc");
         hashMap.put("ORDER_BY","qq");
-        List<InnerMsg> innerMsgs = innerMsgDao.listObjects(hashMap);
+        List<InnerMsg> innerMsgs = innerMsgDao.listObjectsByProperties(hashMap);
         PageDesc pageDesc = new PageDesc(1, 10);
         System.out.println("success");
 
@@ -137,7 +137,7 @@ public class TestInnerMsg {
         HashMap<String, Object> HashMap = new HashMap<>();
         HashMap.put("optTag","123");
         HashMap.put("receive","u1234");
-        innerMsgDao.listObjects(HashMap);
+        innerMsgDao.listObjectsByProperties(HashMap);
         System.out.println("success");
 
     }

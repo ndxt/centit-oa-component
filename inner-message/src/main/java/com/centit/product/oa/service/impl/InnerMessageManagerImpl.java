@@ -213,12 +213,12 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     public List<InnerMsgRecipient> listMsgRecipients(Map<String, Object> filterMap) {
-        return innerMsgRecipientDao.listObjects(filterMap);
+        return innerMsgRecipientDao.listObjectsByProperties(filterMap);
     }
 
     @Override
     public List<InnerMsgRecipient> listMsgRecipients(Map<String, Object> filterMap, PageDesc pageDesc) {
-        return innerMsgRecipientDao.listObjects(filterMap, pageDesc);
+        return innerMsgRecipientDao.listObjectsByProperties(filterMap, pageDesc);
     }
 
     @Override
@@ -233,7 +233,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     public List<InnerMsgRecipient> listMsgRecipientsCascade(Map<String, Object> filterMap){
-        return innerMsgRecipientDao.listObjects(filterMap);
+        return innerMsgRecipientDao.listObjectsByProperties(filterMap);
     }
 
     /*
@@ -294,7 +294,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
 
     @Override
     public List<InnerMsg> listInnerMsgs(Map<String, Object> filterMap) {
-        return innerMsgDao.listObjects(filterMap);
+        return innerMsgDao.listObjectsByProperties(filterMap);
     }
 
     @Override
@@ -303,7 +303,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
             filterMap.put("sort","desc");
         }
         filterMap.put("order_by","SEND_DATE");
-        return innerMsgDao.listObjects(filterMap,pageDesc);
+        return innerMsgDao.listObjectsByProperties(filterMap,pageDesc);
     }
 
     @Override
