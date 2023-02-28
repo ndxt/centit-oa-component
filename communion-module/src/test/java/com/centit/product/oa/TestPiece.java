@@ -1,7 +1,7 @@
 //package com.centit.product.oa;
 //
-//import com.alibaba.fastjson.JSONArray;
-//import com.alibaba.fastjson.JSONObject;
+//import com.alibaba.fastjson2.JSONArray;
+//import com.alibaba.fastjson2.JSONObject;
 //import com.centit.framework.jdbc.config.JdbcConfig;
 //import com.centit.product.oa.dao.BbsPieceDao;
 //import com.centit.product.oa.po.BbsPiece;

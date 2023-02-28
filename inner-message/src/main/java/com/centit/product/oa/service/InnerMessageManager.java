@@ -1,6 +1,6 @@
 package com.centit.product.oa.service;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import com.centit.product.oa.po.InnerMsg;
 import com.centit.product.oa.po.InnerMsgRecipient;
 import com.centit.support.database.utils.PageDesc;

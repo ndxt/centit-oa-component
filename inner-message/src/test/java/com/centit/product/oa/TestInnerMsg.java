@@ -1,6 +1,6 @@
 package com.centit.product.oa;
 
-import com.alibaba.fastjson.JSONArray;
+import com.alibaba.fastjson2.JSONArray;
 import com.centit.framework.jdbc.config.JdbcConfig;
 import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.dao.InnerMsgRecipientDao;

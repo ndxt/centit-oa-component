@@ -1,7 +1,8 @@
 package com.centit.product.oa.dao;
 
-import com.alibaba.fastjson.JSONArray;
-import com.alibaba.fastjson.JSONObject;
+import com.alibaba.fastjson2.JSON;
+import com.alibaba.fastjson2.JSONArray;
+import com.alibaba.fastjson2.JSONObject;
 import com.centit.framework.jdbc.dao.BaseDaoImpl;
 import com.centit.framework.jdbc.dao.DatabaseOptUtils;
 import com.centit.product.oa.po.OptFlowNoPool;
@@ -64,7 +65,7 @@ public class OptFlowNoPoolDao extends BaseDaoImpl<OptFlowNoPool, OptFlowNoPoolId
 
     public List<OptFlowNoPool> listLshInPool(Map<String, Object> filterMap, PageDesc pageDesc){
         JSONArray jsonArray = listObjectsByPropertiesAsJson(filterMap, pageDesc);
-        List<OptFlowNoPool> list = JSONObject.parseArray(jsonArray.toJSONString(),OptFlowNoPool.class);
+        List<OptFlowNoPool> list = jsonArray.toList(OptFlowNoPool.class);
         if(list!=null && list.size()>0){
             return  list;
         }
