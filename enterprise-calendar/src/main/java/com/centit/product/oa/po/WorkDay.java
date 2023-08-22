@@ -12,23 +12,27 @@ import javax.persistence.Table;
 import java.io.Serializable;
 import java.util.Date;
 
-/*
- * @author : guo_jh
+/**
+ * @author : guo_jh codefan@sina.com
  * Date: 2018/6/29 10:46
  * Description:
  */
 @Entity
-@Table(
-    name = "F_WORK_DAY"
-)
+@Table(name = "F_WORK_DAY")
 @Data
 public class WorkDay implements Serializable {
     private static final long serialVersionUID = 1L;
     @Id
-    @Column(
-        name = "WORK_DAY"
-    )
+    @Column(name = "WORK_DAY")
     private String workDay;
+
+    /**
+     * 租户隔离，system 租户为通用设计
+     * 每次获取，获取租户为当前租户和系统租户的信息
+     */
+    @Id
+    @Column(name = "TOP_UNIT")
+    private String topUnit;
 
     public static String toWorkDayId(String sDate){
         return DatetimeOpt.convertDateToString(
@@ -42,21 +46,20 @@ public class WorkDay implements Serializable {
     public static Date toWorkDayDate(String date){
         return DatetimeOpt.convertStringToDate(date, "yyyyMMdd");
     }
-    /*
+
+    /**
      * 0: 未做标记（永远不会有，作为删除标记）
      * A：工作日放假
      * B：周末调班
-     * C：正常上班（按道理不需要）
-     * D: 正常休息（按道理不需要）
+     * C：正常上班（按道理不需要） 和system租户配置冲突时需要
+     * D: 正常休息（按道理不需要） 和system租户配置冲突时需要
      */
-    public static String WORK_DAY_TYPE_IGNORE="0";
-    public static String WORK_DAY_TYPE_HOLIDAY="A";
-    public static String WORK_DAY_TYPE_SHIFT="B";
-    public static String WORK_DAY_TYPE_WORKDAY="C";
-    public static String WORK_DAY_TYPE_WEEKEND="D";
-    @Column(
-        name = "DAY_TYPE"
-    )
+    public static String WORK_DAY_TYPE_IGNORE = "0";
+    public static String WORK_DAY_TYPE_HOLIDAY = "A";
+    public static String WORK_DAY_TYPE_SHIFT = "B";
+    public static String WORK_DAY_TYPE_WORKDAY = "C";
+    public static String WORK_DAY_TYPE_WEEKEND = "D";
+    @Column(name = "DAY_TYPE")
     @Length(
         max = 1,
         message = "字段长度不能小于{min}大于{max}"
@@ -64,17 +67,17 @@ public class WorkDay implements Serializable {
     @DictionaryMap(value = "DAY_TYPE", fieldName = "dayTypeDesc")
     private String dayType;
 
-    @Column(
-        name = "WORK_TIME_TYPE"
-    )
+    /**
+     * 这个字段 暂时没有使用，可以用于关联work class
+     */
+    @Column(name = "WORK_TIME_TYPE")
     @Length(
         max = 20,
         message = "字段长度不能小于{min}大于{max}"
     )
     private String workTimeType;
-    @Column(
-        name = "WORK_DAY_DESC"
-    )
+
+    @Column(name = "WORK_DAY_DESC")
     @Length(
         max = 255,
         message = "字段长度不能小于{min}大于{max}"
@@ -84,12 +87,18 @@ public class WorkDay implements Serializable {
     public WorkDay() {
     }
 
+    public WorkDay(String topUnit, Date currDate) {
+        this.topUnit = topUnit;
+        this.workDay = WorkDay.toWorkDayId(currDate);
+    }
+
     public Date getWorkDate(){
         return toWorkDayDate(this.getWorkDay());
     }
 
     public WorkDay copy(WorkDay other) {
         this.setWorkDay(other.getWorkDay());
+        this.topUnit = other.getTopUnit();
         this.dayType = other.getDayType();
         this.workTimeType = other.getWorkTimeType();
         this.workDayDesc = other.getWorkDayDesc();
@@ -99,6 +108,9 @@ public class WorkDay implements Serializable {
     public WorkDay copyNotNullProperty(WorkDay other) {
         if (other.getWorkDay() != null) {
             this.setWorkDay(other.getWorkDay());
+        }
+        if (other.getTopUnit() != null) {
+            this.topUnit = other.getTopUnit();
         }
 
         if (other.getDayType() != null) {

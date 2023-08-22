@@ -4,12 +4,15 @@ import com.centit.product.oa.dao.WorkDayDao;
 import com.centit.product.oa.po.WorkDay;
 import com.centit.product.oa.service.WorkDayManager;
 import com.centit.support.algorithm.DatetimeOpt;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.annotation.Resource;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 /*
  * @author guo_jh
@@ -24,11 +27,44 @@ public class WorkDayManagerImpl implements WorkDayManager {
     @Resource
     private WorkDayDao workDayDao;
 
-    @Override
-    public boolean isWorkDay(String sWorkDay) {
-        Date workDay = DatetimeOpt.smartPraseDate(sWorkDay);
 
-        WorkDay day = this.workDayDao.getObjectById(WorkDay.toWorkDayId(workDay));
+    @Override
+    public void mergeWorkDay(WorkDay workDay) {
+        workDay.setWorkDay(WorkDay.toWorkDayId(workDay.getWorkDay()));
+        if (WorkDay.WORK_DAY_TYPE_IGNORE.equals(workDay.getDayType())) {//还原日期默认标记
+            this.deleteWorkDay(workDay.getTopUnit(), workDay.getWorkDate());
+        } else {//新增或更新日期标记
+            WorkDay dbWorkDay = this.workDayDao.getWorkDay(workDay.getTopUnit(), workDay.getWorkDate());
+            if (dbWorkDay != null && StringUtils.equals(workDay.getTopUnit(), dbWorkDay.getTopUnit())) {
+                dbWorkDay.copyNotNullProperty(workDay);
+                this.workDayDao.updateObject(workDay);
+            } else {
+                this.workDayDao.saveNewObject(workDay);
+            }
+        }
+        workDayDao.saveNewObject(workDay);
+    }
+
+
+    @Override
+    public void deleteWorkDay(String topUnit, Date currDate) {
+        workDayDao.deleteObject(new WorkDay(topUnit, currDate));
+    }
+
+    @Override
+    public WorkDay getWorkDay(String topUnit, Date currDate) {
+        return workDayDao.getWorkDay(topUnit, currDate);
+    }
+
+    @Override
+    public List<WorkDay> listWorkDays(String topUnit, Date startDate, Date endDate) {
+        return workDayDao.listWorkDays(topUnit, startDate, endDate);
+    }
+
+    @Override
+    public boolean isWorkDay(String topUnit, Date currDate){
+        WorkDay day = this.workDayDao.getWorkDay(topUnit, currDate);
+
         if (day != null) {
             if (WorkDay.WORK_DAY_TYPE_SHIFT.equals(day.getDayType())) {//B:周末调休成工作时间
                 return true;
@@ -36,45 +72,14 @@ public class WorkDayManagerImpl implements WorkDayManager {
                 return false;
             }
         }
-        return DatetimeOpt.getDayOfWeek(workDay) > 0 && DatetimeOpt.getDayOfWeek(workDay) < 6;
+        return DatetimeOpt.getDayOfWeek(currDate) > 0 && DatetimeOpt.getDayOfWeek(currDate) < 6;
     }
 
     @Override
-    public void saveWorkDay(WorkDay workDay) {
-        workDay.setWorkDay(WorkDay.toWorkDayId(workDay.getWorkDay()));
-        workDayDao.saveNewObject(workDay);
-    }
+    public int calcHolidays(String topUnit, Date startDate, Date endDate) {
 
-    @Override
-    public void updateWorkDay(WorkDay workDay) {
-        workDay.setWorkDay(WorkDay.toWorkDayId(workDay.getWorkDay()));
-        workDayDao.updateObject(workDay);
-    }
-
-    @Override
-    public void deleteWorkDay(String currDate) {
-        workDayDao.deleteObjectById(WorkDay.toWorkDayId(currDate));
-    }
-
-    @Override
-    public WorkDay getWorkDay(String currDate){
-        return workDayDao.getObjectById(WorkDay.toWorkDayId(currDate));
-    }
-
-    @Override
-    public List<WorkDay> listWorkDays(String sStartDate, String sEndDate){
-        Map<String, Object> paramsMap = new HashMap<>();
-        paramsMap.put("startDate", WorkDay.toWorkDayId(sStartDate));
-        paramsMap.put("endDate", WorkDay.toWorkDayId(sEndDate));
-        return workDayDao.listObjectsByProperties(paramsMap);
-    }
-
-    @Override
-    public int calcHolidays(String sStartDate, String sEndDate) {
-        Date startDate = DatetimeOpt.smartPraseDate(sStartDate);
-        Date endDate = DatetimeOpt.smartPraseDate(sEndDate);
         int holidays = DatetimeOpt.calcWeekendDays(startDate, endDate);//获取指定范围内周末的天数
-        List<WorkDay> list = listWorkDays(sStartDate, sEndDate);
+        List<WorkDay> list = workDayDao.listWorkDays(topUnit, startDate, endDate);
         if (null != list) {
             for (WorkDay workDay : list) {
                 Date workDate = WorkDay.toWorkDayDate(workDay.getWorkDay());
@@ -93,23 +98,17 @@ public class WorkDayManagerImpl implements WorkDayManager {
     }
 
     @Override
-    public int calcWorkDays(String sStartDate, String sEndDate) {
-        Date startDate = DatetimeOpt.smartPraseDate(sStartDate);
-        Date endDate = DatetimeOpt.smartPraseDate(sEndDate);
+    public int calcWorkDays(String topUnit, Date startDate, Date endDate) {
         int spanDays = DatetimeOpt.calcSpanDays(startDate, endDate);
-        int holidays = this.calcHolidays(sStartDate, sStartDate);
+        int holidays = this.calcHolidays(topUnit, startDate, endDate);
         return spanDays - holidays;
     }
 
-
-
     @Override
-    public List<WorkDay> rangeHolidays(String sStartDate, String sEndDate) {
-        List<WorkDay> list = listWorkDays(sStartDate, sEndDate);
+    public List<WorkDay> rangeHolidays(String topUnit, Date startDate, Date endDate) {
+        List<WorkDay> list = workDayDao.listWorkDays(topUnit, startDate, endDate);
         int i= 0;
         int l = list==null?0:list.size();
-        Date startDate = DatetimeOpt.smartPraseDate(sStartDate);
-        Date endDate = DatetimeOpt.smartPraseDate(sEndDate);
         List<WorkDay> workDays = new ArrayList<>(16);
         for(Date s = startDate; DatetimeOpt.compareTwoDate(s, endDate)<1; s = DatetimeOpt.addDays(s,1)){
             boolean specil = false;
@@ -137,10 +136,8 @@ public class WorkDayManagerImpl implements WorkDayManager {
     }
 
     @Override
-    public List<WorkDay> rangeWorkDays(String sStartDate, String sEndDate) {
-        Date startDate = DatetimeOpt.smartPraseDate(sStartDate);
-        Date endDate = DatetimeOpt.smartPraseDate(sEndDate);
-        List<WorkDay> list = listWorkDays(sStartDate, sEndDate);
+    public List<WorkDay> rangeWorkDays(String topUnit, Date startDate, Date endDate) {
+        List<WorkDay> list = workDayDao.listWorkDays(topUnit, startDate, endDate);
         int i= 0;
         int l = list==null?0:list.size();
         List<WorkDay> workDays = new ArrayList<>(32);
@@ -168,4 +165,5 @@ public class WorkDayManagerImpl implements WorkDayManager {
         }
         return workDays;
     }
+
 }

@@ -42,8 +42,9 @@ public class EnterpriseCalendarController extends BaseController {
     @ApiOperation("获取当前月份所有标记日期，包括：加班和调休。")
     @RequestMapping(value = "/{sCurDate}", method = RequestMethod.GET)
     @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
-    public WorkDay getMarkDay(@PathVariable String sCurDate) {
-          return this.workDayMag.getWorkDay(sCurDate);
+    public WorkDay getMarkDay(@PathVariable String sCurDate, HttpServletRequest request) {
+          return this.workDayMag.getWorkDay(
+              WebOptUtils.getCurrentTopUnit(request), DatetimeOpt.smartPraseDate(sCurDate));
     }
 
     /*
@@ -54,18 +55,10 @@ public class EnterpriseCalendarController extends BaseController {
     @ApiOperation("保存日期标记，如果日期标记为‘0’表示还原默认值，系统会删除对应的标记记录。")
     @WrapUpResponseBody
     @RequestMapping(value = "/", method = RequestMethod.POST)
-    public void saveData(WorkDay workDay) {
-        if (WorkDay.WORK_DAY_TYPE_IGNORE.equals(workDay.getDayType())) {//还原日期默认标记
-            this.workDayMag.deleteWorkDay(workDay.getWorkDay());
-        } else {//新增或更新日期标记
-            WorkDay dbWorkDay = this.workDayMag.getWorkDay(workDay.getWorkDay());
-            if (dbWorkDay != null) {
-                dbWorkDay.copyNotNullProperty(workDay);
-                this.workDayMag.updateWorkDay(workDay);
-            } else {
-                this.workDayMag.saveWorkDay(workDay);
-            }
-        }
+    public void saveData(WorkDay workDay, HttpServletRequest request) {
+        workDay.setTopUnit(WebOptUtils.getCurrentTopUnit(request));
+        workDay.setWorkDay(WorkDay.toWorkDayId(workDay.getWorkDay()));
+        this.workDayMag.mergeWorkDay(workDay);
     }
 
     /*
@@ -76,8 +69,9 @@ public class EnterpriseCalendarController extends BaseController {
     @ApiOperation("保存日期标记，如果日期标记为‘0’表示还原默认值，系统会删除对应的标记记录。")
     @WrapUpResponseBody
     @RequestMapping(value = "/{sCurDate}", method = RequestMethod.DELETE)
-    public void deleteWorkDay(@PathVariable String sCurDate) {
-        this.workDayMag.deleteWorkDay(sCurDate);
+    public void deleteWorkDay(@PathVariable String sCurDate, HttpServletRequest request) {
+        this.workDayMag.deleteWorkDay(
+            WebOptUtils.getCurrentTopUnit(request), DatetimeOpt.smartPraseDate(sCurDate));
     }
 
     /*
@@ -88,18 +82,16 @@ public class EnterpriseCalendarController extends BaseController {
     @ApiOperation("获取当前月份所有标记日期，包括：加班和调休。")
     @RequestMapping(value = "/month/{sCurDate}", method = RequestMethod.GET)
     @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
-    public List<WorkDay> findMarkDayByCurrMonth(@PathVariable String sCurDate) {
+    public List<WorkDay> findMarkDayByCurrMonth(@PathVariable String sCurDate, HttpServletRequest request) {
         Date curDate =  DatetimeOpt.smartPraseDate(sCurDate);
         if(curDate == null){
             curDate = DatetimeOpt.currentUtilDate();
         }
         Date startDate = DatetimeOpt.truncateToMonth(curDate);
         Date endDate = DatetimeOpt.seekEndOfMonth(curDate);
-        return this.workDayMag.listWorkDays(
-            DatetimeOpt.convertDateToString(startDate), DatetimeOpt.convertDateToString(endDate)
-        );
+        return this.workDayMag.listWorkDays(WebOptUtils.getCurrentTopUnit(request),
+            startDate, endDate);
     }
-
 
     @ApiOperation("查询一定范围内所有标记日期，包括：加班和调休。")
     @RequestMapping(value = "/list", method = RequestMethod.GET)
@@ -109,7 +101,8 @@ public class EnterpriseCalendarController extends BaseController {
             "startDate","start","beginDate","begin");
         String endDate = WebOptUtils.getRequestFirstOneParameter(request,
             "endDate","end");
-        return this.workDayMag.listWorkDays(startDate, endDate);
+        return this.workDayMag.listWorkDays(WebOptUtils.getCurrentTopUnit(request),
+            DatetimeOpt.smartPraseDate(startDate), DatetimeOpt.smartPraseDate(endDate));
     }
 
     @ApiOperation("查询一定范围内所有工作日。")
@@ -120,7 +113,8 @@ public class EnterpriseCalendarController extends BaseController {
             "startDate","start","beginDate","begin");
         String endDate = WebOptUtils.getRequestFirstOneParameter(request,
             "endDate","end");
-        return this.workDayMag.rangeWorkDays(startDate, endDate);
+        return this.workDayMag.rangeWorkDays(WebOptUtils.getCurrentTopUnit(request),
+            DatetimeOpt.smartPraseDate(startDate), DatetimeOpt.smartPraseDate(endDate));
     }
 
     @ApiOperation("查询一定范围内所有非工作日。")
@@ -131,7 +125,8 @@ public class EnterpriseCalendarController extends BaseController {
             "startDate","start","beginDate","begin");
         String endDate = WebOptUtils.getRequestFirstOneParameter(request,
             "endDate","end");
-        return this.workDayMag.rangeHolidays(startDate, endDate);
+        return this.workDayMag.rangeHolidays(WebOptUtils.getCurrentTopUnit(request),
+            DatetimeOpt.smartPraseDate(startDate), DatetimeOpt.smartPraseDate(endDate));
     }
 
 }
