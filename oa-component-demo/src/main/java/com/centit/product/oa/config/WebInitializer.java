@@ -25,7 +25,7 @@ public class WebInitializer implements WebApplicationInitializer {
                 "/system/*",
                 SystemSpringMvcConfig.class,SwaggerConfig.class);
         WebConfig.registerServletConfig(servletContext, "oa",
-                "/oa/*",
+                                                        "/oa/*",
                 NormalSpringMvcConfig.class,SwaggerConfig.class);
 
         WebConfig.registerRequestContextListener(servletContext);

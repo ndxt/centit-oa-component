@@ -9,8 +9,6 @@
         <module>optflow-serial-number</module>
         <module>inner-message</module>
         <module>favorite-tag-module</module>
-        <module>unified-question-web</module>
-        <module>unified-question-module</module>
     </modules>
 
     <parent>
