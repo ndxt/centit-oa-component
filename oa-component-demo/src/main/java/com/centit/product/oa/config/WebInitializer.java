@@ -18,14 +18,14 @@ public class WebInitializer implements WebApplicationInitializer {
     @Override
     public void onStartup(ServletContext servletContext) throws ServletException {
 
-        String [] servletUrlPatterns = {"/system/*", "/product/oa/*"};
+        String [] servletUrlPatterns = {"/system/*", "/oa/*"};
 
         WebConfig.registerSpringConfig(servletContext, ServiceConfig.class);
         WebConfig.registerServletConfig(servletContext, "system",
                 "/system/*",
                 SystemSpringMvcConfig.class,SwaggerConfig.class);
-        WebConfig.registerServletConfig(servletContext, "/product/oa/",
-                "/product/oa/*",
+        WebConfig.registerServletConfig(servletContext, "oa",
+                "/oa/*",
                 NormalSpringMvcConfig.class,SwaggerConfig.class);
 
         WebConfig.registerRequestContextListener(servletContext);
