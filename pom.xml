@@ -14,17 +14,17 @@
     <parent>
         <artifactId>framework-snapshot-dependencies</artifactId>
         <groupId>com.centit.framework</groupId>
-        <version>5.3-SNAPSHOT</version>
+        <version>5.4-SNAPSHOT</version>
     </parent>
 
     <properties>
         <aliyun-sdk-oss.version>2.8.1</aliyun-sdk-oss.version>
-        <fileserver.version>5.2-SNAPSHOT</fileserver.version>
+        <fileserver.version>5.4-SNAPSHOT</fileserver.version>
     </properties>
 
     <groupId>com.centit.product</groupId>
     <artifactId>centit-oa-component</artifactId>
-    <version>5.3-SNAPSHOT</version>
+    <version>5.4-SNAPSHOT</version>
 
     <packaging>pom</packaging>
     <name>com.centit.product:centit-oa-component</name>

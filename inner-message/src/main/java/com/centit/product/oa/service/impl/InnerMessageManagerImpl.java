@@ -7,9 +7,9 @@ import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.framework.core.dao.DictionaryMapUtils;
 import com.centit.framework.filter.RequestThreadLocal;
 import com.centit.framework.model.adapter.MessageSender;
-import com.centit.framework.model.basedata.IUnitInfo;
-import com.centit.framework.model.basedata.IUserInfo;
 import com.centit.framework.model.basedata.NoticeMessage;
+import com.centit.framework.model.basedata.UnitInfo;
+import com.centit.framework.model.basedata.UserInfo;
 import com.centit.product.oa.dao.InnerMsgAnnexDao;
 import com.centit.product.oa.dao.InnerMsgDao;
 import com.centit.product.oa.dao.InnerMsgRecipientDao;
@@ -131,10 +131,10 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
     @Transactional
     public void noticeByUnitCode(String unitCode, InnerMsg msg) throws ObjectException {
         String topUnit = WebOptUtils.getCurrentTopUnit(RequestThreadLocal.getLocalThreadWrapperRequest());
-        List<IUnitInfo> unitList = CodeRepositoryUtil.getSubUnits(topUnit, unitCode);
+        List<UnitInfo> unitList = CodeRepositoryUtil.getSubUnits(topUnit, unitCode);
         //(ArrayList<UnitInfo>) unitDao.listAllSubUnits(unitCode);
-        Set<IUserInfo> userList = CodeRepositoryUtil.getUnitUsers(topUnit, unitCode);
-        for (IUnitInfo ui : unitList) {
+        Set<UserInfo> userList = CodeRepositoryUtil.getUnitUsers(topUnit, unitCode);
+        for (UnitInfo ui : unitList) {
             userList.addAll(CodeRepositoryUtil.getUnitUsers(topUnit, ui.getUnitCode()));
         }
 
@@ -148,7 +148,7 @@ public class InnerMessageManagerImpl implements InnerMessageManager, MessageSend
            // msg.setMsgCode(innerMsgDao.getNextKey());
             innerMsgDao.saveNewObject(msg);
 
-            for (IUserInfo ui : userList) {
+            for (UserInfo ui : userList) {
                 if(!Objects.equals(msg.getSender(),ui.getUserCode())){
                     InnerMsgRecipient recipient = new InnerMsgRecipient();
                     recipient.setMsgState("U");
