@@ -39,7 +39,7 @@ public class EnterpriseCalendarController extends BaseController {
      *
      * @param sCurDate  当前选中时间,默认取系统当前时间
      */
-    @ApiOperation("获取当前月份所有标记日期，包括：加班和调休。")
+    @ApiOperation("获取当日标记信息。")
     @RequestMapping(value = "/{sCurDate}", method = RequestMethod.GET)
     @WrapUpResponseBody(contentType = WrapUpContentType.MAP_DICT)
     public WorkDay getMarkDay(@PathVariable String sCurDate, HttpServletRequest request) {
