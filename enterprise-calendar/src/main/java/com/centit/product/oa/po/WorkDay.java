@@ -108,7 +108,7 @@ public class WorkDay implements Serializable {
     }
 
     public WorkDay copy(WorkDay other) {
-        this.setWorkDay(other.getWorkDay());
+        this.workDay = other.getWorkDay();
         this.topUnit = other.getTopUnit();
         this.dayType = other.getDayType();
         this.workTimeType = other.getWorkTimeType();
