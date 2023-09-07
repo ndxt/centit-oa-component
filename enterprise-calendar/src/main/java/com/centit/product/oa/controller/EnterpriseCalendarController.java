@@ -57,7 +57,7 @@ public class EnterpriseCalendarController extends BaseController {
     @RequestMapping(value = "/", method = RequestMethod.POST)
     public void saveData(WorkDay workDay, HttpServletRequest request) {
         workDay.setTopUnit(WebOptUtils.getCurrentTopUnit(request));
-        workDay.setWorkDay(WorkDay.toWorkDayId(workDay.getWorkDay()));
+        //workDay.setWorkDay(WorkDay.toWorkDayId(workDay.getWorkDay()));
         this.workDayMag.mergeWorkDay(workDay);
     }
 

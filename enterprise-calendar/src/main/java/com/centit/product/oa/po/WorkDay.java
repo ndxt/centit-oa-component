@@ -96,6 +96,17 @@ public class WorkDay implements Serializable {
         return toWorkDayDate(this.getWorkDay());
     }
 
+    public void setWorkDate(Date currDate){
+        this.workDay = WorkDay.toWorkDayId(currDate);
+    }
+
+    public void setWorkDay(String date){
+        String workDayId = WorkDay.toWorkDayId(date);
+        if(workDayId != null) {
+            this.workDay = workDayId;
+        }
+    }
+
     public WorkDay copy(WorkDay other) {
         this.setWorkDay(other.getWorkDay());
         this.topUnit = other.getTopUnit();
