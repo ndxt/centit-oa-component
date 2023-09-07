@@ -34,10 +34,10 @@ public class WorkDayDao extends BaseDaoImpl<WorkDay, String> {
         List<WorkDay> workDays = super.listObjectsByFilter(
             "where WORK_DAY = ? and (TOP_UNIT = 'system' or TOP_UNIT = ?)",
             new Object[]{WorkDay.toWorkDayId(currDate), topUnit});
-        if(workDays.size() < 0){
+        if(workDays.size() < 1){
             return null;
         }
-        if(workDays.size() == 0){
+        if(workDays.size() == 1){
             return workDays.get(0);
         }
         for(WorkDay wd : workDays){
