@@ -10,7 +10,7 @@ import java.util.Date;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ResourceLock {
-    public static final int MAX_ACTIVE_TIME_SECONDS = 300 * 1000;
+    public static final int MAX_ACTIVE_TIME_SECONDS = 360 * 1000;
     @Data
     @AllArgsConstructor
     static class LockUser{
