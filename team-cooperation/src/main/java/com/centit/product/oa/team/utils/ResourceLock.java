@@ -20,6 +20,10 @@ public abstract class ResourceLock {
     static ConcurrentHashMap<String, LockUser> resourceLockMap = new ConcurrentHashMap<>(1000);
 
     public static void lockResource(String resourceId, String lockUser){
+        if(StringUtils.isBlank(resourceId)||StringUtils.isBlank(lockUser)){
+            return;
+        }
+
         LockUser lockInfo = resourceLockMap.get(resourceId);
         Date currentTime = DatetimeOpt.currentUtilDate();
         if(lockInfo==null){
@@ -43,6 +47,9 @@ public abstract class ResourceLock {
     }
 
     public static boolean releaseLock(String resourceId, String lockUser){
+        if(StringUtils.isBlank(resourceId)||StringUtils.isBlank(lockUser)){
+            return true;
+        }
         LockUser lockInfo = resourceLockMap.get(resourceId);
         if(lockInfo==null)
             return true;
