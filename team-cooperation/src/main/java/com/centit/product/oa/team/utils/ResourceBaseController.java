@@ -19,8 +19,10 @@ public abstract class ResourceBaseController extends BaseController {
     )
     @PostMapping("/lock/{resourceId}")
     @WrapUpResponseBody
-    public void lockResource(@PathVariable String resourceId, HttpServletRequest request){
-        ResourceLock.lockResource(resourceId, WebOptUtils.getCurrentUserCode(request));
+    public String lockResource(@PathVariable String resourceId, HttpServletRequest request){
+        String currentUserCode = WebOptUtils.getCurrentUserCode(request);
+        ResourceLock.lockResource(resourceId, currentUserCode);
+        return "用户：" + currentUserCode + "成功的锁定了资源" + resourceId;
     }
 
 
