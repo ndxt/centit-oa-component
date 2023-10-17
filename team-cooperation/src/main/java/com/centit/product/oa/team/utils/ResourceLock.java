@@ -7,6 +7,7 @@ import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;
+import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public abstract class ResourceLock {
@@ -60,6 +61,17 @@ public abstract class ResourceLock {
         }
 
         return false;
+    }
+
+    public static void releaseAll(String lockUser){
+        if(StringUtils.isBlank(lockUser)){
+            return;
+        }
+        for(Map.Entry<String, LockUser> ent: resourceLockMap.entrySet()) {
+            if(lockUser.equals(ent.getValue().getUserCode())) {
+                resourceLockMap.remove(ent.getKey());
+            }
+        }
     }
 
 }

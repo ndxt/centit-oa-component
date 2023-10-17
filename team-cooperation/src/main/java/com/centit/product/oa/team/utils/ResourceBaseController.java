@@ -36,4 +36,11 @@ public abstract class ResourceBaseController extends BaseController {
     public void releaseResource(@PathVariable String resourceId, HttpServletRequest request){
         ResourceLock.releaseLock(resourceId, WebOptUtils.getCurrentUserCode(request));
     }
+
+    @ApiOperation(value = "释放用户资源", notes = "释放用户资源")
+    @PostMapping("/releaseUser")
+    @WrapUpResponseBody
+    public void releaseAllResourceByUser(HttpServletRequest request){
+        ResourceLock.releaseAll(WebOptUtils.getCurrentUserCode(request));
+    }
 }
