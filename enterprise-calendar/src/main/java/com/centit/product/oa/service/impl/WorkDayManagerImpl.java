@@ -8,6 +8,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ import java.util.List;
  * Description:
  */
 @Service
+@Transactional
 public class WorkDayManagerImpl implements WorkDayManager {
 
     private static Logger logger = LoggerFactory.getLogger(WorkDayManagerImpl.class);
@@ -42,9 +44,7 @@ public class WorkDayManagerImpl implements WorkDayManager {
                 this.workDayDao.saveNewObject(workDay);
             }
         }
-        workDayDao.saveNewObject(workDay);
     }
-
 
     @Override
     public void deleteWorkDay(String topUnit, Date currDate) {
