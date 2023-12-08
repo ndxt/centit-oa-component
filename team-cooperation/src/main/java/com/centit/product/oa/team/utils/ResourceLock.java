@@ -43,7 +43,7 @@ public abstract class ResourceLock {
             return;
         }
 
-        throw new ObjectException(ObjectException.DATA_VALIDATE_ERROR,
+        throw new ObjectException(lockInfo.getUserCode(), ObjectException.DATA_VALIDATE_ERROR,
             "资源："+resourceId+" 已被用户："+ lockInfo.getUserCode()+" 锁定。");
     }
 
