@@ -21,7 +21,7 @@ public abstract class ResourceBaseController extends BaseController {
     @WrapUpResponseBody
     public String lockResource(@PathVariable String resourceId, HttpServletRequest request){
         String currentUserCode = WebOptUtils.getCurrentUserCode(request);
-        ResourceLock.lockResource(resourceId, currentUserCode);
+        ResourceLock.lockResource(resourceId, currentUserCode, request);
         return "用户：" + currentUserCode + "成功的锁定了资源" + resourceId;
     }
 

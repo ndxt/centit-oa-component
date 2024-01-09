@@ -1,11 +1,14 @@
 package com.centit.product.oa.team.utils;
 
+import com.centit.framework.common.WebOptUtils;
+import com.centit.framework.components.CodeRepositoryUtil;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.common.ObjectException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import org.apache.commons.lang3.StringUtils;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
@@ -20,7 +23,7 @@ public abstract class ResourceLock {
     }
     static ConcurrentHashMap<String, LockUser> resourceLockMap = new ConcurrentHashMap<>(1000);
 
-    public static void lockResource(String resourceId, String lockUser){
+    public static void lockResource(String resourceId, String lockUser, HttpServletRequest request){
         if(StringUtils.isBlank(resourceId)||StringUtils.isBlank(lockUser)){
             return;
         }
@@ -42,9 +45,13 @@ public abstract class ResourceLock {
             resourceLockMap.put(resourceId, lockInfo);
             return;
         }
-
+        String topUnit = WebOptUtils.getCurrentTopUnit(request);
+        String userName = CodeRepositoryUtil.getUserName(topUnit, lockInfo.getUserCode());
+        if(StringUtils.isBlank(userName)){
+            userName = lockInfo.getUserCode();
+        }
         throw new ObjectException(lockInfo.getUserCode(), ObjectException.DATA_VALIDATE_ERROR,
-            "资源："+resourceId+" 已被用户："+ lockInfo.getUserCode()+" 锁定。");
+            "资源："+resourceId+" 已被用户："+ userName +" 锁定。");
     }
 
     public static boolean releaseLock(String resourceId, String lockUser){
