@@ -2,6 +2,7 @@ package com.centit.product.oa.team.utils;
 
 import com.centit.framework.common.WebOptUtils;
 import com.centit.framework.components.CodeRepositoryUtil;
+import com.centit.support.algorithm.CollectionsOpt;
 import com.centit.support.algorithm.DatetimeOpt;
 import com.centit.support.common.ObjectException;
 import lombok.AllArgsConstructor;
@@ -50,7 +51,13 @@ public abstract class ResourceLock {
         if(StringUtils.isBlank(userName)){
             userName = lockInfo.getUserCode();
         }
-        throw new ObjectException(lockInfo.getUserCode(), ObjectException.DATA_VALIDATE_ERROR,
+        throw new ObjectException(
+            CollectionsOpt.createHashMap("lockUser", lockUser,
+                "lockUserName", CodeRepositoryUtil.getUserName(topUnit, lockUser),
+                "resourceId", resourceId,
+                "resourceOwner", lockInfo.getUserCode(),
+                "resourceOwnerName", userName
+            ), ObjectException.DATA_VALIDATE_ERROR,
             "资源："+resourceId+" 已被用户："+ userName +" 锁定。");
     }
 
