@@ -5,7 +5,7 @@
     <parent>
         <artifactId>centit-oa-component</artifactId>
         <groupId>com.centit.product</groupId>
-        <version>5.4-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
     <artifactId>enterprise-calendar</artifactId>
@@ -21,14 +21,13 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-core</artifactId>
+            <version>${revision}</version>
         </dependency>
-        <dependency>
-            <groupId>com.centit.framework</groupId>
-            <artifactId>framework-adapter</artifactId>
-        </dependency>
+
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-jdbc</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>

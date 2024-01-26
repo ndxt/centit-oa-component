@@ -5,7 +5,7 @@
     <parent>
         <artifactId>centit-oa-component</artifactId>
         <groupId>com.centit.product</groupId>
-        <version>5.4-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -20,16 +20,19 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>framework-core</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-jdbc</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-extend</artifactId>
+            <version>${revision}</version>
         </dependency>
 
         <dependency>
@@ -45,6 +48,7 @@
         <dependency>
             <groupId>com.centit.framework</groupId>
             <artifactId>centit-persistence-jdbc-config</artifactId>
+            <version>${revision}</version>
         </dependency>
         <!--jdbc 测试中提示com.mysql.drive打不开，所以后来重新添加了依赖mysql-connector-java-->
         <!-- https://mvnrepository.com/artifact/mysql/mysql-connector-java -->
@@ -73,18 +77,5 @@
             <scope>test</scope>
         </dependency>
 
-        <!-- server runtime library -->
-        <!--<dependency>
-            <groupId>com.sun</groupId>
-            <artifactId>tools</artifactId>
-            <version>${jdk.version}</version>
-            <systemPath>${java.home}/../lib/tools.jar</systemPath>
-            <scope>system</scope>
-        </dependency>-->
-
-        <dependency>
-            <groupId>com.centit.support</groupId>
-            <artifactId>centit-database</artifactId>
-        </dependency>
     </dependencies>
 </project>

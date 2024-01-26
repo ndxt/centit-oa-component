@@ -3,32 +3,31 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>com.centit.framework</groupId>
+        <artifactId>centit-project-bulid-parent</artifactId>
+        <version>5.5-SNAPSHOT</version>
+    </parent>
+
+    <groupId>com.centit.product</groupId>
+    <artifactId>centit-oa-component</artifactId>
+    <version>${revision}</version>
+    <packaging>pom</packaging>
+    <name>com.centit.product:centit-oa-component</name>
+
     <modules>
         <module>communion-module</module>
         <module>enterprise-calendar</module>
         <module>optflow-serial-number</module>
         <module>inner-message</module>
-        <!--<module>favorite-tag-module</module>-->
         <module>team-cooperation</module>
     </modules>
 
-    <parent>
-        <artifactId>framework-snapshot-dependencies</artifactId>
-        <groupId>com.centit.framework</groupId>
-        <version>5.4-SNAPSHOT</version>
-    </parent>
-
     <properties>
         <aliyun-sdk-oss.version>2.8.1</aliyun-sdk-oss.version>
-        <fileserver.version>5.4-SNAPSHOT</fileserver.version>
     </properties>
 
-    <groupId>com.centit.product</groupId>
-    <artifactId>centit-oa-component</artifactId>
-    <version>5.4-SNAPSHOT</version>
-
-    <packaging>pom</packaging>
-    <name>com.centit.product:centit-oa-component</name>
     <description>内部消息（邮件）服务</description>
     <build>
         <plugins>
