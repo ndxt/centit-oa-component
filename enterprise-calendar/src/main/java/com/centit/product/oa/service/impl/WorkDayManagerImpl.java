@@ -4,6 +4,7 @@ import com.centit.product.oa.dao.WorkDayDao;
 import com.centit.product.oa.po.WorkDay;
 import com.centit.product.oa.service.WorkDayManager;
 import com.centit.support.algorithm.DatetimeOpt;
+import com.centit.support.common.WorkTimeSpan;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -102,6 +103,19 @@ public class WorkDayManagerImpl implements WorkDayManager {
         int spanDays = DatetimeOpt.calcSpanDays(startDate, endDate);
         int holidays = this.calcHolidays(topUnit, startDate, endDate);
         return spanDays - holidays;
+    }
+
+    @Override
+    public Date calcWorkingDeadline(String topUnit, Date startDate, WorkTimeSpan timeLimit){
+        Date deadLine = new Date( startDate.getTime() + timeLimit.longValue());
+        Date beginDate = startDate;
+        while(beginDate.before(deadLine)){
+            int n = calcHolidays(topUnit, beginDate, deadLine);
+            if(n==0) break;
+            beginDate = DatetimeOpt.addDays(deadLine,1);
+            deadLine  = DatetimeOpt.addDays(deadLine, n);
+        }
+        return deadLine;
     }
 
     @Override
