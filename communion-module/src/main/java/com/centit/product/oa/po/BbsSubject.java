@@ -50,28 +50,28 @@ public class BbsSubject implements Serializable {
      * 项目ID 类似与 OSID
      */
     @Column(name = "APPLICATION_ID")
-    @Length(max = 64, message = "字段长度不能大于{max}")
+    @Length(max = 64)
     private String applicationId;
 
     /**
      * 功能模块
      */
     @Column(name = "OPT_ID")
-    @Length(max = 64, message = "字段长度不能大于{max}")
+    @Length(max = 64)
     private String optId;
 
     /**
      * 操作方法
      */
     @Column(name = "OPT_METHOD")
-    @Length(max = 64, message = "字段长度不能大于{max}")
+    @Length(max = 64)
     private String optMethod;
 
     /**
      * 操作业务标记
      */
     @Column(name = "OPT_TAG")
-    @Length(max = 200, message = "字段长度不能大于{max}")
+    @Length(max = 200)
     private String optTag;
 
     /*
@@ -99,7 +99,7 @@ public class BbsSubject implements Serializable {
 
     //话题内容
     @Column(name = "SUBJECT_CONTENT")
-    @Length(max = 2000, message = "字段长度不能大于{max}")
+    @Length(max = 2000)
     private String subjectContent;
 
     //数据有效性 0无效、1有效

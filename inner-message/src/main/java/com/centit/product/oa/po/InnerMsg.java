@@ -38,14 +38,14 @@ public class InnerMsg implements Serializable{
      * 如果是回复邮件，可以关联相关的邮件
      */
     @Column(name="REPLY_MSG_CODE")
-    @Length(max = 32, message = "字段长度不能大于{max}")
+    @Length(max = 32)
     private String replyMsgCode;
 
     /*
      * 发送人
      */
     @Column(name="SENDER")
-    @Length(max = 128, message = "字段长度不能大于{max}")
+    @Length(max = 128)
     @DictionaryMap(fieldName="senderName",value="userCode")
     @ApiModelProperty(value = "发送人",name = "sender",required = true)
     private String sender;
@@ -63,14 +63,14 @@ public class InnerMsg implements Serializable{
      * 标题
      */
     @Column(name="MSG_TITLE")
-    @Length(max = 512, message = "字段长度不能大于{max}")
+    @Length(max = 512)
     private String msgTitle;
 
     /*
      * 消息类别：P = 私信人为消息   A=机构为公告  M =系统消息
      */
     @Column(name = "MSG_TYPE")
-    @Length(max = 16, message = "字段长度必须为{max}")
+    @Length(max = 16)
     private String msgType;
 
     /*
@@ -79,14 +79,14 @@ public class InnerMsg implements Serializable{
      *  针对收件人的状态 在 F_INNER_MSG_RECIPIENT 表中的MSG_STATE
      */
     @Column(name = "MAIL_TYPE")
-    @Length(max = 1, message = "字段长度必须为{max}")
+    @Length(max = 1)
     private String mailType;
 
     /*
      * 接收人中文名
      */
     @Column(name="RECEIVE_NAME")
-    @Length(max = 2048, message = "字段长度不能大于{max}")
+    @Length(max = 2048)
     private String receiveName;
 
     /*
@@ -94,7 +94,7 @@ public class InnerMsg implements Serializable{
      *
     */
     @Column(name = "MSG_STATE")
-    @Length(max = 1, message = "字段长度必须为{max}")
+    @Length(max = 1)
     private String msgState;
 
     /*
@@ -112,20 +112,20 @@ public class InnerMsg implements Serializable{
     /*
      *功能模块 */
     @Column(name="OPT_ID")
-    @Length(max = 64, message = "字段长度不能大于{max}")
+    @Length(max = 64)
     private String optId;
 
     /*
      *操作方法 */
     @Column(name="OPT_METHOD")
-    @Length(max = 64, message = "字段长度不能大于{max}")
+    @Length(max = 64)
     private String optMethod;
 
     /*
      *操作业务标记
      * */
     @Column(name="OPT_TAG")
-    @Length(max = 200, message = "字段长度不能大于{max}")
+    @Length(max = 200)
     private String optTag;
 
     /*

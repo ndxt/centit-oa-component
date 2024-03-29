@@ -54,7 +54,7 @@ public class BbsPiece implements Serializable {
 
     //消息的内容
     @Column(name = "PIECE_CONTENT")
-    @Length(max = 2000, message = "字段长度不能大于{max}")
+    @Length(max = 2000)
     private String pieceContent;
 
     //回复（引用）的消息id

@@ -34,7 +34,7 @@ public class InnerMsgRecipient implements Serializable{
      */
     @Id
     @Column(name = "RECEIVE")
-    @Length(max = 2048, message = "字段长度不能大于{max}")
+    @Length(max = 2048)
     @DictionaryMap(fieldName="receiverName",value="userCode")
     @ApiModelProperty(value = "接收人编号",name = "receive",required = true)
     private String receive;
@@ -52,7 +52,7 @@ public class InnerMsgRecipient implements Serializable{
         B=密送
      */
     @Column(name = "MAIL_TYPE")
-    @Length(max = 1, message = "字段长度必须为{max}")
+    @Length(max = 1)
     private String mailType;
 
     /*
@@ -62,7 +62,7 @@ public class InnerMsgRecipient implements Serializable{
         D=删除
      */
     @Column(name = "MSG_STATE")
-    @Length(max = 1, message = "字段长度必须为{max}")
+    @Length(max = 1)
     private String msgState;
 
     /*

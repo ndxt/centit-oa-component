@@ -60,10 +60,7 @@ public class WorkDay implements Serializable {
     public static String WORK_DAY_TYPE_WORKDAY = "C";
     public static String WORK_DAY_TYPE_WEEKEND = "D";
     @Column(name = "DAY_TYPE")
-    @Length(
-        max = 1,
-        message = "字段长度不能小于{min}大于{max}"
-    )
+    @Length(max = 1)
     @DictionaryMap(value = "DAY_TYPE", fieldName = "dayTypeDesc")
     private String dayType;
 
@@ -71,17 +68,11 @@ public class WorkDay implements Serializable {
      * 这个字段 暂时没有使用，可以用于关联work class
      */
     @Column(name = "WORK_TIME_TYPE")
-    @Length(
-        max = 20,
-        message = "字段长度不能小于{min}大于{max}"
-    )
+    @Length(max = 20)
     private String workTimeType;
 
     @Column(name = "WORK_DAY_DESC")
-    @Length(
-        max = 255,
-        message = "字段长度不能小于{min}大于{max}"
-    )
+    @Length(max = 255)
     private String workDayDesc;
 
     public WorkDay() {

@@ -32,7 +32,7 @@ public class BbsModule implements Serializable {
 
     //模块描述
     @Column(name="MODULE_DESC")
-    @Length(max = 2000, message = "字段长度不能大于{max}")
+    @Length(max = 2000)
     private String moduleDesc;
 //    private JSONObject moduleDesc;
 
@@ -56,7 +56,7 @@ public class BbsModule implements Serializable {
 //     * 项目ID 类似与 OSID
 //     */
 //    @Column(name="APPLICATION_ID")
-//    @Length(max = 64, message = "字段长度不能大于{max}")
+//    @Length(max = 64)
 //    private String applicationId;
 
     public String getModuleId() {
