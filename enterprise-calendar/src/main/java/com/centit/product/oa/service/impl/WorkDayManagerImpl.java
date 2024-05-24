@@ -4,7 +4,7 @@ import com.centit.product.oa.dao.WorkDayDao;
 import com.centit.product.oa.po.WorkDay;
 import com.centit.product.oa.service.WorkDayManager;
 import com.centit.support.algorithm.DatetimeOpt;
-import com.centit.support.common.WorkTimeSpan;
+import com.centit.support.common.DateTimeSpan;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,14 +106,23 @@ public class WorkDayManagerImpl implements WorkDayManager {
     }
 
     @Override
-    public Date calcWorkingDeadline(String topUnit, Date startDate, WorkTimeSpan timeLimit){
+    public Date calcWorkingDeadline(String topUnit, Date startDate, DateTimeSpan timeLimit){
         Date deadLine = new Date( startDate.getTime() + timeLimit.longValue());
         Date beginDate = startDate;
-        while(beginDate.before(deadLine)){
-            int n = calcHolidays(topUnit, beginDate, deadLine);
-            if(n==0) break;
-            beginDate = DatetimeOpt.addDays(deadLine,1);
-            deadLine  = DatetimeOpt.addDays(deadLine, n);
+        if(beginDate.before(deadLine)) { // timeLimit 为正
+            while (beginDate.before(deadLine)) {
+                int n = calcHolidays(topUnit, beginDate, deadLine);
+                if (n == 0) break;
+                beginDate = DatetimeOpt.addDays(deadLine, 1);
+                deadLine = DatetimeOpt.addDays(deadLine, n);
+            }
+        } else { // timeLimit 为 负
+            while (beginDate.after(deadLine)) {
+                int n = calcHolidays(topUnit, deadLine, beginDate);
+                if (n == 0) break;
+                beginDate = DatetimeOpt.addDays(deadLine, -1);
+                deadLine = DatetimeOpt.addDays(deadLine, -n);
+            }
         }
         return deadLine;
     }

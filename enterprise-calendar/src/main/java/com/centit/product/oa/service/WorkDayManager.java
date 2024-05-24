@@ -1,7 +1,7 @@
 package com.centit.product.oa.service;
 
 import com.centit.product.oa.po.WorkDay;
-import com.centit.support.common.WorkTimeSpan;
+import com.centit.support.common.DateTimeSpan;
 
 import java.util.Date;
 import java.util.List;
@@ -71,7 +71,7 @@ public interface WorkDayManager{
      * @param timeLimit 期限
      * @return 计算工作日天数
      */
-    Date calcWorkingDeadline(String topUnit, Date startDate, WorkTimeSpan timeLimit);
+    Date calcWorkingDeadline(String topUnit, Date startDate, DateTimeSpan timeLimit);
     /**
      * @param topUnit 租户隔离，system 租户为通用设计,  每次获取，获取租户为当前租户和系统租户的信息
      * @param startDate 日期 ，如果是date型用函数转换 WorkDay.toWorkDayId( Date类型)
